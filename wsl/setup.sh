@@ -63,6 +63,7 @@ fi
 powershell=false;
 zypperdnf=false;
 guivalue=false;
+zypperdnfgui=false;
 #########################
 i=1;
 j=$#;
