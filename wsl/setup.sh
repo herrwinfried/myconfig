@@ -28,7 +28,7 @@ if ! [ -x "$(command -v lsb_release)" ]; then
 if [ -x "$(command -v apt)" ]; then
 echo "$red I couldn't find the lsb-release package. $green I'm uploading now. $white"
 sudo apt install -y lsb-release
-elif [ -x "$(command -v zypper)" ] || [ -x "$(command -v zypper)" && -x "$(command -v dnf)" ]; then
+elif [ -x "$(command -v zypper)" ]; then
 echo "$red I couldn't find the lsb-release package. $green I'm uploading now. $white"
  sudo zypper in -y lsb-release
 elif [ ! -x "$(command -v zypper)" ] && [ -x "$(command -v dnf)" ]; then
@@ -45,7 +45,7 @@ if ! [ -x "$(command -v lsb_release)" ]; then
 if [ -x "$(command -v apt)" ]; then
 echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
 sudo apt install -y sudo
-elif [ -x "$(command -v zypper)" ] || [ -x "$(command -v zypper)" && -x "$(command -v dnf)" ]; then
+elif [ -x "$(command -v zypper)" ]; then
 echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
  sudo zypper in -y sudo
 elif [ ! -x "$(command -v zypper)" ] && [ -x "$(command -v dnf)" ]; then
@@ -63,6 +63,7 @@ fi
 powershell=false;
 zypperdnf=false;
 guivalue=false;
+zypperdnfgui=false;
 #########################
 i=1;
 j=$#;
