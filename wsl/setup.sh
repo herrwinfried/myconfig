@@ -231,6 +231,7 @@ fi
 ####OS SELECT
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 #########FINISH###################
+unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
 [[ ! -f /proc/cpuinfo ]] && echo "I couldn't find the /proc/cpuinfo file so the process was aborted." && exit 1
 if [[ "$unameout" == "*microsoft*" || "$unameout" == "*wsl*" ]] \
 || cat /proc/cpuinfo | grep "microcode" | grep "0xffffffff" &>/dev/null
