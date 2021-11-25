@@ -18,9 +18,9 @@ cyan="$(tput setaf 6)"
 white="$(tput setaf 7)"
 ### Finish
 if [[ $EUID -ne 0 ]]; then
-   #echo "$red TUR:Süper Kullanıcı/Root Olmanız gerekiyor." 
-     echo "$red ENG:You need to be Super User/Root. $white" 
-       #echo "$red GER: Sie müssen Superuser/Root sein." 
+   #echo "$red TUR:Süper Kullanıcı/Root Olmanız gerekiyor."
+     echo "$red ENG:You need to be Super User/Root. $white"
+       #echo "$red GER: Sie müssen Superuser/Root sein."
    exit 1
 fi
 ###################PACKAGE##############################################################
@@ -37,23 +37,6 @@ echo "$red I couldn't find the redhat-lsb-core package. $green I'm uploading now
  else
   #echo "$red İşlem İptal: lsb_release Paketi Bulunmadığından işlem iptal edildi." >&2
   echo "$red Transaction Canceled: The operation was canceled because the lsb_release Package is Not Found. $white" >&2
-  exit 1
-fi
-fi
-####
-if ! [ -x "$(command -v lsb_release)" ]; then
-if [ -x "$(command -v apt)" ]; then
-echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
-sudo apt install -y sudo
-elif [ -x "$(command -v zypper)" ]; then
-echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
- sudo zypper in -y sudo
-elif [ ! -x "$(command -v zypper)" ] && [ -x "$(command -v dnf)" ]; then
-echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
- sudo dnf install -y sudo
- else
-  #echo "$red İşlem İptal: sudo Paketi Bulunmadığından işlem iptal edildi." >&2
-  echo "$red Transaction Canceled: The operation was canceled because the sudo Package is Not Found. $white" >&2
   exit 1
 fi
 fi
@@ -76,6 +59,7 @@ elif [[ $1 == "--dnf" ]]; then
 zypperdnf=true;
 elif [[ $1 == "--gui" ]]; then
 guivalue=true;
+zypperdnfgui=false;
 elif [[ $1 == "--guidnf" ]]; then
 guivalue=false;
 zypperdnfgui=true;
@@ -88,12 +72,11 @@ done
 
 #######################ARGS FINISH#########################
 function opensuse_tw {
-
+#f
 if [[ $zypperdnf == true ]]; then
 function update {
 sudo zypper --gpg-auto-import-keys dup -y
 }
-
 function repository {
 sudo zypper --gpg-auto-import-keys addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/' packman
 sudo zypper --gpg-auto-import-keys refresh
@@ -110,7 +93,6 @@ sudo zypper addrepo https://brave-browser-rpm-nightly.s3.brave.com/x86_64/ brave
 ##########################################
 sudo zypper --gpg-auto-import-keys refresh
 }
-
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
@@ -137,8 +119,8 @@ function developerpackage {
     sudo dnf install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++
      sudo zypper install -y --type  pattern devel_basis
 }
+else
 
-else {
 
 function update {
 sudo zypper --gpg-auto-import-keys dup -y
@@ -184,13 +166,11 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++
+    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake
      sudo zypper install -y --type  pattern devel_basis
 }
-
-}
-
-
+fi
+#
 
 update
 repository
@@ -200,7 +180,7 @@ fi
 dnfsetup
 basepackage
 developerpackage
-#
+#########################
 
 if [[ $zypperdnfgui == true ]] && [[ $guivalue == false ]]; then
 if [ ! -x "$(command -v dnf)" ]; then
@@ -216,11 +196,11 @@ if [[ $zypperdnfgui == false ]] && [[ $guivalue == true ]]; then
 sudo zypper --gpg-auto-import-keys in -y noto-sans-fonts gsettings-desktop-schemas xorg-x11-libs xorg-x11-server humanity-icon-theme patterns-fonts-fonts patterns-fonts-fonts_opt xorg-x11-fonts materia-gtk-theme gnome-tweaks
 sudo zypper --gpg-auto-import-keys in -y Mesa-devel libOSMesa-devel libgthread-2_0-0 libts0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libevent-2_1-7 libminizip1 libpcre2-16-0
 fi
-} 
-#
+
+}
 
 function fedora {
-
+#
 function update {
 sudo dnf update --refresh -y
 }
@@ -240,13 +220,60 @@ update
 repository
 basepackage
 developerpackage
-
-if [[ $guivalue == true ]]
+if [[ $guivalue == true ]]; then
 
 echo "Soon."
 
 fi
+#
+}
+function debian {
+#
+function update {
+    sudo apt update && sudo apt upgrade -y
+}
+function repository {
+#####
+wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo rm packages-microsoft-prod.deb
+#####
+curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+#####
+sudo apt install -y apt-transport-https curl
+#####
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
+#######
+sudo apt update
+}
+function powershell {
+wget https://github.com/PowerShell/PowerShell/releases/download/v7.2.0/powershell-lts_7.2.0-1.deb_amd64.deb
+dpkg -i ./powershell-lts_7.2.0-1.deb_amd64.deb
+sudo apt install -f -y
+rm ./powershell-lts_7.2.0-1.deb_amd64.deb
+}
 
+function basepackage {
+    sudo apt update
+    sudo apt install -y zsh nano lsb-release screenfetch neofetch lzip unzip git e2fsprogs curl
+sudo apt install -y brave-browser-nightly
+}
+function developerpackage {
+   sudo apt install -y python3.9 python3-pip gcc cmake build-essential nodejs dotnet-sdk-6.0 apt-transport-https
+}
+update
+repository
+if [[ $powershell == true ]]; then
+powershell
+fi
+basepackage
+developerpackage
+
+#
+if [[ $guivalue == true ]]; then
+sudo apt install -y gnome-tweaks papirus-icon-theme materia-gtk-theme
+fi
 }
 
 ####OS SELECT
@@ -257,14 +284,13 @@ unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
 if [[ "$unameout" == "*microsoft*" || "$unameout" == "*wsl*" ]] \
 || cat /proc/cpuinfo | grep "microcode" | grep "0xffffffff" &>/dev/null
 then
-
 if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
 opensuse_tw
-
 elif [ "$distroselect" == "Fedora release 35 (Thirty Five)" ]; then
 fedora
+elif [ "$distroselect" == "Debian GNU/Linux 11 (bullseye)" ]; then
+debian
 else
-echo "$red Üzgünüm Bu Script Senin İşletim sistemin için uyarlanmadı."
+echo "The script does not yet support your operating system."
 fi
-
-echo "$blue Script Bitti."
+fi
