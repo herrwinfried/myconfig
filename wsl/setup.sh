@@ -40,23 +40,6 @@ echo "$red I couldn't find the redhat-lsb-core package. $green I'm uploading now
   exit 1
 fi
 fi
-####
-if ! [ -x "$(command -v lsb_release)" ]; then
-if [ -x "$(command -v apt)" ]; then
-echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
-sudo apt install -y sudo
-elif [ -x "$(command -v zypper)" ]; then
-echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
- sudo zypper in -y sudo
-elif [ ! -x "$(command -v zypper)" ] && [ -x "$(command -v dnf)" ]; then
-echo "$red I couldn't find the sudo package. $green I'm uploading now. $white"
- sudo dnf install -y sudo
- else
-  #echo "$red İşlem İptal: sudo Paketi Bulunmadığından işlem iptal edildi." >&2
-  echo "$red Transaction Canceled: The operation was canceled because the sudo Package is Not Found. $white" >&2
-  exit 1
-fi
-fi
 ###############################PACKAGE FINISH##################
 
 ########################ARGS##################################
@@ -76,6 +59,7 @@ elif [[ $1 == "--dnf" ]]; then
 zypperdnf=true;
 elif [[ $1 == "--gui" ]]; then
 guivalue=true;
+zypperdnfgui=false;
 elif [[ $1 == "--guidnf" ]]; then
 guivalue=false;
 zypperdnfgui=true;
@@ -88,12 +72,11 @@ done
 
 #######################ARGS FINISH#########################
 function opensuse_tw {
-
+#f
 if [[ $zypperdnf == true ]]; then
 function update {
 sudo zypper --gpg-auto-import-keys dup -y
 }
-
 function repository {
 sudo zypper --gpg-auto-import-keys addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/' packman
 sudo zypper --gpg-auto-import-keys refresh
@@ -110,7 +93,6 @@ sudo zypper addrepo https://brave-browser-rpm-nightly.s3.brave.com/x86_64/ brave
 ##########################################
 sudo zypper --gpg-auto-import-keys refresh
 }
-
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
@@ -137,8 +119,8 @@ function developerpackage {
     sudo dnf install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++
      sudo zypper install -y --type  pattern devel_basis
 }
+else
 
-else {
 
 function update {
 sudo zypper --gpg-auto-import-keys dup -y
@@ -184,13 +166,11 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++
+    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++ cmake
      sudo zypper install -y --type  pattern devel_basis
 }
-
-}
-
-
+fi
+#
 
 update
 repository
@@ -200,7 +180,7 @@ fi
 dnfsetup
 basepackage
 developerpackage
-#
+#########################
 
 if [[ $zypperdnfgui == true ]] && [[ $guivalue == false ]]; then
 if [ ! -x "$(command -v dnf)" ]; then
@@ -216,11 +196,11 @@ if [[ $zypperdnfgui == false ]] && [[ $guivalue == true ]]; then
 sudo zypper --gpg-auto-import-keys in -y noto-sans-fonts gsettings-desktop-schemas xorg-x11-libs xorg-x11-server humanity-icon-theme patterns-fonts-fonts patterns-fonts-fonts_opt xorg-x11-fonts materia-gtk-theme gnome-tweaks
 sudo zypper --gpg-auto-import-keys in -y Mesa-devel libOSMesa-devel libgthread-2_0-0 libts0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libevent-2_1-7 libminizip1 libpcre2-16-0
 fi
-} 
-#
+
+}
 
 function fedora {
-
+#
 function update {
 sudo dnf update --refresh -y
 }
@@ -240,31 +220,26 @@ update
 repository
 basepackage
 developerpackage
-
-if [[ $guivalue == true ]]
+if [[ $guivalue == true ]]; then
 
 echo "Soon."
 
 fi
-
+#
 }
 
 ####OS SELECT
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 #########FINISH###################
-unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
 [[ ! -f /proc/cpuinfo ]] && echo "I couldn't find the /proc/cpuinfo file so the process was aborted." && exit 1
 if [[ "$unameout" == "*microsoft*" || "$unameout" == "*wsl*" ]] \
 || cat /proc/cpuinfo | grep "microcode" | grep "0xffffffff" &>/dev/null
 then
-
 if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
 opensuse_tw
-
 elif [ "$distroselect" == "Fedora release 35 (Thirty Five)" ]; then
-fedora
+opensuse_tw
 else
-echo "$red Üzgünüm Bu Script Senin İşletim sistemin için uyarlanmadı."
+echo "The script does not yet support your operating system."
 fi
-
-echo "$blue Script Bitti."
+fi
