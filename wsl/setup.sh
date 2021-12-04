@@ -248,11 +248,14 @@ echo "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.g
 sudo apt update
 }
 function powershell {
-    sudo apt-get update
-    sudo apt-get install -y powershell
+wget https://github.com/PowerShell/PowerShell/releases/download/v7.2.0/powershell-lts_7.2.0-1.deb_amd64.deb
+dpkg -i ./powershell-lts_7.2.0-1.deb_amd64.deb
+sudo apt install -f -y
+rm ./powershell-lts_7.2.0-1.deb_amd64.deb
 }
 
 function basepackage {
+    sudo apt update
     sudo apt install -y zsh nano lsb-release screenfetch neofetch lzip unzip git e2fsprogs curl
 sudo apt install -y brave-browser-nightly
 }
