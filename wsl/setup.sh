@@ -166,7 +166,7 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++ cmake
+    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake
      sudo zypper install -y --type  pattern devel_basis
 }
 fi
@@ -227,6 +227,51 @@ echo "Soon."
 fi
 #
 }
+function debian {
+#
+function update {
+    sudo apt update && sudo apt upgrade -y
+}
+function repository {
+#####
+wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo rm packages-microsoft-prod.deb
+#####
+curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+#####
+sudo apt install -y apt-transport-https curl
+#####
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
+#######
+sudo apt update
+}
+function powershell {
+    sudo apt-get update
+    sudo apt-get install -y powershell
+}
+
+function basepackage {
+    sudo apt install -y zsh nano lsb-release screenfetch neofetch lzip unzip git e2fsprogs curl
+sudo apt install -y brave-browser-nightly
+}
+function developerpackage {
+   sudo apt install -y python3.9 python3-pip gcc cmake build-essential nodejs dotnet-sdk-6.0 apt-transport-https
+}
+update
+repository
+if [[ $powershell == true ]]; then
+powershell
+fi
+basepackage
+developerpackage
+
+#
+if [[ $guivalue == true ]]; then
+sudo apt install -y gnome-tweaks papirus-icon-theme materia-gtk-theme
+fi
+}
 
 ####OS SELECT
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
@@ -239,7 +284,9 @@ then
 if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
 opensuse_tw
 elif [ "$distroselect" == "Fedora release 35 (Thirty Five)" ]; then
-opensuse_tw
+fedora
+elif [ "$distroselect" == "Debian GNU/Linux 11 (bullseye)" ]; then
+debian
 else
 echo "The script does not yet support your operating system."
 fi
