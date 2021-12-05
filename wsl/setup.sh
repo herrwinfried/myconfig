@@ -166,7 +166,7 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake
+    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 fi
