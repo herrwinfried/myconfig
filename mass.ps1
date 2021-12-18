@@ -17,6 +17,6 @@ Expand-Archive $env:TEMP\mass.zip -DestinationPath $env:TEMP\mass
 Write-Host "Zipten çıkarttım"
 
 Write-Host "HWID çalıştırıyorum"
-Set-Location $env:TEMP\mass\MAS_1.4\Separate-Files-Version\Activators\HWID-KMS38_Activation
+Set-Location $env:TEMP\mass\Microsoft-Activation-Scripts-master\MAS_1.4\Separate-Files-Version\Activators\HWID-KMS38_Activation
 cmd .\HWID_Activation.cmd
 Pause
