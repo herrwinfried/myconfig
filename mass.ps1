@@ -18,5 +18,3 @@ Write-Host "Zipten çıkarttım"
 
 Write-Host "HWID çalıştırıyorum"
 Set-Location $env:TEMP\mass\Microsoft-Activation-Scripts-master\MAS_1.4\Separate-Files-Version\Activators\HWID-KMS38_Activation
-cmd HWID_Activation.cmd
-Pause
