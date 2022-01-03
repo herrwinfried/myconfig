@@ -1,4 +1,9 @@
 alias systemupdate='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l && sudo flatpak update && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
-alias systemupdateyes='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l -y && sudo flatpak update -y && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
-
+alias systemupdate_yes='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l -y && sudo flatpak update -y && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
+alias systemupdate_pk='sudo su -c "pkcon get-updates && sudo flatpak update || echo Hey bir sorun oldu sanırım"'
+alias systemupdate_pkyes='sudo su -c "pkcon get-updates -y && sudo flatpak update -y || echo Hey bir sorun oldu sanırım"'
 alias podmanRun='echo "podman system service --time=0 tcp:0.0.0.0:12979"; podman system service --time=0 tcp:0.0.0.0:12979'
+
+if [ -f /etc/zsh_command_not_found ]; then
+      . /etc/zsh_command_not_found
+  fi
