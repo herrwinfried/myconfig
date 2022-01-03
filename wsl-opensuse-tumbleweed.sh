@@ -76,7 +76,7 @@ sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.opensuse.o
 function basepackage {
 sudo zypper --gpg-auto-import-keys install -y --from packman ffmpeg gstreamer-plugins-{good,bad,ugly,libav} libavcodec-full
     sudo $PackageName $PackageInstall dracula-gtk-theme fetchmsttfonts powerline-fonts \
-neofetch screenfetch hwinfo htop ffmpeg zsh git curl wget lsb-release \
+neofetch screenfetch hwinfo htop ffmpeg zsh git git-lfs curl wget lsb-release \
 brave-browser \
 zsh curl neofetch git opi lzip unzip e2fsprogs nano
 }

@@ -104,7 +104,7 @@ function basepackage {
 sudo zypper --gpg-auto-import-keys install -y --from packman ffmpeg gstreamer-plugins-{good,bad,ugly,libav} libavcodec-full vlc-codecs
 sudo $PackageName remove -y tlp
     sudo $PackageName $PackageInstall dracula-gtk-theme fetchmsttfonts powerline-fonts AdobeICCProfiles \
-neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git curl wget lsb-release \
+neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git git-lfs curl wget lsb-release \
 discord brave-browser pinta flameshot gimp \
 zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-profiles-daemon
 #openshot
