@@ -90,14 +90,8 @@ sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.opensuse.o
 function kde_function {
     zypper addrepo https://download.opensuse.org/repositories/home:hopeandtruth6517:kirigami-apps/openSUSE_Tumbleweed/home:hopeandtruth6517:kirigami-apps.repo
     sudo $PackageName $UpdateArg
-## Music
-    sudo flatpak install -y flathub org.kde.vvave
-#remove package
-    sudo $PackageName $PackageRemove plasma5-pk-updates
-### partitionmanager, kclock, digikam,colord-kde, Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, dosya bulucu, GPG , kamera, kde IDE, KDE IDE PHP VE QT , Google Drive KDE  , Discover Update, Discover flatpak support
-    sudo $PackageName $PackageInstall partitionmanager kclock digikam colord-kde krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive discover-notifier discover-backend-flatpak
-## YT Music QT
-    sudo flatpak install -y flathub org.kde.audiotube
+### partitionmanager, kclock, digikam,colord-kde, Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, dosya bulucu, GPG , kamera, kde IDE, KDE IDE PHP VE QT , Google Drive KDE  , Discover flatpak support, paint uygulaması, music uygulaması
+    sudo $PackageName $PackageInstall partitionmanager kclock digikam colord-kde krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive discover-backend-flatpak kolourpaint elisa 
 }
 
 function basepackage {
@@ -191,6 +185,11 @@ function game_video {
 	sudo $PackageName $PackageInstall lutris minetest steam gamemoded libgamemode0 libgamemodeauto0 obs-studio kdenlive 
 	sudo flatpak install -y flathub com.usebottles.bottles
 }
+
+function x_github_desktop {
+    desktopGitURL=$(curl -s https://api.github.com/repos/shiftkey/desktop/releases/latest | jq -r ".assets[] | select(.name | test(\".rpm\")) | .browser_download_url")
+curl -L $desktopGitURL -o $output/GitHubDesktop.rpm
+}
 function developerpackage {
 
 sudo $PackageName $PackageInstall \
@@ -223,6 +222,8 @@ apple_device
 
 x_powershell
 x_ohmyposh
+
+x_github_desktop
 
 rpms
 runs
