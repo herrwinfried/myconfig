@@ -96,7 +96,7 @@ sudo zypper --gpg-auto-import-keys refresh
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
-curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.0/powershell-7.2.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz
+curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/powershell-7.2.2-linux-x64.tar.gz -o /tmp/powershell.tar.gz
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
@@ -116,7 +116,7 @@ sudo dnf install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo dnf install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++
+    sudo dnf install -y nodejs-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 else
@@ -146,7 +146,7 @@ sudo zypper --gpg-auto-import-keys refresh
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
-curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.0/powershell-7.2.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz
+curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/powershell-7.2.2-linux-x64.tar.gz -o /tmp/powershell.tar.gz
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
@@ -166,7 +166,7 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
+    sudo zypper install -y nodejs-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 fi
