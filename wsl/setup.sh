@@ -18,9 +18,9 @@ cyan="$(tput setaf 6)"
 white="$(tput setaf 7)"
 ### Finish
 if [[ $EUID -ne 0 ]]; then
-   #echo "$red TUR:Süper Kullanıcı/Root Olmanız gerekiyor." 
-     echo "$red ENG:You need to be Super User/Root. $white" 
-       #echo "$red GER: Sie müssen Superuser/Root sein." 
+   #echo "$red TUR:Süper Kullanıcı/Root Olmanız gerekiyor."
+     echo "$red ENG:You need to be Super User/Root. $white"
+       #echo "$red GER: Sie müssen Superuser/Root sein."
    exit 1
 fi
 ###################PACKAGE##############################################################
@@ -276,6 +276,43 @@ sudo apt install -y gnome-tweaks papirus-icon-theme materia-gtk-theme
 fi
 }
 
+function ubuntu {
+sudo apt install -f -y
+function update {
+sudo apt update && sudo apt upgrade -y
+}
+function repository {
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm -rf packages-microsoft-prod.deb
+##############
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+##############
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
+###
+sudo apt update
+}
+function powershell {
+sudo apt install -y powershell
+}
+function basepackage {
+sudo apt install -y zsh curl neofetch screenfetch git lzip unzip nano
+}
+function developerpackage {
+sudo apt install -y build-essential nodejs python3.9-full python3.9 python3-pip dotnet-sdk-6.0
+}
+
+update
+repository
+if [[ $powershell == true ]]; then
+powershell
+fi
+basepackage
+developerpackage
+}
+
 ####OS SELECT
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 #########FINISH###################
@@ -290,6 +327,8 @@ elif [ "$distroselect" == "Fedora release 35 (Thirty Five)" ]; then
 fedora
 elif [ "$distroselect" == "Debian GNU/Linux 11 (bullseye)" ]; then
 debian
+elif [ "$distroselect" == "Ubuntu 20.04.4 LTS" ]; then
+ubuntu
 else
 echo "The script does not yet support your operating system."
 fi
