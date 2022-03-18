@@ -299,6 +299,7 @@ sudo apt install -y powershell
 }
 function basepackage {
 sudo apt install -y zsh curl neofetch screenfetch git lzip unzip nano
+sudo apt install brave-browser-nightly -y
 }
 function developerpackage {
 sudo apt install -y build-essential nodejs python3.9-full python3.9 python3-pip dotnet-sdk-6.0
