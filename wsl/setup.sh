@@ -96,7 +96,7 @@ sudo zypper --gpg-auto-import-keys refresh
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
-curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.0/powershell-7.2.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz
+curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/powershell-7.2.2-linux-x64.tar.gz -o /tmp/powershell.tar.gz
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
@@ -116,7 +116,7 @@ sudo dnf install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo dnf install -y nodejs-default python38 python38-pip dotnet-sdk-5.0 llvm-clang icu gcc gcc-c++
+    sudo dnf install -y nodejs-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 else
@@ -146,7 +146,7 @@ sudo zypper --gpg-auto-import-keys refresh
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
-curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.0/powershell-7.2.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz
+curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/powershell-7.2.2-linux-x64.tar.gz -o /tmp/powershell.tar.gz
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
@@ -166,7 +166,7 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python38 python38-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
+    sudo zypper install -y nodejs-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 fi
@@ -276,6 +276,44 @@ sudo apt install -y gnome-tweaks papirus-icon-theme materia-gtk-theme
 fi
 }
 
+function ubuntu {
+sudo apt install -f -y
+function update {
+sudo apt update && sudo apt upgrade -y
+}
+function repository {
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm -rf packages-microsoft-prod.deb
+##############
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+##############
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
+###
+sudo apt update
+}
+function powershell {
+sudo apt install -y powershell
+}
+function basepackage {
+sudo apt install -y zsh curl neofetch screenfetch git lzip unzip nano
+sudo apt install brave-browser-nightly -y
+}
+function developerpackage {
+sudo apt install -y build-essential nodejs python3.9-full python3.9 python3-pip dotnet-sdk-6.0
+}
+
+update
+repository
+if [[ $powershell == true ]]; then
+powershell
+fi
+basepackage
+developerpackage
+}
+
 ####OS SELECT
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 #########FINISH###################
@@ -290,6 +328,8 @@ elif [ "$distroselect" == "Fedora release 35 (Thirty Five)" ]; then
 fedora
 elif [ "$distroselect" == "Debian GNU/Linux 11 (bullseye)" ]; then
 debian
+elif [ "$distroselect" == "Ubuntu 20.04.4 LTS" ]; then
+ubuntu
 else
 echo "The script does not yet support your operating system."
 fi
