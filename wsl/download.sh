@@ -63,3 +63,6 @@ sudo chmod +x varibles.sh
 
 sudo chmod +x ubuntu.sh
 sudo chmod +x opensuse.sh
+
+echo "Go To SetupScript Folder"
+echo "sudo ./setup [ARG]
