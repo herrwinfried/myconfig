@@ -24,7 +24,7 @@ tw_package="zypper --gpg-auto-import-keys"
 fi
 ###########################################
 if [[ $tw_gui -eq 2 ]]; then
-tw_gui_package==dnf
+tw_gui_package=dnf
 elif [[ $tw_gui -eq 1 ]]; then
 tw_gui_package="zypper --gpg-auto-import-keys"
 fi
