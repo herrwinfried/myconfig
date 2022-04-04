@@ -19,12 +19,42 @@ fi
 
 mkdir SetupScript
 cd SetupScript
-
+if [[ -f setup.sh.old ]]; then
+rm -rf setup.old.sh
+fi
+if [[ -f setup.sh ]]; then
+mv setup.sh setup.old.sh
+fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/setup.sh -O setup.sh
+if [[ -f varibles.sh.old ]]; then
+rm -rf requirepackage.old.sh
+fi
+if [[ -f requirepackage.sh ]]; then
+mv requirepackage.sh requirepackage.old.sh
+fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/requirepackage.sh -O requirepackage.sh
+if [[ -f varibles.sh.old ]]; then
+rm -rf varibles.old.sh
+fi
+if [[ -f varibles.sh ]]; then
+mv varibles.sh varibles.old.sh
+fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/varibles.sh -O varibles.sh
 
+if [[ -f ubuntu.sh.old ]]; then
+rm -rf ubuntu.old.sh
+fi
+if [[ -f ubuntu.sh ]]; then
+mv ubuntu.sh ubuntu.old.sh
+fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/ubuntu.sh -O ubuntu.sh
+
+if [[ -f opensuse.sh.old ]]; then
+rm -rf opensuse.old.sh
+fi
+if [[ -f opensuse.sh ]]; then
+mv opensuse.sh opensuse.old.sh
+fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/opensuse.sh -O opensuse.sh
 
 sudo chmod +x setup.sh
