@@ -116,7 +116,7 @@ sudo dnf install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo dnf install -y nodejs-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
+    sudo dnf install -y nodejs-default npm-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 else
@@ -166,7 +166,7 @@ sudo zypper install -y brave-browser-nightly
 }
 
 function developerpackage {
-    sudo zypper install -y nodejs-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
+    sudo zypper install -y nodejs-default npm-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
      sudo zypper install -y --type  pattern devel_basis
 }
 fi
