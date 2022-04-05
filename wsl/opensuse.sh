@@ -97,7 +97,7 @@ fi
 if [[ $tw_gui -eq 2 ]] || [[ $tw_gui -eq 1 ]]; then
 sudo $tw_gui_package install -y noto-sans-fonts gsettings-desktop-schemas xorg-x11-libs xorg-x11-server humanity-icon-theme patterns-fonts-fonts patterns-fonts-fonts_opt xorg-x11-fonts materia-gtk-theme gnome-tweaks
 sudo $tw_gui_package install -y Mesa-devel libOSMesa-devel libgthread-2_0-0 libts0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libevent-2_1-7 libminizip1 libpcre2-16-0
-
+sudo $tw_gui_package install -y Mesa-libva 
 fi
 
 }
