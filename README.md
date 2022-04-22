@@ -4,6 +4,8 @@ There are configurations that I made according to myself. Please try it yourself
 
 Kendime göre yaptığım konfigürasyonlar var. Lütfen kendi bilincinize göre kendiniz deneyiniz.
 
-### Please select a branch / Lütfen bir dal seç
+## OpenSUSE Tumbleweed
 
-![image](https://user-images.githubusercontent.com/52379312/208476466-a59ed251-2a3e-49a4-9db7-7eff60c74301.png)
+```bash
+sudo zypper in -y wget curl git && wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/download.sh -O download.sh && chmod +x download.sh && ./download.sh
+```
