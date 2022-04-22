@@ -1,0 +1,63 @@
+#!/bin/bash
+OhMyPoshTheme="~/.poshthemes/default.omp.json"
+
+function unkey {
+security unlock-keychain
+}
+if [ -f "/usr/local/bin/brew" ]; then
+eval "$(/usr/local/bin/brew shellenv)"
+function brewInstall {
+    brew install $1 < /dev/null
+}
+
+function brewInstallCask {
+    brew install --cask $1 < /dev/null
+}
+fi
+#################### Only ZSH ################
+if [ -n "$ZSH_VERSION" ]; then
+
+if [ -x "$(command -v oh-my-posh)" ]; then
+eval "$(oh-my-posh init zsh --config $OhMyPoshTheme)"
+fi
+
+#
+fi
+#################### ZSH #####################
+##############################################
+################ Only BASH ###################
+if [ -n "$BASH_VERSION" ]; then
+
+if [ -x "$(command -v oh-my-posh)" ]; then
+eval "$(oh-my-posh init bash --config $OhMyPoshTheme)"
+fi
+
+#
+fi
+
+function Base_Font {
+# Colors
+termcols=$(tput cols)
+bold="$(tput bold)"
+fontnormal="$(tput init)"
+fontreset="$(tput reset)"
+underline="$(tput smul)"
+standout="$(tput smso)"
+normal="$(tput sgr0)"
+black="$(tput setaf 0)"
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+yellow="$(tput setaf 3)"
+blue="$(tput setaf 4)"
+magenta="$(tput setaf 5)"
+cyan="$(tput setaf 6)"
+white="$(tput setaf 7)"
+# Colors Finish
+}
+
+function aliasUpdate {
+
+rm -r ~/.alias && wget https://raw.githubusercontent.com/herrwinfried/myconfig/macos/data/home/.alias -O ~/.alias && rm -r ~/.alias.ps1 && wget https://raw.githubusercontent.com/herrwinfried/myconfig/macos/data/home/.alias.ps1 -O ~/.alias.ps1
+
+}
+
