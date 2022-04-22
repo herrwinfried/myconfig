@@ -3,6 +3,8 @@ if (-Not $ismacos ) {
     Exit 1
 }
 
+$env:PATH += ":/Users/winfried/development/flutter/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
 Function unkey {
     security unlock-keychain
 }
@@ -22,6 +24,15 @@ $OhMyPoshTheme="~/.poshthemes/default.omp.json"
 
 if (Test-Path "/usr/local/bin/brew") {
   Add-Content -Path $PROFILE.CurrentUserAllHosts -Value '$(/usr/local/bin/brew shellenv) | Invoke-Expression'
+
+  function brewInstall {
+    brew install $Args 2>$null
+}
+
+function brewInstallCask {
+    brew install --cask $Args 2>$null
+}
+
 }
 
 if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
