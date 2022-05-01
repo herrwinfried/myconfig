@@ -7,7 +7,7 @@ PackageName="zypper --gpg-auto-import-keys"
 RPMArg="--no-gpg-checks"
 PackageInstall="install -y -l"
 UpdateArg="dup -y"
-
+PackageRemove="remove -y"
 onlypc
 
 function x_nvidia_part(){
@@ -92,8 +92,10 @@ function kde_function {
     sudo $PackageName $UpdateArg
 ## Music
     sudo flatpak install -y flathub org.kde.vvave
-### partitionmanager, kclock, digikam,colord-kde, Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, dosya bulucu, GPG , kamera, kde IDE, KDE IDE PHP VE QT , Google Drive KDE
-    sudo $PackageName $PackageInstall partitionmanager kclock digikam colord-kde krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
+#remove package
+    sudo $PackageName $PackageRemove plasma5-pk-updates
+### partitionmanager, kclock, digikam,colord-kde, Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, dosya bulucu, GPG , kamera, kde IDE, KDE IDE PHP VE QT , Google Drive KDE  , Discover Update, Discover flatpak support
+    sudo $PackageName $PackageInstall partitionmanager kclock digikam colord-kde krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive discover-notifier discover-backend-flatpak
 ## YT Music QT
     sudo flatpak install -y flathub org.kde.audiotube
 }
@@ -158,7 +160,7 @@ sudo systemctl start --now asusd.service
 sudo
 }
 function dnfsetup {
-sudo zypper --gpg-auto-import-keys install -y dnf rpm-repos-openSUSE-Tumbleweed
+sudo zypper --gpg-auto-import-keys install -y dnf libdnf-repo-config-zypp
 sudo dnf swap -y PackageKit-backend-zypp PackageKit-backend-dnf
 sudo dnf makecache -y && sudo zypper --gpg-auto-import-keys refresh
 

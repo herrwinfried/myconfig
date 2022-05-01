@@ -7,7 +7,7 @@ PackageName="zypper --gpg-auto-import-keys"
 RPMArg="--no-gpg-checks"
 PackageInstall="install -y -l"
 UpdateArg="dup -y"
-
+PackageRemove="remove -y"
 onlywsl
 
 
@@ -107,7 +107,7 @@ function apple_device {
 }
 
 function dnfsetup {
-sudo zypper --gpg-auto-import-keys install -y dnf rpm-repos-openSUSE-Tumbleweed
+sudo zypper --gpg-auto-import-keys install -y dnf libdnf-repo-config-zypp
 sudo dnf swap -y PackageKit-backend-zypp PackageKit-backend-dnf
 sudo dnf makecache -y && sudo zypper --gpg-auto-import-keys refresh
 
