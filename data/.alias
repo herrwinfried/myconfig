@@ -1,3 +1,4 @@
 alias systemupdate='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l && sudo flatpak update && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
 alias systemupdateyes='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l -y && sudo flatpak update -y && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
 
+alias podmanRun='echo "podman system service --time=0 tcp:0.0.0.0:12979"; podman system service --time=0 tcp:0.0.0.0:12979'
