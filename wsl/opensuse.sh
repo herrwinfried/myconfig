@@ -51,7 +51,7 @@ sudo zypper --gpg-auto-import-keys refresh
 function powershell {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0
-curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.2/powershell-7.2.2-linux-x64.tar.gz -o /tmp/powershell.tar.gz
+curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.4/powershell-7.2.4-linux-x64.tar.gz -o /tmp/powershell.tar.gz
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
