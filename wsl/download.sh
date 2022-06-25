@@ -57,12 +57,20 @@ mv opensuse.sh opensuse.old.sh
 fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/opensuse.sh -O opensuse.sh
 
+if [[ -f systemd-distrod.sh ]]; then
+mv systemd-distrod.sh systemd-distrod.old.sh
+fi
+wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/systemd-distrod.sh -O systemd-distrod.sh
+
+
 sudo chmod +x setup.sh
 sudo chmod +x requirepackage.sh
 sudo chmod +x varibles.sh
 
 sudo chmod +x ubuntu.sh
 sudo chmod +x opensuse.sh
+
+sudo chmod +x systemd-distrod.sh
 
 echo "Go To SetupScript Folder"
 echo "sudo ./setup [ARG]"
