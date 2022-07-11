@@ -46,6 +46,9 @@ sudo chown root:root /etc/zypp/repos.d/microsoft-prod.repo
 sudo rpm --import https://brave-browser-rpm-nightly.s3.brave.com/brave-core-nightly.asc
 sudo zypper addrepo https://brave-browser-rpm-nightly.s3.brave.com/x86_64/ brave-browser-nightly
 ##########################################
+sudo rpm --import https://www.mongodb.org/static/pgp/server-5.0.asc
+sudo zypper addrepo --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-org/5.0/x86_64/" mongodb
+##########################################
 sudo zypper --gpg-auto-import-keys refresh
 }
 function powershell {
@@ -72,7 +75,16 @@ sudo $tw_package install -y brave-browser-nightly
 
 function developerpackage {
     sudo $tw_package install -y nodejs-default npm-default python39 python39-pip dotnet-sdk-6.0 llvm-clang icu gcc gcc-c++ cmake rsync gdb ninja
-     sudo zypper install -y --type  pattern devel_basis
+    sudo zypper install -y --type  pattern devel_basis
+    ##Apache2, PHP8, MariaDB, MongoDB
+    sudo $tw_package install -y apache2 mariadb php8 php8-mysql apache2-mod_php8 mariadb mariadb-tools mongodb-org
+    ##flutter 
+    sudo $tw_package install -y gtk3-devel java-18-openjdk
+    ##CONFIG
+    mkdir -p ~/data/db
+    a2enmod php8
+    sudo AddType application/x-httpd-php .php >> /etc/apache2/mod_mime-defaults.conf
+    ##CONFIG FINISH   
 }
 
 update
