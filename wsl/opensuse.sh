@@ -86,6 +86,40 @@ function developerpackage {
     sudo AddType application/x-httpd-php .php >> /etc/apache2/mod_mime-defaults.conf
     ##CONFIG FINISH   
 }
+function themesConfig {
+pwd5="$(pwd)"
+mkdir -p themeconfig
+cd themeconfig
+##GTK THEME
+wget https://github.com/dracula/gtk/archive/master.zip
+mv gtk-master dracula
+mv dracula /usr/share/themes
+rm -rf *.zip
+##GTK ICON
+https://github.com/dracula/gtk/files/5214870/Dracula.zip
+unzip Dracula.zip
+mv Dracula /usr/share/icons/
+rm -rf *.zip
+##QT COLOR
+git clone https://github.com/dracula/qt5.git
+sudo cp qt5/Dracula.conf /usr/share/qt5ct/colors
+rm -rf qt5
+####################################################
+##Cursor
+git clone https://github.com/dracula/gtk.git
+sudo cp gtk/kde/cursors/Dracula-cursors /usr/share/icons/ 
+rm -rf gtk
+###########################################################
+gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
+gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
+gsettings set org.gnome.desktop.interface icon-theme "Dracula"
+
+############
+############
+############
+
+
+}
 
 update
 repository
@@ -107,9 +141,10 @@ tw_gui_package="zypper --gpg-auto-import-keys"
 fi
 fi
 if [[ $tw_gui -eq 2 ]] || [[ $tw_gui -eq 1 ]]; then
-sudo $tw_gui_package install -y noto-sans-fonts gsettings-desktop-schemas xorg-x11-libs xorg-x11-server humanity-icon-theme patterns-fonts-fonts patterns-fonts-fonts_opt xorg-x11-fonts materia-gtk-theme gnome-tweaks
+sudo $tw_gui_package install -y noto-sans-fonts gsettings-desktop-schemas xorg-x11-libs xorg-x11-server humanity-icon-theme patterns-fonts-fonts patterns-fonts-fonts_opt xorg-x11-fonts materia-gtk-theme gnome-tweaks qt5ct
 sudo $tw_gui_package install -y Mesa-devel libOSMesa-devel libgthread-2_0-0 libts0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libevent-2_1-7 libminizip1 libpcre2-16-0
 sudo $tw_gui_package install -y Mesa-libva 
+themesConfig
 fi
 
 }
