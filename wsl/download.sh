@@ -57,12 +57,17 @@ mv opensuse.sh opensuse.old.sh
 fi
 wget https://raw.githubusercontent.com/herrwinfried/myconfig/main/wsl/opensuse.sh -O opensuse.sh
 
+sudo cat <<EOF > /etc/wsl.conf
+[boot]
+systemd=true
+EOF
+
 sudo chmod +x setup.sh
 sudo chmod +x requirepackage.sh
 sudo chmod +x varibles.sh
 
 sudo chmod +x ubuntu.sh
 sudo chmod +x opensuse.sh
-
+echo "Go to windows powershell enter command (wsl --shutdown) and open WSL distro"
 echo "Go To SetupScript Folder"
 echo "sudo ./setup [ARG]"

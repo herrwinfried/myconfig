@@ -69,9 +69,7 @@ if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
 opensuse_tw $dnf_value $gui_value $pwsh_value
 
 # TW DNFVALUE GUIVALUE POWERSHELLVALUE
-elif [ "$distroselect" == "Ubuntu 20.04.4 LTS" ]; then
-. ./ubuntu.sh
-ubuntu_20_04 $gui_value $pwsh_value
+
 else
 echo "The script does not yet support your operating system."
 fi
