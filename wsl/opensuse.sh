@@ -57,7 +57,7 @@ sudo zypper addrepo --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-
 ##########################################
 sudo zypper --gpg-auto-import-keys refresh
 }
-function powershell {
+function powershells {
 sudo zypper update
 sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0 
 sudo zypper in -y jq
@@ -68,6 +68,11 @@ sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
 sudo chmod +x /usr/bin/pwsh
+}
+
+function ohmyposhs {
+sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+sudo chmod +x /usr/local/bin/oh-my-posh
 }
 
 function dnfsetup {
@@ -136,8 +141,9 @@ cd $pwd5
 update
 repository
 if [[ $tw_pwsh -eq 1 ]]; then
-powershell
+powershells
 fi
+ohmyposhs
 dnfsetup
 basepackage
 developerpackage
@@ -159,5 +165,4 @@ Mesa-libva
 
 themesConfig
 fi
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
