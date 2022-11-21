@@ -131,7 +131,7 @@ function kde_function {
 ## Music
     flatpak install -y flathub org.kde.vvave
 ### Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, To do, dosya bulucu, kamera, kde IDE
-    sudo $PackageName $PackageInstall krecorder dragonplayer Kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt
+    sudo $PackageName $PackageInstall krecorder dragonplayer Kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
 ## YT Music QT
     flatpak install -y flathub org.kde.audiotube
 }
@@ -153,12 +153,12 @@ unzip /tmp/kuro.rpm && cd /tmp/kuro && cd opt && mv * /opt/ && cd /tmp/kuro && m
 }
 function basepackage {
 sudo zypper --gpg-auto-import-keys install -y --from packman ffmpeg gstreamer-plugins-{good,bad,ugly,libav} libavcodec-full vlc-codecs
-
+sudo $PackageName remove -y tlp
     sudo $PackageName $PackageInstall fetchmsttfonts powerline-fonts \
 neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git curl wget lsb-release \
-discord brave-browser pinta openshot flameshot gimp \
-zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service
-
+discord brave-browser pinta flameshot gimp \
+zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-profiles-daemon
+#openshot 
     flatpak install -y flathub org.telegram.desktop
     flatpak install -y flathub io.github.mimbrero.WhatsAppDesktop
     sudo snap install authy
@@ -166,6 +166,8 @@ zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service
 kde_function
 sudo $PackageName $PackageInstall anydesk
 kuro
+systemctl start zramswap.service
+
 sudo mkdir -p /etc/systemd/system/bluetooth.service.d
 sudo touch /etc/systemd/system/bluetooth.service.d/override.conf
 echo "[Service]
@@ -235,7 +237,7 @@ function game_video {
 function developerpackage {
 
 sudo $PackageName $PackageInstall \
-apache2 php8 php8-mysql apache2-mod_php8 mariadb mariadb-tools mongodb-org nodejs-default npm-default mssql-server php-composer2 \
+apache2 php8 php8-mysql apache2-mod_php8 mariadb mariadb-tools mongodb-org nodejs-default npm-default php-composer2 \
 dotnet-sdk-6.0 llvm-clang gcc gcc-c++ cmake cmake-full extra-cmake-modules rsync gdb ninja \
 patterns-devel-base-devel_basis patterns-devel-C-C++-devel_C_C++ \
 gtk3-devel \

@@ -117,3 +117,7 @@ if (Test-Path -Path "$env:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTe
 } else {
     Invoke-WebRequest https://raw.githubusercontent.com/herrwinfried/herrwinfried/json/terminal.json -OutFile $env:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
 }
+
+wingetx -Id JetBrains.DataGrip
+
+wingetx -Id JetBrains.CLion
