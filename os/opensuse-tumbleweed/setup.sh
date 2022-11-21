@@ -1,7 +1,7 @@
 #!/bin/bash
 PackageName="zypper --gpg-auto-import-keys"
 RPMArg="--no-gpg-checks"
-PackageInstall="install -y"
+PackageInstall="install --auto-agree-with-licenses -y"
 UpdateArg="dup -y"
 
 
@@ -47,8 +47,10 @@ if ! [ -x "$(command -v wget)" ]; then
     echo "$yellow Dikkat ! wget Paketi Bulunmadığından otomatik yüklenecek." >&2
   sudo zypper --gpg-auto-import-keys in -y wget
 fi
-
-
+################################
+   sudo prime-select offload-set intel
+    sudo prime-select offload
+    sudo systemctl enable nvidia-hibernate.service nvidia-suspend.service nvidia-resume.service
 ################REQUIRED FINISH##################################################################
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 
@@ -129,11 +131,11 @@ function kde_function {
     zypper addrepo https://download.opensuse.org/repositories/home:hopeandtruth6517:kirigami-apps/openSUSE_Tumbleweed/home:hopeandtruth6517:kirigami-apps.repo
     sudo $PackageName $UpdateArg
 ## Music
-    flatpak install -y flathub org.kde.vvave
+    sudo flatpak install -y flathub org.kde.vvave
 ### Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, To do, dosya bulucu, kamera, kde IDE
-    sudo $PackageName $PackageInstall krecorder dragonplayer Kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
+    sudo $PackageName $PackageInstall krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
 ## YT Music QT
-    flatpak install -y flathub org.kde.audiotube
+    sudo flatpak install -y flathub org.kde.audiotube
 }
 
 function fonts {
@@ -157,16 +159,16 @@ sudo $PackageName remove -y tlp
     sudo $PackageName $PackageInstall fetchmsttfonts powerline-fonts \
 neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git curl wget lsb-release \
 discord brave-browser pinta flameshot gimp \
-zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-profiles-daemon
-#openshot 
-    flatpak install -y flathub org.telegram.desktop
-    flatpak install -y flathub io.github.mimbrero.WhatsAppDesktop
+zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-profiles-daemon thunderbird
+#openshot
+    sudo flatpak install -y flathub org.telegram.desktop
+    sudo flatpak install -y flathub io.github.mimbrero.WhatsAppDesktop
     sudo snap install authy
+    sudo snap install termius-app
 
 kde_function
 sudo $PackageName $PackageInstall anydesk
-kuro
-systemctl start zramswap.service
+sudo systemctl enable zramswap.service
 
 sudo mkdir -p /etc/systemd/system/bluetooth.service.d
 sudo touch /etc/systemd/system/bluetooth.service.d/override.conf
@@ -200,15 +202,20 @@ function apples {
 }
 function asus_pack {
 sudo $PackageName $PackageInstall asusctl asusctl-rog-gui
+sudo systemctl enable supergfxd.service
+sudo systemctl enable asusd.service
+sudo systemctl start supergfxd.service
+sudo systemctl start asusd.service
+sudo
 }
 function dnfsetup {
-sudo zypper --gpg-auto-import-keys install -y dnf rpm-repos-openSUSE-Tumbleweed 
+sudo zypper --gpg-auto-import-keys install -y dnf rpm-repos-openSUSE-Tumbleweed
 sudo zypper --gpg-auto-import-keys install -y libdnf-repo-config-zypp PackageKit-backend-dnf
 sudo dnf swap -y PackageKit-backend-zypp PackageKit-backend-dnf
 sudo dnf makecache -y && sudo zypper --gpg-auto-import-keys refresh
 
 }
-function flatpak {
+function flatpakx {
 sudo $PackageName $PackageInstall flatpak
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 }
@@ -216,9 +223,9 @@ sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub
 function snapx {
   sudo $PackageName $PackageInstall snapd
   sudo systemctl enable --now snapd
-  sudo systemctl enable --now snapd.apparmor  
+  sudo systemctl enable --now snapd.apparmor
   sudo systemctl start --now snapd
-  sudo systemctl start --now snapd.apparmor 
+  sudo systemctl start --now snapd.apparmor
 }
 function printers {
 sudo $PackageName $PackageInstall skanlite cups cups-client cups-filters system-config-printer skanlite system-config-printer hplip
@@ -231,8 +238,9 @@ function ide_text {
 	sudo $PackageName $PackageInstall code filezilla
 }
 function game_video {
-	sudo $PackageName $PackageInstall lutris minetest steam gamemoded obs-studio kdenlive
-	#sudo flatpak install -y flathub com.obsproject.Studio
+	sudo $PackageName $PackageInstall lutris minetest steam gamemoded obs-studio kdenlive libgamemode0 libgamemodeauto0
+	sudo flatpak install -y flathub com.usebottles.bottles
+	#sudo sudo flatpak install -y flathub com.obsproject.Studio
 }
 function developerpackage {
 
@@ -242,7 +250,7 @@ dotnet-sdk-6.0 llvm-clang gcc gcc-c++ cmake cmake-full extra-cmake-modules rsync
 patterns-devel-base-devel_basis patterns-devel-C-C++-devel_C_C++ \
 gtk3-devel \
 java-18-openjdk \
-patterns-kde-devel_kde_frameworks patterns-kde-devel_qt5 desktop-file-utils #patterns-devel-base-devel_rpm_build 
+patterns-kde-devel_kde_frameworks patterns-kde-devel_qt5 desktop-file-utils #patterns-devel-base-devel_rpm_build
 ##Config
 
     mkdir -p ~/data/db
@@ -250,13 +258,15 @@ patterns-kde-devel_kde_frameworks patterns-kde-devel_qt5 desktop-file-utils #pat
     sudo echo "AddType application/x-httpd-php .php" >> /etc/apache2/mod_mime-defaults.conf
 
 ##Config FINISH
-sudo podman
+sudo $PackageName $PackageInstall podman
+sudo flatpak install -y flathub io.podman_desktop.PodmanDesktop
+
 }
 sudo $PackageName $UpdateArg
 repository
 dnfsetup
 snapx
-flatpak
+flatpakx
 fonts
 asus_pack
 basepackage

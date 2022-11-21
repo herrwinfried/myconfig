@@ -64,7 +64,11 @@ sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.nvidia.com
 
 }
 function basepackage {
-    sudo $PackageName $PackageInstall nvidia-glG06 x11-video-nvidiaG06 
+    sudo $PackageName $PackageInstall nvidia-glG06 x11-video-nvidiaG06 bbswitch
+    sudo prime-select intel
+   sudo prime-select offload-set intel
+  #  sudo prime-select offload
+  #  sudo systemctl enable nvidia-hibernate.service nvidia-suspend.service nvidia-resume.service
 }
 
 repository
