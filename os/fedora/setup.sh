@@ -1,8 +1,7 @@
 #!/bin/bash
-PackageName="zypper --gpg-auto-import-keys"
-RPMArg="--no-gpg-checks"
-PackageInstall="install --auto-agree-with-licenses -y"
-UpdateArg="dup -y"
+PackageName="dnf"
+PackageInstall="install -y --skip-broken"
+UpdateArg="update -y"
 
 
 FolderName="myscripts_1"
@@ -34,28 +33,26 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 if ! [ -x "$(command -v lsb_release)" ]; then
-    echo "$yellow Dikkat ! lsb-release Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y lsb-release
+    echo "$yellow Dikkat ! redhat-lsb-core Paketi Bulunmadığından otomatik yüklenecek." >&2
+  sudo dnf install -y redhat-lsb-core
 fi
 
 if ! [ -x "$(command -v git)" ]; then
     echo "$yellow Dikkat ! git Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y git
+  sudo dnf install -y git
 fi
 
 if ! [ -x "$(command -v wget)" ]; then
     echo "$yellow Dikkat ! wget Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y wget
+  sudo dnf install -y wget
 fi
 ################################
-   sudo prime-select offload-set intel2
-    sudo prime-select offload
-    sudo systemctl enable nvidia-hibernate.service nvidia-suspend.service nvidia-resume.service
+
 ################REQUIRED FINISH##################################################################
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 
 
-if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
+if [ "$distroselect" == "Fedora release 37 (Thirty Seven)" ]; then
 ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 #
 
@@ -66,8 +63,7 @@ cd $ScriptLocal/$FolderName/$FolderScript
 function rpms {
 
 	checkFolder
-    find . -iname '*.run' -exec chmod +x ./"{}" \;
-	find . -iname '*.run' -exec $PackageName $RPMArg $PackageInstall ./"{}" \;
+	sudo $PackageName $PackageInstall ./*.rpm
     sudo $PackageName $UpdateArg
 }
 function runs {
@@ -88,53 +84,44 @@ function appimages {
 	find . -iname "*.appimage" -exec sudo ./"{}" \;
 }
 function repository {
-sudo zypper --gpg-auto-import-keys addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/' packman
-sudo zypper --gpg-auto-import-keys refresh
-sudo zypper dist-upgrade -y --from packman --allow-vendor-change
+sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 #######################################################################################################
-sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.nvidia.com/opensuse/tumbleweed NVIDIA
-#######################################################################################################
-sudo zypper --gpg-auto-import-keys install -y curl
+sudo dnf install -y --skip-broken dnf-plugins-core
+sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
 sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-sudo zypper --gpg-auto-import-keys addrepo --refresh https://brave-browser-rpm-release.s3.brave.com/x86_64/ brave-browser
 #######################################################################################################
-sudo zypper --gpg-auto-import-keys install -y libicu
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-wget https://packages.microsoft.com/config/opensuse/15/prod.repo
-sudo mv prod.repo /etc/zypp/repos.d/microsoft-prod.repo
-sudo chown root:root /etc/zypp/repos.d/microsoft-prod.repo
 
-#sudo zypper --gpg-auto-import-keys addrepo -fc https://packages.microsoft.com/config/sles/15/mssql-server-preview.repo
-
-#######################################################################################################
-sudo rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
-sudo zypper addrepo --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-org/6.0/x86_64/" mongodb
+cat > mongodb.repo << "EOF"
+[Mongodb]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/8/mongodb-org/4.4/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-4.4.asc
+EOF
 #######################################################################################################
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/zypp/repos.d/vscode.repo'
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
 #######################################################################################################
-cat > AnyDesk-OpenSUSE.repo << "EOF"
+cat > /etc/yum.repos.d/AnyDesk-Fedora.repo << "EOF" 
 [anydesk]
-name=AnyDesk OpenSUSE - stable
-baseurl=http://rpm.anydesk.com/opensuse/$basearch/
+name=AnyDesk Fedora - stable
+baseurl=http://rpm.anydesk.com/fedora/$basearch/
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
 EOF
-zypper --gpg-auto-import-keys addrepo --repo AnyDesk-OpenSUSE.repo
 #######################################################################################################
-zypper ar --priority 50 --refresh https://download.opensuse.org/repositories/home:/luke_nukem:/asus/openSUSE_Tumbleweed/ asus-linux
+sudo dnf copr enable -y lukenukem/asus-linux
 #######################################################################################################
-sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed snappy
 }
 
 function kde_function {
-    zypper addrepo https://download.opensuse.org/repositories/home:hopeandtruth6517:kirigami-apps/openSUSE_Tumbleweed/home:hopeandtruth6517:kirigami-apps.repo
-    sudo $PackageName $UpdateArg
+sudo $PackageName $UpdateArg
 ## Music
     sudo flatpak install -y flathub org.kde.vvave
 ### Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, To do, dosya bulucu, kamera, kde IDE
-    sudo $PackageName $PackageInstall krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
+    sudo $PackageName $PackageInstall krecorder dragon kwrite krename kdiff3 kalendar kde-connect kate kfind kleopatra kamoso kdevelop kdevelop-php kdevelop-pg-qt-devel kio-gdrive
 ## YT Music QT
     sudo flatpak install -y flathub org.kde.audiotube
 }
@@ -147,20 +134,17 @@ sudo wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20N
 fc-cache
 }
 
-function kuro {
-    sudo rm -rf kuro.rpm
-    sudo rm -rf kuro
-    kuroinfo=$(curl -s https://api.github.com/repos/davidsmorais/kuro/releases/latest| jq -r ".assets[] | select(.name | test(\"x86_64.rpm\")) | .browser_download_url")
-curl -L $kuroinfo -o /tmp/kuro.rpm
-unzip /tmp/kuro.rpm && cd /tmp/kuro && cd opt && mv * /opt/ && cd /tmp/kuro && mv usr /usr/
-}
 function basepackage {
-sudo zypper --gpg-auto-import-keys install -y --from packman ffmpeg gstreamer-plugins-{good,bad,ugly,libav} libavcodec-full vlc-codecs
-sudo $PackageName remove -y tlp
-    sudo $PackageName $PackageInstall fetchmsttfonts powerline-fonts \
-neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git curl wget lsb-release \
+sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+
+sudo dnf install -y powerline-fonts \
+neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git curl wget redhat-lsb-core \
 discord brave-browser pinta flameshot gimp \
-zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-profiles-daemon thunderbird
+zsh curl git lzip unzip nano e2fsprogs thunderbird
+
+
+
+sudo dnf installstall -y --from packman ffmpeg gstreamer-plugins-{good,bad,ugly,libav} libavcodec-full vlc-codecs
 #openshot
     sudo flatpak install -y flathub org.telegram.desktop
     sudo flatpak install -y flathub io.github.mimbrero.WhatsAppDesktop
@@ -170,7 +154,6 @@ zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-p
 
 kde_function
 sudo $PackageName $PackageInstall anydesk
-sudo systemctl enable zramswap.service
 
 sudo mkdir -p /etc/systemd/system/bluetooth.service.d
 sudo touch /etc/systemd/system/bluetooth.service.d/override.conf
@@ -183,15 +166,16 @@ sudo systemctl restart bluetooth
 
 function powershells {
 sudo $PackageName $UpdateArg
-sudo $PackageName $PackageInstall curl tar libicu60_2 libopenssl1_0_0
+sudo $PackageName $PackageInstall curl tar libicu openssl-libs
 sudo $PackageName $PackageInstall jq
-susepwshcore=$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest| jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
+pwshcore=$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest| jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
 
-curl -L $susepwshcore -o /tmp/powershell.tar.gz
+curl -L $pwshcore -o /tmp/powershell.tar.gz
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
 sudo chmod +x /usr/bin/pwsh
+
 }
 
 function ohmyposhs {
@@ -200,37 +184,26 @@ sudo chmod +x /usr/local/bin/oh-my-posh
 }
 
 function apples {
-    sudo $PackageName $PackageInstall libimobiledevice-1_0-6 libimobiledevice-devel usbmuxd
+    sudo $PackageName $PackageInstall libimobiledevice-utils libimobiledevice-devel usbmuxd
 }
 function asus_pack {
 sudo $PackageName $PackageInstall asusctl asusctl-rog-gui
-sudo systemctl enable --now supergfxd.service
-sudo systemctl enable --now asusd.service
-sudo systemctl start --now supergfxd.service
-sudo systemctl start --now asusd.service
-sudo
-}
-function dnfsetup {
-sudo zypper --gpg-auto-import-keys install -y dnf rpm-repos-openSUSE-Tumbleweed
-sudo zypper --gpg-auto-import-keys install -y libdnf-repo-config-zypp PackageKit-backend-dnf
-sudo dnf swap -y PackageKit-backend-zypp PackageKit-backend-dnf
-sudo dnf makecache -y && sudo zypper --gpg-auto-import-keys refresh
-
+sudo systemctl enable supergfxd.service
+sudo systemctl enable asusd.service
+sudo systemctl start supergfxd.service
+sudo systemctl start asusd.service
 }
 function flatpakx {
 sudo $PackageName $PackageInstall flatpak
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 }
-
 function snapx {
   sudo $PackageName $PackageInstall snapd
   sudo systemctl enable --now snapd
-  sudo systemctl enable --now snapd.apparmor
   sudo systemctl start --now snapd
-  sudo systemctl start --now snapd.apparmor
 }
 function printers {
-sudo $PackageName $PackageInstall skanlite cups cups-client cups-filters system-config-printer skanlite system-config-printer hplip
+sudo $PackageName $PackageInstall skanlite cups cups-client cups-filters system-config-printer hplip
 	#sudo adduser $home lpadmin
 	sudo service cups start
 	sudo systemctl start cups
@@ -240,22 +213,23 @@ function ide_text {
 	sudo $PackageName $PackageInstall code filezilla
 }
 function game_video {
-	sudo $PackageName $PackageInstall lutris minetest steam gamemoded obs-studio kdenlive libgamemode0 libgamemodeauto0
+	sudo $PackageName $PackageInstall lutris minetest steam gamemode obs-studio kdenlive
 	sudo flatpak install -y flathub com.usebottles.bottles
 	#sudo sudo flatpak install -y flathub com.obsproject.Studio
 }
 function developerpackage {
 
 sudo $PackageName $PackageInstall \
-apache2 php8 php8-mysql apache2-mod_php8 mariadb mariadb-tools mongodb-org nodejs-default npm-default php-composer2 \
-dotnet-sdk-6.0 llvm-clang gcc gcc-c++ cmake cmake-full extra-cmake-modules rsync gdb ninja \
-patterns-devel-base-devel_basis patterns-devel-C-C++-devel_C_C++ \
-gtk3-devel \
-java-18-openjdk \
-patterns-kde-devel_kde_frameworks patterns-kde-devel_qt5 desktop-file-utils #patterns-devel-base-devel_rpm_build
+httpd mariadb-server mariadb mongodb-org nodejs npm composer \
+php php-mysqlnd dotnet-sdk-6.0 gcc gcc-c++ cmake cmake-full extra-cmake-modules rsync gdb ninja-build \
+gtk3-devel java-latest-openjdk 
+kf5-rpm-macros.noarch qt5-rpm-macros.noarch @development-tools @c-development
 ##Config
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
 
-    mkdir -p ~/data/db
+    mkdir -p /home/winfried/data/db
     a2enmod php8
     sudo echo "AddType application/x-httpd-php .php" >> /etc/apache2/mod_mime-defaults.conf
 
@@ -266,7 +240,6 @@ sudo flatpak install -y flathub io.podman_desktop.PodmanDesktop
 }
 sudo $PackageName $UpdateArg
 repository
-dnfsetup
 snapx
 flatpakx
 fonts

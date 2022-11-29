@@ -1,8 +1,7 @@
 #!/bin/bash
-PackageName="zypper --gpg-auto-import-keys"
-RPMArg="--no-gpg-checks"
-PackageInstall="install -y --auto-agree-with-licenses"
-UpdateArg="dup -y"
+PackageName="dnf"
+PackageInstall="install -y"
+UpdateArg="update -y"
 
 
 FolderName="myscripts_1"
@@ -34,18 +33,18 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 if ! [ -x "$(command -v lsb_release)" ]; then
-    echo "$yellow Dikkat ! lsb-release Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y lsb-release
+    echo "$yellow Dikkat ! redhat-lsb-core Paketi Bulunmadığından otomatik yüklenecek." >&2
+  sudo dnf install -y redhat-lsb-core
 fi
 
 if ! [ -x "$(command -v git)" ]; then
     echo "$yellow Dikkat ! git Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y git
+  sudo dnf install -y git
 fi
 
 if ! [ -x "$(command -v wget)" ]; then
     echo "$yellow Dikkat ! wget Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y wget
+  sudo dnf install -y wget
 fi
 
 
@@ -53,22 +52,20 @@ fi
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 
 
-if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
+if [ "$distroselect" == "Fedora release 37 (Thirty Seven)" ]; then
 ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 #
 function repository {
 
 #######################################################################################################
-sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.nvidia.com/opensuse/tumbleweed NVIDIA
+sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 #######################################################################################################
 
 }
 function basepackage {
-    sudo $PackageName $PackageInstall nvidia-glG06 x11-video-nvidiaG06 xf86-video-intel
-    sudo prime-select intel2
-   sudo prime-select offload-set intel2
-  #  sudo prime-select offload
-  #  sudo systemctl enable nvidia-hibernate.service nvidia-suspend.service nvidia-resume.service
+    sudo $PackageName $PackageInstall akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs
+    sudo $PackageName $PackageInstall xorg-x11-drv-nvidia-power vdpauinfo libva-vdpau-driver libva-utils
+    sudo systemctl enable nvidia-{suspend,resume,hibernate}
 }
 
 repository

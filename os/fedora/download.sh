@@ -27,18 +27,18 @@ fi
 #################
 #####lsb-core required##############################################
 if ! [ -x "$(command -v lsb_release)" ]; then
-    echo "$yellow Dikkat ! lsb-release Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y lsb-release
+    echo "$yellow Dikkat ! redhat-lsb-core Paketi Bulunmadığından otomatik yüklenecek." >&2
+  sudo dnf install -y redhat-lsb-core
 fi
 
 if ! [ -x "$(command -v wget)" ]; then
     echo "$yellow Dikkat ! wget Paketi Bulunmadığından otomatik yüklenecek." >&2
-  sudo zypper --gpg-auto-import-keys in -y wget
+  sudo dnf install -y wget
 fi
 
 export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 #########FINISH###################
-if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
+if [ "$distroselect" == "Fedora release 37 (Thirty Seven)" ]; then
 ###Only OpenSUSE TW
 function scriptabort() {
 echo "Bir sorun oldu." && exit 1
@@ -60,8 +60,8 @@ if [ -d "$ScriptLocal/$FolderName" ]
 then
 cd $ScriptLocal/$FolderName
 
-wget https://raw.githubusercontent.com/herrwinfried/myconfig/$GitB/os/opensuse-tumbleweed/nvidia.sh
-wget https://raw.githubusercontent.com/herrwinfried/myconfig/$GitB/os/opensuse-tumbleweed/setup.sh && echo "$green İşlem tamamlandı. setup.sh çalıştır. $white"
+wget https://raw.githubusercontent.com/herrwinfried/myconfig/$GitB/os/fedora/nvidia.sh
+wget https://raw.githubusercontent.com/herrwinfried/myconfig/$GitB/os/fedora/setup.sh && echo "$green İşlem tamamlandı. setup.sh çalıştır. $white"
 rm -rf *.1
 sudo chmod 777 *
 if [ -d "$ScriptLocal/$FolderName/$FolderScript" ]
