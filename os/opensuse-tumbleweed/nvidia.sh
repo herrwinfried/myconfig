@@ -64,7 +64,7 @@ sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.nvidia.com
 
 }
 function basepackage {
-    sudo $PackageName $PackageInstall nvidia-glG06 x11-video-nvidiaG06 xf86-video-intel
+    sudo $PackageName $PackageInstall nvidia-glG06 x11-video-nvidiaG06 xf86-video-intel bbswitch
     sudo prime-select intel2
    sudo prime-select offload-set intel2
   #  sudo prime-select offload

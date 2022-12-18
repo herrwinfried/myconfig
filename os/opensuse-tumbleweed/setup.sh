@@ -133,8 +133,8 @@ function kde_function {
     sudo $PackageName $UpdateArg
 ## Music
     sudo flatpak install -y flathub org.kde.vvave
-### Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, To do, dosya bulucu, kamera, kde IDE
-    sudo $PackageName $PackageInstall krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
+### partitionmanager, kclock, digikam,colord-kde, Ses kayıt edici, Video oynatıcı, Metin düzenleyici , Dosya yöneticisi , KDIFF, Takvim, kdeconnect, dosya bulucu, GPG , kamera, kde IDE, KDE IDE PHP VE QT , Google Drive KDE
+    sudo $PackageName $PackageInstall partitionmanager kclock digikam colord-kde krecorder dragonplayer kwrite krename kdiff3 kalendar kdeconnect-kde kate kfind kleopatra kamoso kdevelop5 kdevelop5-plugin-php kdevelop5-pg-qt kio-gdrive
 ## YT Music QT
     sudo flatpak install -y flathub org.kde.audiotube
 }
@@ -147,17 +147,10 @@ sudo wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20N
 fc-cache
 }
 
-function kuro {
-    sudo rm -rf kuro.rpm
-    sudo rm -rf kuro
-    kuroinfo=$(curl -s https://api.github.com/repos/davidsmorais/kuro/releases/latest| jq -r ".assets[] | select(.name | test(\"x86_64.rpm\")) | .browser_download_url")
-curl -L $kuroinfo -o /tmp/kuro.rpm
-unzip /tmp/kuro.rpm && cd /tmp/kuro && cd opt && mv * /opt/ && cd /tmp/kuro && mv usr /usr/
-}
 function basepackage {
 sudo zypper --gpg-auto-import-keys install -y --from packman ffmpeg gstreamer-plugins-{good,bad,ugly,libav} libavcodec-full vlc-codecs
 sudo $PackageName remove -y tlp
-    sudo $PackageName $PackageInstall fetchmsttfonts powerline-fonts \
+    sudo $PackageName $PackageInstall fetchmsttfonts powerline-fonts AdobeICCProfiles \
 neofetch screenfetch onboard hwinfo htop ffmpeg redshift zsh git curl wget lsb-release \
 discord brave-browser pinta flameshot gimp \
 zsh curl neofetch git opi lzip unzip e2fsprogs nano systemd-zram-service power-profiles-daemon thunderbird
@@ -183,8 +176,7 @@ sudo systemctl restart bluetooth
 
 function powershells {
 sudo $PackageName $UpdateArg
-sudo $PackageName $PackageInstall curl tar libicu60_2 libopenssl1_0_0
-sudo $PackageName $PackageInstall jq
+sudo $PackageName $PackageInstall curl tar libicu72 libopenssl1_0_0 jq
 susepwshcore=$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest| jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
 
 curl -L $susepwshcore -o /tmp/powershell.tar.gz
@@ -200,7 +192,7 @@ sudo chmod +x /usr/local/bin/oh-my-posh
 }
 
 function apples {
-    sudo $PackageName $PackageInstall libimobiledevice-1_0-6 libimobiledevice-devel usbmuxd
+    sudo $PackageName $PackageInstall ifuse libimobiledevice-1_0-6 libimobiledevice-devel usbmuxd libimobiledevice-glue-1_0-0
 }
 function asus_pack {
 sudo $PackageName $PackageInstall asusctl asusctl-rog-gui

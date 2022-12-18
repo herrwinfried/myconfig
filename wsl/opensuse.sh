@@ -59,8 +59,7 @@ sudo zypper --gpg-auto-import-keys refresh
 }
 function powershells {
 sudo zypper update
-sudo zypper in -y curl tar libicu60_2 libopenssl1_0_0 
-sudo zypper in -y jq
+sudo zypper in -y curl tar libicu72 libopenssl1_0_0 jq
 susepwshcore=$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest| jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
 
 curl -L $susepwshcore -o /tmp/powershell.tar.gz
