@@ -3,7 +3,7 @@ ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . ./VARIBLES.sh
 
 function file() {
-
+sudo chmod +x nvidia*
 cat .alias > $HomePWD/.alias 
 sudo cat .alias >  ~/.alias 
 sudo mkdir -p ~/.config/powershell 

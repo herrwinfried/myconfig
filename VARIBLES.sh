@@ -49,7 +49,7 @@ fi
 
 function requirepackage() {
 ################REQUIRED##################################################################
-packageList
+packageList=""
 if ! [ -x "$(command -v lsb_release)" ]; then
     echo "$yellow Dikkat ! lsb-release Paketi Bulunmadığından otomatik yüklenecek." >&2
   if [ -x "$(command -v apt)" ]; then
