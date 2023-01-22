@@ -7,5 +7,5 @@ Kendime göre yaptığım konfigürasyonlar var. Lütfen kendi bilincinize göre
 ## OpenSUSE Tumbleweed
 
 ```bash
-sudo zypper in -y wget curl git && wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/download.sh -O download.sh && chmod +x download.sh && ./download.sh
+sudo zypper in -y wget curl git && wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/download.sh -O download.sh && chmod +x download.sh && sh ./download.sh
 ```

@@ -10,14 +10,25 @@ fi
 
 # Only Bash
 if [ -n "$BASH_VERSION" ]; then
-
+echo ""
 # Only Bash ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 fi
 
 
 #alias systemupdate='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l && sudo flatpak update && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
-
+if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
 alias podmanRun='echo "podman system service --time=0 tcp:0.0.0.0:12979"; podman system service --time=0 tcp:0.0.0.0:12979'
+
+if [[ -t ancs4linux-ctl ]]; then
+function ios_pair {
+
+iosAddress=$(ancs4linux-ctl get-all-hci | jq -r '.[0]')
+ancs4linux-ctl enable-advertising --hci-address $iosAddress --name herrwinfried
+
+}
+fi
+
+fi
 
 function Base_Font {
 # Colors
