@@ -66,9 +66,11 @@ wingetx -Id 9N9WCLWDQS5J
 wingetx -Id 9MZ1SNWT0N5D
 
 wingetx -Id JanDeDobbeleer.OhMyPosh
-if (!Test-Path -Path "$env:USERPROFILE\OhMyPosh") {
+
+
+#if (!Test-Path -Path "$env:USERPROFILE\OhMyPosh") {
 mkdir "$env:USERPROFILE\OhMyPosh"
-}
+#}
 if (Test-Path -Path "$env:USERPROFILE\OhMyPosh\powerlevel10k_rainbow.omp.json") {
     Remove-Item "$env:USERPROFILE\OhMyPosh\powerlevel10k_rainbow.omp.json" -Recurse
     Invoke-WebRequest https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/powerlevel10k_rainbow.omp.json -OutFile $env:USERPROFILE\OhMyPosh\powerlevel10k_rainbow.omp.json
@@ -76,9 +78,9 @@ if (Test-Path -Path "$env:USERPROFILE\OhMyPosh\powerlevel10k_rainbow.omp.json") 
     Invoke-WebRequest https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/powerlevel10k_rainbow.omp.json -OutFile $env:USERPROFILE\OhMyPosh\powerlevel10k_rainbow.omp.json
 }
 
-if (!Test-Path -Path "$env:USERPROFILE\Documents\PowerShell") {
+#if (!Test-Path -Path "$env:USERPROFILE\Documents\PowerShell") {
     mkdir "$env:USERPROFILE\Documents\PowerShell"
-    }
+    #}
 
     if (Test-Path -Path "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1") {
         Remove-Item "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -Recurse
@@ -94,7 +96,7 @@ if (!Test-Path -Path "$env:USERPROFILE\Documents\PowerShell") {
         Invoke-WebRequest https://raw.githubusercontent.com/herrwinfried/myconfig/windows/data/terminal.json -OutFile $env:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
     }
 
-wingetx -Id BlueStack.BlueStacks
+# wingetx -Id BlueStack.BlueStacks
 wingetx -Id BinanceTech.Binance
 #auto dark mode
 wingetx -Id XP8JK4HZBVF435
@@ -119,6 +121,8 @@ wingetx -Id Microsoft.SQLServerManagementStudio
 wingetx -Id Microsoft.AzureDataStudio
 wingetx -Id JetBrains.Toolbox
 
-
+wingetx -Id RedHat.Podman 
+wingetx -Id RedHat.Podman-Desktop
+wingetx -Id Docker.DockerDesktop
 
 

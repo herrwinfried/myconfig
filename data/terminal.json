@@ -36,41 +36,62 @@
     {
         "defaults": 
         {
-            "backgroundImage": "C:\\Users\\ozgrr\\Pictures\\Page-85-of-wallpaper-4K-wallpapers-for-your-desktop-or-.jpg",
+            "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\default.png",
             "backgroundImageOpacity": 0.089999999999999997,
             "colorScheme": "Dracula",
             "font": 
             {
                 "face": "MesloLGS NF"
-            }
+            },
+            "padding": "4"
         },
         "list": 
         [
             {
-                "backgroundImage": "C:\\Users\\ozgrr\\Pictures\\b0ff762fcff7935d8f164dbb04d5f204.jpg",
+                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\powershell.png",
                 "backgroundImageOpacity": 0.089999999999999997,
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "font": 
+                {
+                    "face": "MesloLGS NF"
+                },
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell"
             },
             {
-                "backgroundImage": "C:\\Users\\ozgrr\\Pictures\\windows-red.png",
+                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\pwsh.png",
+                "font": 
+                {
+                    "face": "MesloLGS NF"
+                },
                 "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
                 "hidden": false,
                 "name": "PowerShell",
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "backgroundImage": "C:\\Users\\ozgrr\\Pictures\\2148229.jpg",
+                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\opensuse.png",
+                "backgroundImageOpacity": 0.14999999999999999,
+                "font": 
+                {
+                    "face": "MesloLGS NF"
+                },
                 "guid": "{bc2da056-dd06-5879-b969-1dfcefc8d2c7}",
                 "hidden": false,
                 "name": "openSUSE-Tumbleweed",
+                "padding": "13",
                 "source": "Windows.Terminal.Wsl"
             },
             {
-                "backgroundImage": "C:\\Users\\ozgrr\\Pictures\\windows.png",
+                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\batch.jpg",
+                "backgroundImageOpacity": 0.050000000000000003,
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "font": 
+                {
+                    "face": "MesloLGS NF",
+                    "size": 12
+                },
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "Command Prompt"
@@ -82,19 +103,13 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
-                "hidden": false,
-                "name": "Git Bash",
-                "source": "Git"
-            },
-            {
-                "guid": "{37058dc6-fd6d-5d6e-a51b-6d74355f6bf3}",
+                "guid": "{c61248a3-766d-532b-8477-3b408dcb2bf1}",
                 "hidden": false,
                 "name": "Developer Command Prompt for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
             },
             {
-                "guid": "{cf7eed80-9ab5-5093-9284-6754c9857449}",
+                "guid": "{f214d9cb-a31a-5f70-a18f-5b43250a18ac}",
                 "hidden": false,
                 "name": "Developer PowerShell for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
