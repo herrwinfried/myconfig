@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function x_nvidia_part(){
-    sudo prime-select offload-set intel
-    sudo prime-select offload
+    #sudo prime-select offload-set intel
+   # sudo prime-select offload
     sudo systemctl enable nvidia-hibernate.service nvidia-suspend.service nvidia-resume.service
 }
 

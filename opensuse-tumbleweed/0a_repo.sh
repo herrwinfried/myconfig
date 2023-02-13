@@ -42,16 +42,25 @@ gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
 EOF
 sudo zypper --gpg-auto-import-keys addrepo --repo AnyDesk-OpenSUSE.repo
 }
+
 function asuscommunity {
 sudo zypper ar --priority 50 --refresh https://download.opensuse.org/repositories/home:/luke_nukem:/asus/openSUSE_Tumbleweed/ asus-linux
 }
+
 function snaprepo {
 sudo zypper --gpg-auto-import-keys addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed snappy
 }
+
+function megaSYNCrepo {
+sudo rpm --import https://mega.nz/linux/repo/openSUSE_Tumbleweed/repodata/repomd.xml.key
+sudo zypper --gpg-auto-import-keys addrepo --refresh https://mega.nz/linux/repo/openSUSE_Tumbleweed/ MEGAsync
+}
+
 function chromerepo {
 sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub
 sudo zypper addrepo http://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
 }
+
 
 packmanrepo
 nvidiarepo
@@ -62,7 +71,7 @@ microsoft
 mongodbrepo
 pssqlrepo
 vscode
-
+megaSYNCrepo
 #chromerepo
 
 sudo zypper --gpg-auto-import-keys refresh

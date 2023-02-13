@@ -22,11 +22,12 @@ sudo $PackageName $PackageInstall $package1
 mkdir -p ~/data/db
 }
 function php {
-package1="apache2 php8 php8-mysql apache2-mod_php8 mariadb mariadb-tools mongodb-org nodejs-default npm-default php-composer2"
+package1="apache2 php8 php8-mysql apache2-mod_php8 mariadb mariadb-tools mongodb-org nodejs-default npm-default php-composer2 phpMyAdmin phpMyAdmin-apache"
 sudo $PackageName $PackageInstall $package1	
 
 a2enmod php8
 sudo echo "AddType application/x-httpd-php .php" >> /etc/apache2/mod_mime-defaults.conf
+
 }
 function rpmpackage {
 package1="desktop-file-utils patterns-devel-base-devel_rpm_build"

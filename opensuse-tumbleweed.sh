@@ -10,7 +10,6 @@ UpdateArg="dup -y"
 PackageRemove="remove -y"
 FlatpakInstall="flatpak install -y flathub"
 SnapInstall="snap install"
-onlypc
 
 function checkFolder {
 mkdir -p $output
@@ -44,7 +43,7 @@ function appimages {
 
 for TWSCRIPT in $(ls $ScriptLocal/opensuse-tumbleweed )
 do
-    . ./$TWSCRIPT
+    . $ScriptLocal/opensuse-tumbleweed/$TWSCRIPT
 done
 
 rpms
