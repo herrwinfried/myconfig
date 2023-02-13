@@ -4,7 +4,7 @@ Username="winfried"
 HomePWD="/home/$Username"
 Folder="MyConfig/files"
 output="$HomePWD/$Folder"
-
+HOSTNAME_NEW="herrwinfried"
 
 
 # Colors

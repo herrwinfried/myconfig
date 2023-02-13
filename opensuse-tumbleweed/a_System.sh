@@ -8,6 +8,9 @@ sudo $PackageName remove -y tlp
 sudo $PackageName $PackageInstall systemd-zram-service power-profiles-daemon
 sudo systemctl enable zramswap.service
 
+
+sudo hostnamectl set-hostname $HOSTNAME_NEW
+
 sudo mkdir -p /etc/systemd/system/bluetooth.service.d
 sudo touch /etc/systemd/system/bluetooth.service.d/override.conf
 echo "[Service]

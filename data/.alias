@@ -82,7 +82,7 @@ fi
 function rootMode {
 if ! [ $# -eq 0 ]; then
 
-sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $(command -v $@)
+sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $@
 
 else
 echo "Birşey Yazmadın..."
@@ -93,7 +93,7 @@ fi
 function englishRun {
 if ! [ $# -eq 0 ]; then
 
-LANG=en_US.UTF-8 $(command -v $@)
+LANG=en_US.UTF-8 $@
 
 else
 echo "Birşey Yazmadın..."

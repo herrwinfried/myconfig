@@ -3,6 +3,7 @@ ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . ./VARIBLES.sh
 
 function file() {
+
 sudo chmod +x nvidia*
 cat .alias > $HomePWD/.alias 
 sudo cat .alias >  ~/.alias 
@@ -10,10 +11,16 @@ sudo mkdir -p ~/.config/powershell
 sudo touch ~/.config/powershell/Microsoft.PowerShell_profile.ps1
 su -l $home -c "mkdir -p ~/.config/powershell; touch ~/.config/powershell/Microsoft.PowerShell_profile.ps1"
 cat Microsoft.PowerShell_profile.ps1 > $HomePWD/.config/powershell/Microsoft.PowerShell_profile.ps1
-cat Microsoft.PowerShell_profile.ps1 > ~/.config/powershell/Microsoft.PowerShell_profile.ps1
+cat Microsoft.PowerShell_profile.ps1 > /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
 sudo cp nvidia_gamemoderun /usr/local/bin/nvidia_gamemoderun
 sudo cp nvidia-run /usr/local/bin/nvidia-run
+
+su -l $home -c "touch ~/.p10k.zsh"
+cat .p10k.zsh >  $HomePWD/.p10k.zsh
+touch ~/.p10k.zsh
+cat .p10k.zsh >  /root/.p10k.zsh
+
 fi
 }
 

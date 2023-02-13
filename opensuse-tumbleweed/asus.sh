@@ -1,6 +1,7 @@
 #!/bin/bash
 function asus_community {
-sudo $PackageName $PackageInstall asusctl asusctl-rog-gui
+sudo $PackageName $PackageRemove suse-prime
+sudo $PackageName $PackageInstall asusctl asusctl-rog-gui supergfxctl
 sudo systemctl enable --now supergfxd.service
 sudo systemctl enable --now asusd.service
 sudo systemctl start --now supergfxd.service

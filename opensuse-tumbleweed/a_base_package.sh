@@ -31,11 +31,14 @@ sudo $PackageName $PackageInstall $package2
 }
 function other {
 package3="pinta lutris minetest steam gamemoded libgamemode0 libgamemodeauto0 obs-studio kdenlive"
-packageFlatpak="org.onlyoffice.desktopeditors com.usebottles.bottles"
+packageFlatpak="org.onlyoffice.desktopeditors com.usebottles.bottles org.gtk.Gtk3theme.Adwaita-dark"
 packageSnap="termius-app authy"
 sudo $PackageName $PackageInstall $package3
 sudo $FlatpakInstall $packageFlatpak
 sudo $SnapInstall $packageSnap
+
+sudo flatpak override --filesystem=/usr/share/themes/
+sudo flatpak override --env GTK_THEME=Adwaita-dark
 }
 
 ###########################
