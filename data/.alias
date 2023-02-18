@@ -9,10 +9,10 @@ fi
 
 
 # Only Bash
-if [ -n "$BASH_VERSION" ]; then
-echo ""
+# if [ -n "$BASH_VERSION" ]; then
+
 # Only Bash ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-fi
+# fi
 
 
 #alias systemupdate='sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup -l && sudo flatpak update && sudo snap refresh || echo Hey bir sorun oldu sanırım"'
@@ -20,10 +20,12 @@ if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xfff
 alias podmanRun='echo "podman system service --time=0 tcp:0.0.0.0:12979"; podman system service --time=0 tcp:0.0.0.0:12979'
 
 if [[ -t ancs4linux-ctl ]]; then
+
 function ios_pair {
 
 iosAddress=$(ancs4linux-ctl get-all-hci | jq -r '.[0]')
-ancs4linux-ctl enable-advertising --hci-address $iosAddress --name herrwinfried
+echo "Telefonunuzdan $(hostnamectl hostname) adlı cihaza bağlanın."
+ancs4linux-ctl enable-advertising --hci-address $iosAddress --name $(hostnamectl hostname)
 
 }
 fi
@@ -81,8 +83,12 @@ fi
 
 function rootMode {
 if ! [ $# -eq 0 ]; then
-
+XDG_DE=$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
+if [[ $XDG_DE == "kde" ]]; then 
 sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $@
+else 
+sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $@
+fi
 
 else
 echo "Birşey Yazmadın..."
@@ -93,7 +99,7 @@ fi
 function englishRun {
 if ! [ $# -eq 0 ]; then
 
-LANG=en_US.UTF-8 $@
+LC_ALL=C LANG=$LC_ALL $@
 
 else
 echo "Birşey Yazmadın..."

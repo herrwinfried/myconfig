@@ -36,4 +36,3 @@ cd $HomePWD
 wget https://github.com/herrwinfried/myconfig/archive/refs/heads/$MainLine.zip -O MyConfig.zip
 unzip MyConfig.zip -d MyConfig && mv $unzipName/* $HomePWD/MyConfig && rm -rf $unzipName
 rm -rf $HomePWD/MyConfig.zip
-

@@ -1,3 +1,4 @@
+# System notifications for iOS via Bluetooth.
 git clone https://github.com/pzmarzly/ancs4linux
 
 sed -ie 's+ExecStart=/usr/local/bin/ancs4linux-advertising+ExecStart=/usr/bin/ancs4linux-advertising+i' ./ancs4linux/autorun/ancs4linux-advertising.service
