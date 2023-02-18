@@ -18,3 +18,7 @@ sudo chmod +x /usr/local/bin/oh-my-posh
 mkdir $HomePWD/.poshthemes
 wget https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/powerlevel10k_rainbow.omp.json -O $HomePWD/.poshthemes/powerlevel10k_rainbow.omp.json
 chmod u+rw $HomePWD/.poshthemes/*.omp.*
+
+mkdir /root/.poshthemes
+wget https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/powerlevel10k_rainbow.omp.json -O /root/.poshthemes/powerlevel10k_rainbow.omp.json
+chmod u+rw /root/.poshthemes/*.omp.*

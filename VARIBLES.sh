@@ -5,7 +5,7 @@ HomePWD="/home/$Username"
 Folder="MyConfig/files"
 output="$HomePWD/$Folder"
 HOSTNAME_NEW="herrwinfried"
-
+home="winfried"
 
 # Colors
 termcols=$(tput cols)
@@ -84,4 +84,14 @@ sudo zypper --gpg-auto-import-keys install -y -l $packageList
 fi
 fi
 ################REQUIRED FINISH##################################################################
+}
+
+function openSUSETW_ALIAS {
+PackageName="zypper --gpg-auto-import-keys"
+RPMArg="--no-gpg-checks"
+PackageInstall="install -y -l"
+UpdateArg="dup -y"
+PackageRemove="remove -y"
+FlatpakInstall="flatpak install -y flathub"
+SnapInstall="snap install"    
 }

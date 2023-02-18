@@ -3,13 +3,7 @@
 ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . ./VARIBLES.sh
 
-PackageName="zypper --gpg-auto-import-keys"
-RPMArg="--no-gpg-checks"
-PackageInstall="install -y -l"
-UpdateArg="dup -y"
-PackageRemove="remove -y"
-FlatpakInstall="flatpak install -y flathub"
-SnapInstall="snap install"
+openSUSETW_ALIAS
 
 function checkFolder {
 mkdir -p $output
@@ -41,11 +35,24 @@ function appimages {
 	find . -iname "*.appimage" -exec sudo ./"{}" \;
 }
 
-for TWSCRIPT in $(ls $ScriptLocal/opensuse-tumbleweed )
+for TWSCRIPT in $(ls $ScriptLocal/opensuse-tumbleweed/Repo )
 do
-    . $ScriptLocal/opensuse-tumbleweed/$TWSCRIPT
+	chmod +x $ScriptLocal/opensuse-tumbleweed/Repo/$TWSCRIPT
+    . $ScriptLocal/opensuse-tumbleweed/Repo/$TWSCRIPT
 done
-
+#
+for TWSCRIPT in $(ls $ScriptLocal/opensuse-tumbleweed/FirstPackage )
+do
+	chmod +x $ScriptLocal/opensuse-tumbleweed/FirstPackage/$TWSCRIPT
+    . $ScriptLocal/opensuse-tumbleweed/FirstPackage/$TWSCRIPT
+done
+#
+for TWSCRIPT in $(ls $ScriptLocal/opensuse-tumbleweed/Package )
+do
+	chmod +x $ScriptLocal/opensuse-tumbleweed/Package/$TWSCRIPT
+    . $ScriptLocal/opensuse-tumbleweed/Package/$TWSCRIPT
+done
+#
 rpms
 runs
 bundles
