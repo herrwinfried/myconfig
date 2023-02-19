@@ -37,7 +37,7 @@
         "defaults": 
         {
             "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\default.png",
-            "backgroundImageOpacity": 0.089999999999999997,
+            "backgroundImageOpacity": 0.09,
             "colorScheme": "Dracula",
             "font": 
             {
@@ -49,7 +49,7 @@
         [
             {
                 "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\powershell.png",
-                "backgroundImageOpacity": 0.089999999999999997,
+                "backgroundImageOpacity": 0.09,
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "font": 
                 {
@@ -72,7 +72,7 @@
             },
             {
                 "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\opensuse.png",
-                "backgroundImageOpacity": 0.14999999999999999,
+                "backgroundImageOpacity": 0.15,
                 "font": 
                 {
                     "face": "MesloLGS NF"
@@ -85,12 +85,12 @@
             },
             {
                 "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\batch.jpg",
-                "backgroundImageOpacity": 0.050000000000000003,
+                "backgroundImageOpacity": 0.05,
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
                 "font": 
                 {
                     "face": "MesloLGS NF",
-                    "size": 12
+                    "size": 12.0
                 },
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
@@ -103,22 +103,10 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{c61248a3-766d-532b-8477-3b408dcb2bf1}",
+                "guid": "{1d2d9f1c-0192-5285-8115-38593c2c526e}",
                 "hidden": false,
-                "name": "Developer Command Prompt for VS 2022",
-                "source": "Windows.Terminal.VisualStudio"
-            },
-            {
-                "guid": "{f214d9cb-a31a-5f70-a18f-5b43250a18ac}",
-                "hidden": false,
-                "name": "Developer PowerShell for VS 2022",
-                "source": "Windows.Terminal.VisualStudio"
-            },
-            {
-                "guid": "{16208362-94fc-5b1f-a491-5b2624d5ab56}",
-                "hidden": true,
-                "name": "Visual Studio Debug Console",
-                "source": "VSDebugConsole"
+                "name": "Gentoo",
+                "source": "Windows.Terminal.Wsl"
             }
         ]
     },
@@ -377,5 +365,6 @@
             "white": "#C0C0C0",
             "yellow": "#808000"
         }
-    ]
+    ],
+    "themes": []
 }
