@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function printers {
-sudo $PackageName $PackageInstall skanlite cups cups-client cups-filters system-config-printer skanlite system-config-printer hplip
+sudo $PackageName $PackageInstall skanlite cups cups-client cups-filters system-config-printer # hplip
 	#sudo adduser $home lpadmin
 	sudo service cups start
 	sudo systemctl start cups

@@ -1,0 +1,165 @@
+#!/bin/bash
+
+#Package Manager
+Package="zypper"
+        #If there is an extra parameter, specify it.
+defaultPackage="$Package --gpg-auto-import-keys"
+updatecommand="dup --details -l"
+
+#Flatpak
+flatpak="flatpak"
+flatpakUpdate="update"
+
+
+#snapd store/snap store
+snap="snap"
+snapUpdate="refresh"
+
+######### Colors ############
+termcols=$(tput cols)       #
+bold="$(tput bold)"         #
+fontnormal="$(tput init)"   #
+fontreset="$(tput reset)"   #
+underline="$(tput smul)"    #
+standout="$(tput smso)"     #
+normal="$(tput sgr0)"       #
+black="$(tput setaf 0)"     #
+red="$(tput setaf 1)"       #
+green="$(tput setaf 2)"     #
+yellow="$(tput setaf 3)"    #
+blue="$(tput setaf 4)"      #
+magenta="$(tput setaf 5)"   #
+cyan="$(tput setaf 6)"      #
+white="$(tput setaf 7)"     #
+#############################
+
+function x_cancel {
+echo "$red""A problem occured. The operation is cancelled.""$white"
+sleep 1    
+}
+
+if [ $# -eq 0 ]; then
+sudo su -c "$defaultPackage $updatecommand && $flatpak $flatpakUpdate && $snap $snapUpdate || x_cancel"
+elif [ $1 = "yes" ]; then
+sudo su -c "$defaultPackage $updatecommand -y && $flatpak $flatpakUpdate -y && $snap $snapUpdate || x_cancel"
+
+elif [ $# -eq 1 ] && [ $1 = "dnf" ]; then
+sudo su -c "dnf update || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "dnf" ] && [ $2 = "yes" ]; then
+sudo su -c "dnf update -y || x_cancel"
+
+
+
+elif [ $# -eq 1 ] && [ $1 = "zypp" ]; then
+sudo su -c "zypper --gpg-auto-import-keys dup --details -l || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "zypp" ] && [ $2 = "yes" ]; then
+sudo su -c "zypper --gpg-auto-import-keys dup --details -l -y || x_cancel"
+
+
+
+elif [ $# -eq 1 ] && [ $1 = "pk" ]; then
+sudo su -c "pkcon get-updates || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "pk" ] && [ $2 = "yes" ]; then
+sudo su -c "pkcon get-updates -y || x_cancel"
+
+
+
+elif [ $# -eq 1 ] && [ $1 = "container" ]; then
+sudo su -c "$flatpak $flatpakUpdate && $snap $snapUpdate || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "container" ] && [ $2 = "yes" ]; then
+sudo su -c "$flatpak $flatpakUpdate -y && $snap $snapUpdate || x_cancel"
+
+
+
+
+elif [ $# -eq 1 ] && [ $1 = "full" ] && [ $2 = "dnf" ]; then
+sudo su -c "dnf update && $flatpak $flatpakUpdate && $snap $snapUpdate || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "full" ] && [ $2 = "dnf" ] && [ $3 = "yes" ]; then
+sudo su -c "dnf update -y && $flatpak $flatpakUpdate -y && $snap $snapUpdate || x_cancel"
+
+
+
+elif [ $# -eq 1 ] && [ $1 = "full" ] && [ $2 = "zypp" ]; then
+sudo su -c "zypper --gpg-auto-import-keys dup --details -l && $flatpak $flatpakUpdate && $snap $snapUpdate || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "full" ] && [ $2 = "zypp" ] && [ $3 = "yes" ]; then
+sudo su -c "zypper --gpg-auto-import-keys dup --details -l -y && $flatpak $flatpakUpdate -y && $snap $snapUpdate || x_cancel"
+
+else 
+
+echo "$red""Hmm, you chose the wrong value or something went wrong..."
+echo "$yellow""Parameters you can choose:"
+echo "$magenta""SystemUpdate "                                                       "$blue"" | It updates your system using ""$cyan""$Package "$blue"package manager, it also does flatpak and snap updates."
+echo "$magenta""SystemUpdate ""$red""yes"                                            "$blue"" | It updates your system using ""$cyan""$Package "$blue"package manager, it also does flatpak and snap updates."
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+echo "$magenta""SystemUpdate ""$yellow""zypp "                                                           "$blue"" | It updates your system using ZYPPER package manager"
+echo "$magenta""SystemUpdate ""$yellow""zypp ""$red""yes"                                         "$blue"" | It updates your system using ZYPPER package manager"
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+echo "$magenta""SystemUpdate ""$yellow""dnf "                                                           "$blue"" | It updates your system using DNF package manager"
+echo "$magenta""SystemUpdate ""$yellow""dnf ""$red""yes"                                         "$blue"" | It updates your system using DNF package manager"
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+echo "$magenta""SystemUpdate ""$yellow""full ""$cyan""zypp "                                                        "$blue"" | It updates your system using ZYPPER package manager, it also does flatpak and snap updates."
+echo "$magenta""SystemUpdate ""$yellow""full ""$cyan""zypp ""$red""yes"                                         "$blue"" | It updates your system using ZYPPER package manager, it also does flatpak and snap updates."
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+echo "$magenta""SystemUpdate ""$yellow""full ""$cyan""dnf "                                                         "$blue"" | It updates your system using DNF package manager, it also does flatpak and snap updates."
+echo "$magenta""SystemUpdate ""$yellow""full ""$cyan""dnf ""$red""yes"                                         "$blue"" | It updates your system using DNF package manager, it also does flatpak and snap updates."
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+
+echo "$magenta""SystemUpdate ""$yellow""pk "                                                        "$blue"" | Updates your system using pkcon."
+echo "$magenta""SystemUpdate ""$yellow""pk ""$red""yes"                                         "$blue"" | Updates your system using pkcon."
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+echo "$magenta""SystemUpdate ""$yellow""container "                                                                "$blue"" | Does flatpak and snap updates"
+echo "$magenta""SystemUpdate ""$yellow""container ""$red""yes"                                         "$blue"" | Does flatpak and snap updates"
+                                                                                            echo "$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+
+echo "$white"
+
+fi
+
+
+
+
+
+
+
+
+
+function SystemUpdate {
+if [ $# -eq 0 ]; then
+sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup --details -l && $flatpak $flatpakUpdate && $snap $snapUpdate || x_cancel"
+elif [ $1 = "yes" ]; then
+sudo su -c "sudo zypper --gpg-auto-import-keys ref && sudo zypper --gpg-auto-import-keys dup --details -l -y && $flatpak $flatpakUpdate -y && $snap $snapUpdate || x_cancel"
+elif [ $# -eq 1 ] && [ $1 = "pk" ]; then
+sudo su -c "pkcon get-updates || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "pk" ] && [ $2 = "yes" ]; then
+sudo su -c "pkcon get-updates -y || x_cancel"
+elif [ $# -eq 1 ] && [ $1 = "container" ]; then
+sudo su -c "$flatpak $flatpakUpdate && $snap $snapUpdate || x_cancel"
+elif [ $# -eq 2 ] && [ $1 = "container" ] && [ $2 = "yes" ]; then
+sudo su -c "$flatpak $flatpakUpdate -y && $snap $snapUpdate || x_cancel"
+else
+Base_Font
+
+echo "$red""Hmm, Yanlış değer seçtiniz yada bir sorun oldu..."
+echo "$yellow""Seçebilceğin Komutlar:"
+echo "$magenta""SystemUpdate""$blue"   "                              | zypper üzerinden paketleri günceller, flatpak günceller ve snap günceller."
+echo "$magenta""SystemUpdate""$white""$yellow"" yes""$blue"   "                          | zypper üzerinden paketleri günceller, flatpak günceller ve snap günceller.""$red""Sizden İzin istemez"
+echo "$magenta""SystemUpdate""$white""$yellow"" pk""$blue"   "                           | pkcon üzerinden güncellemeleri yap"
+echo "$magenta""SystemUpdate""$white""$yellow"" pk""$red" "yes"   "$blue"   "                      | pkcon üzerinden güncellemeleri yap.""$red""Sizden İzin istemez"
+echo "$magenta""SystemUpdate""$white""$yellow"" container"  "$blue"   "                   | Flatpak ve snapd güncellemeleri yap."
+echo "$magenta""SystemUpdate""$white""$yellow"" container""$red" "yes"  "$blue"   "               | Flatpak ve snapd güncellemeleri yap.""$red""Sizden İzin istemez"
+echo "$white"
+fi
+}

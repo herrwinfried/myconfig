@@ -4,35 +4,28 @@ ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 function file() {
 
-sudo chmod +x nvidia*
+sudo chmod +x script/*
 ###USER
-su -l $home -c "touch ~/.alias"
-cat .alias > $HomePWD/.alias
-su -l $home -c "mkdir -p ~/.config"
-su -l $home -c "mkdir -p ~/.config/powershell"
-su -l $home -c "touch ~/.config/powershell/Microsoft.PowerShell_profile.ps1"
-cat Microsoft.PowerShell_profile.ps1 > $HomePWD/.config/powershell/Microsoft.PowerShell_profile.ps1
-su -l $home -c "touch ~/.p10k.zsh"
-cat .p10k.zsh > $HomePWD/.p10k.zsh
-su -l $home -c "zsh -c 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k'"
-sed -ie 's+ZSH_THEME="robbyrussell"+ZSH_THEME="powerlevel10k/powerlevel10k"+i' $HomePWD/.zshrc
+su -l $home -c "cd $ScriptLocal/data/home; cp -r * $HomePWD/; cp -r .* $HomePWD/"
+su -l $home -c "mkdir -p $HomePWD/.config"
+su -l $home -c "mkdir -p $HomePWD/.config/powershell"
+su -l $home -c "cd $ScriptLocal/data/powershell; cp -r * $HomePWD/.config/powershell/"
+su -l $home -c "mkdir -p $HomePWD/.poshthemes"
+su -l $home -c "cp -r $ScriptLocal/data/default.omp.json $HomePWD/.poshthemes"
 
 ### Root
-touch ~/.alias
-cat .alias > ~/.alias
-mkdir -p ~/.config/
-mkdir -p ~/.config/powershell
-touch ~/.config/powershell/Microsoft.PowerShell_profile.ps1
-cat Microsoft.PowerShell_profile.ps1 > ~/.config/powershell/Microsoft.PowerShell_profile.ps1
-touch ~/.p10k.zsh
-cat .p10k.zsh > ~/.p10k.zsh
-zsh -c 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k'
-sed -ie 's+ZSH_THEME="robbyrussell"+ZSH_THEME="powerlevel10k/powerlevel10k"+i' ~/.zshrc
+cd $ScriptLocal/data/home; cp -r * /root/; cp -r .* /root/
+mkdir -p /root/.config
+mkdir -p /root/.config/powershell
+cd $ScriptLocal/data/powershell; cp -r * /root/.config/powershell/
 
+# mkdir -p /root/.poshthemes
+# cp -r $ScriptLocal/data/default.omp.json /root/.poshthemes
+sudo ln -s $HomePWD/.poshthemes /root/.poshthemes
 
 if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
-sudo cp nvidia_gamemoderun /usr/local/bin/nvidia_gamemoderun
-sudo cp nvidia-run /usr/local/bin/nvidia-run
+sudo chmod +x script/*
+sudo cp script/* /usr/local/bin/
 fi
 }
 
@@ -74,31 +67,34 @@ fc-cache
 function WSL_Theme() {
 mkdir -p themeconfig
 cd themeconfig
-##GTK THEME
-wget https://github.com/dracula/gtk/archive/master.zip
-unzip master.zip
-mv gtk-master dracula
-mv dracula /usr/share/themes
-rm -rf *.zip
-##GTK ICON
-wget https://github.com/dracula/gtk/files/5214870/Dracula.zip
-unzip Dracula.zip
-mv Dracula /usr/share/icons/
-rm -rf *.zip
-##QT COLOR
-git clone https://github.com/dracula/qt5.git
-sudo cp -r qt5/Dracula.conf /usr/share/qt5ct/colors
-rm -rf qt5
-####################################################
-##Cursor
-sudo git clone https://github.com/dracula/gtk.git
-sudo cp -r gtk/kde/cursors/Dracula-cursors /usr/share/icons/ 
-sudo rm -rf gtk
-###########################################################
-gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
-gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
-gsettings set org.gnome.desktop.interface icon-theme "Dracula"
+sudo zypper in -y libsass-3_6_5-1 sassc libostree appstream-glib
+git clone https://github.com/vinceliuice/Fluent-gtk-theme.git
+cd Fluent-gtk-theme
+ ./install.sh -t -all -c -s -i
+ ./install.sh --tweaks round
+ ./install.sh --tweaks blur
+ ./install.sh --tweaks square
+
+
+cd ..
+################
+git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git
+cd Tela-circle-icon-theme
+ ./install.sh -a
+cd ..
+###############
+git clone https://github.com/vinceliuice/Fluent-icon-theme.git
+cd Fluent-icon-theme
+ ./install.sh -a -r
+cd ..
+###############
+
+cd Fluent-icon-theme
+cd cursors
+ ./install.sh
+cd ../..
 }
+
 
 cd data
 pwdok="$(pwd)"

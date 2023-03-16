@@ -5,6 +5,9 @@ ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 openSUSETW_ALIAS
 
+mkdir -p /boot/grub2.d
+mkdir -p /boot/grub2.d/themes
+
 function checkFolder {
 mkdir -p $output
 cd $output
@@ -53,8 +56,14 @@ do
     . $ScriptLocal/opensuse-tumbleweed/Package/$TWSCRIPT
 done
 #
+ln -s /usr/lib64/libraw.so.23 /usr/lib64/libraw.so.20
+ln -s /usr/lib64/libraw.so.23.0.0 /usr/lib64/libraw.so.20.0.0
+ln -s /usr/lib64/libraw_r.so.23 /usr/lib64/libraw_r.so.20
+ln -s /usr/lib64/libraw_r.so.23.0.0 /usr/lib64/libraw_r.so.20.0.0
+
 rpms
 runs
+ln -s /etc/sysconfig /etc/init.d
 bundles
 appimages
 

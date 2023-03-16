@@ -1,0 +1,90 @@
+OhMyPoshTheme="~/.poshthemes/default.omp.json"
+
+#################### Only ZSH ################
+if [ -n "$ZSH_VERSION" ]; then
+
+# OpenSUSE CNF
+if [ -f /etc/zsh_command_not_found ]; then
+      . /etc/zsh_command_not_found
+fi
+
+if [ -x "$(command -v oh-my-posh)" ]; then
+eval "$(oh-my-posh init zsh --config $OhMyPoshTheme)"
+fi
+
+#
+fi
+#################### ZSH #####################
+##############################################
+################ Only BASH ###################
+if [ -n "$BASH_VERSION" ]; then
+
+if [ -x "$(command -v oh-my-posh)" ]; then
+eval "$(oh-my-posh init bash --config $OhMyPoshTheme)"
+fi
+
+#
+fi
+################# BASH #######################
+
+#IF NOT WSL
+if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
+
+if [[ -t ancs4linux-ctl ]]; then
+
+function ios_pair {
+
+iosAddress=$(ancs4linux-ctl get-all-hci | jq -r '.[0]')
+echo "Connect to $(hostname) from your phone."
+ancs4linux-ctl enable-advertising --hci-address $iosAddress --name $(hostname)
+}
+fi
+
+# IF CLOSE PARENTHESIS [IF NOT WSL]
+fi
+
+
+function Base_Font {
+# Colors
+termcols=$(tput cols)
+bold="$(tput bold)"
+fontnormal="$(tput init)"
+fontreset="$(tput reset)"
+underline="$(tput smul)"
+standout="$(tput smso)"
+normal="$(tput sgr0)"
+black="$(tput setaf 0)"
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+yellow="$(tput setaf 3)"
+blue="$(tput setaf 4)"
+magenta="$(tput setaf 5)"
+cyan="$(tput setaf 6)"
+white="$(tput setaf 7)"
+# Colors Finish
+}
+
+function rootMode {
+if ! [ $# -eq 0 ]; then
+XDG_DE=$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
+if [[ $XDG_DE == "kde" ]]; then 
+sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $@
+else 
+sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $@
+fi
+
+else
+echo "$red""You didn't write anything to run.""$white"
+fi
+}
+
+
+function englishRun {
+if ! [ $# -eq 0 ]; then
+
+LC_ALL=C LANG=$LC_ALL $@
+
+else
+echo echo "$red""You didn't write anything to run.""$white"
+fi
+}
