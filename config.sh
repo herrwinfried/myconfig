@@ -93,6 +93,11 @@ cd Fluent-icon-theme
 cd cursors
  ./install.sh
 cd ../..
+
+gsettings set org.gnome.desktop.interface cursor-theme Fluent-cursors
+gsettings set org.gnome.desktop.interface gtk-theme Fluent-Dark
+gsettings set org.gnome.desktop.interface icon-theme Fluent-dark
+gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
 }
 
 
