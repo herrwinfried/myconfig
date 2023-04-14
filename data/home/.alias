@@ -1,5 +1,18 @@
 OhMyPoshTheme="~/.poshthemes/default.omp.json"
 
+if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+function brewInstall {
+    brew install $1 < /dev/null
+}
+
+function brewInstallCask {
+    brew install --cask $1 < /dev/null
+}
+
+fi
+
 #################### Only ZSH ################
 if [ -n "$ZSH_VERSION" ]; then
 
@@ -87,4 +100,10 @@ LC_ALL=C LANG=$LC_ALL $@
 else
 echo echo "$red""You didn't write anything to run.""$white"
 fi
+}
+
+function aliasUpdate {
+
+rm -r ~/.alias && wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias -O ~/.alias && rm -r ~/.alias.ps1 && wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1 -O ~/.alias.ps1
+
 }

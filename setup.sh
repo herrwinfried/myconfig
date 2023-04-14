@@ -5,13 +5,9 @@ ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 checkroot
 requirepackage
 
-export distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
+distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
+
 if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
-. ./opensuse-tumbleweed.sh
-
-#
-
-
-
-##OPENSUSE TALİMATLARI BİTTİ
+. ./distro/opensuse-tumbleweed.sh
+##OPENSUSE FINISH
 fi

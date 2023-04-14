@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # System notifications for iOS via Bluetooth.
 git clone https://github.com/pzmarzly/ancs4linux
 

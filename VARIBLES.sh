@@ -2,7 +2,7 @@
 
 Username="winfried"
 HomePWD="/home/$Username"
-Folder="MyConfig/files"
+Folder="myconfig/files"
 output="$HomePWD/$Folder"
 HOSTNAME_NEW="herrwinfried"
 home="winfried"
@@ -56,6 +56,8 @@ if ! [ -x "$(command -v lsb_release)" ]; then
 packageList+=" lsb-release"
 elif [ -x "$(command -v zypper)" ]; then
 packageList+=" lsb-release"
+elif [ -x "$(command -v zypper)" ]; then
+packageList+=" redhat-lsb-core"
 fi
 fi
 
@@ -64,6 +66,8 @@ if ! [ -x "$(command -v git)" ]; then
     if [ -x "$(command -v apt)" ]; then
 packageList+=" git"
 elif [ -x "$(command -v zypper)" ]; then
+packageList+=" git"
+elif [ -x "$(command -v dnf)" ]; then
 packageList+=" git"
 fi
 fi
@@ -74,6 +78,8 @@ if ! [ -x "$(command -v wget)" ]; then
 packageList+=" wget"
 elif [ -x "$(command -v zypper)" ]; then
 packageList+=" wget"
+elif [ -x "$(command -v dnf)" ]; then
+packageList+=" wget"
 fi
 fi
 if [ ! -z "$packageList" ]; then
@@ -81,6 +87,8 @@ if [ ! -z "$packageList" ]; then
 sudo apt install -y $packageList
 elif [ -x "$(command -v zypper)" ]; then
 sudo zypper --gpg-auto-import-keys install -y -l $packageList
+elif [ -x "$(command -v dnf)" ]; then
+sudo dnf install -y $packageList
 fi
 fi
 ################REQUIRED FINISH##################################################################
@@ -89,8 +97,10 @@ fi
 function openSUSETW_ALIAS {
 PackageName="zypper --gpg-auto-import-keys"
 RPMArg="--no-gpg-checks"
-PackageInstall="install -y -l"
-UpdateArg="dup -y"
+PackageInstall="install -y -l --force-resolution"
+#install <COMMAND>
+RPMInstall="--allow-unsigned-rpm"
+UpdateArg="dup -y -l"
 PackageRemove="remove -y"
 FlatpakInstall="flatpak install -y flathub"
 SnapInstall="snap install"    
