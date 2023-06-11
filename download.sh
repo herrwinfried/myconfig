@@ -1,38 +1,24 @@
 #!/bin/bash
 MainLine="linux"
 
-Username="winfried"
-HomePWD="/home/$Username"
-Folder="MyConfig/files"
-output="$HomePWD/$Folder"
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_VERSION | tr '[:upper:]' '[:lower:]')
+
+NEW_HOSTNAME="herrwinfried"
+
+Username=$USER
+HomePWD=$HOME
+ExternalFolder="$HomePWD/myconfig/files"
 
 
-unzipName="$HomePWD/MyConfig/myconfig-$MainLine"
 
-if [ -d "old" ]
-then
-rm -rf old
+if [ -d "myconfig" ]; then
+rm -rf myconfig
 fi
 
-if [ -d "$HomePWD/MyConfig" ]
-then
+git clone https://github.com/herrwinfried/myconfig/ -b $MainLine
 
-echo "$output/MyConfig mevcut..."
-else
-mkdir -p $output/MyConfig
-fi
-
-if [ -d "$output" ]
-then
-mv $output old
-mkdir -p $output
-echo "$output mevcut..."
-else
-mkdir -p $output
-fi
-
-cd $HomePWD
-
-wget https://github.com/herrwinfried/myconfig/archive/refs/heads/$MainLine.zip -O MyConfig.zip
-unzip MyConfig.zip -d MyConfig && mv $unzipName/* $HomePWD/MyConfig && rm -rf $unzipName
-rm -rf $HomePWD/MyConfig.zip
+mkdir $ExternalFolder

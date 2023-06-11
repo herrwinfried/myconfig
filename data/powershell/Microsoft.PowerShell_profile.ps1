@@ -1,1 +1,0 @@
-. $env:USERPROFILE/.alias.ps1

@@ -7,5 +7,14 @@ Kendime göre yaptığım konfigürasyonlar var. Lütfen kendi bilincinize göre
 ## OpenSUSE Tumbleweed
 
 ```bash
-sudo zypper in -y wget curl git && wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/download.sh -O download.sh && chmod +x download.sh && sh ./download.sh
+sudo sh -c 'zypper in -y wget curl git && git clone https://github.com/herrwinfried/myconfig.git -b linux && mkdir -p myconfig/files && chmod +x myconfig/*.sh'
 ```
+
+### The file extension that the `files` folder supports *
+- .run
+- .appimage
+- .bundles
+- .rpm
+- .flatpakref
+
+\* Only OpenSUSE Tumbleweed

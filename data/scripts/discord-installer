@@ -1,0 +1,61 @@
+#!/bin/bash
+if ! [ $# -eq 0 ]; then
+echo "ERROR! Example: discord-installer PTB"
+exit 0
+fi
+
+n1=$(echo $1 | tr '[:upper:]' '[:lower:]')
+
+if [ $n1 == "canary" ]; then
+Version="canary"
+ExecCom="DiscordCanary"
+elif [ $n1 == "ptb" ]; then
+Version="ptb"
+ExecCom="DiscordPTB"
+elif [ $n1 == "stable" ]; then
+Version=""
+ExecCom="Discord"
+else
+echo "ERROR! Example: discord-installer PTB"
+exit 1
+fi
+
+distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
+if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
+
+PackageName="zypper --gpg-auto-import-keys"
+PackageInstall="install -y -l --force-resolution"
+UpdateArg="dup -y -l"
+PackageRemove="remove -y"
+
+sudo $PackageName $UpdateArg
+sudo $PackageName $PackageInstall curl tar
+
+echo "[Desktop Entry]
+Name=Discord $Version
+StartupWMClass=discord$Version
+Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
+GenericName=Internet Messenger
+Exec=/opt/Discord$Version/$ExecCom
+Icon=$ExecCom
+Type=Application
+Categories=Network;InstantMessaging;
+Path=/opt/Discord$Version" > /usr/share/applications/discord$Version.desktop
+
+curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
+sudo mkdir -p /opt/Discord$Version
+
+if [ -d "/tmp/discord$Version.tar.gz" ]; then
+sudo rm -rf /tmp/discord*
+fi
+
+if [ -d "/opt/Discord$Version" ]; then
+sudo rm -rf /opt/Discord$Version
+fi
+sleep 3
+
+sudo tar -xzf /tmp/discord$Version.tar.gz -C /opt/
+sudo chmod 777 /opt/Discord$Version
+sudo chmod 777 /opt/Discord$Version/*
+
+fi

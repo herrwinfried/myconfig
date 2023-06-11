@@ -1,0 +1,26 @@
+#!/bin/bash
+
+distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
+if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
+
+PackageName="zypper --gpg-auto-import-keys --no-gpg-checks"
+#REMOVE AUTO-YES
+PackageInstall="install --allow-unsigned-rpm -R -l"
+UpdateArg="dup -y -l --force-resolution"
+PackageRemove="remove -y"
+
+
+function install {
+sudo $PackageName $UpdateArg
+sudo $PackageName $PackageInstall curl tar jq
+if [ -d "/tmp/GitHubDesktop.rpm" ]; then
+sudo rm -rf /tmp/Github*
+fi
+sleep 3
+desktopGitURL=$(curl -s "https://api.github.com/repos/shiftkey/desktop/releases/latest" | jq -r ".assets[] | select(.name | test(\".rpm\")) | .browser_download_url")
+curl -L $desktopGitURL -o /tmp/GitHubDesktop.rpm
+sudo $PackageName $PackageInstall /tmp/GitHubDesktop.rpm
+}
+install
+
+fi

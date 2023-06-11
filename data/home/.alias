@@ -1,5 +1,46 @@
 OhMyPoshTheme="~/.poshthemes/default.omp.json"
 
+if [ -d "$HOME/bin" ]; then
+PATH+=":$HOME/bin"
+fi
+
+if [ -d "$HOME/development" ]; then
+PATH+=":$HOME/development"
+fi
+
+if [ -d "$HOME/.local/bin" ]; then
+PATH+=":$HOME/.local/bin"
+fi
+
+if [ -f "$HOME/bin/docker" ]; then
+export DOCKER_HOST=unix:///run/user/1000/docker.sock
+fi
+
+function checkwsl() {
+unameout=$(uname -r | tr '[:upper:]' '[:lower:]');
+if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] || \
+[ -f /proc/sys/fs/binfmt_misc/WSLInterop ] || \
+[ $WSL_DISTRO_NAME ] || \
+[ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" = "0xffffffff" ] && [ $WSL_DISTRO_NAME ]; then
+    return 0
+else
+    return 1
+fi
+}
+
+if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+function brewInstall {
+    brew install $1 < /dev/null
+}
+
+function brewInstallCask {
+    brew install --cask $1 < /dev/null
+}
+
+fi
+
 #################### Only ZSH ################
 if [ -n "$ZSH_VERSION" ]; then
 
@@ -19,6 +60,11 @@ fi
 ################ Only BASH ###################
 if [ -n "$BASH_VERSION" ]; then
 
+# OpenSUSE CNF
+if [ -f /etc/bash_command_not_found ]; then
+      . /etc/bash_command_not_found
+fi
+
 if [ -x "$(command -v oh-my-posh)" ]; then
 eval "$(oh-my-posh init bash --config $OhMyPoshTheme)"
 fi
@@ -28,7 +74,7 @@ fi
 ################# BASH #######################
 
 #IF NOT WSL
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
+if checkwsl ; then
 
 if [[ -t ancs4linux-ctl ]]; then
 
@@ -45,7 +91,6 @@ fi
 
 
 function Base_Font {
-# Colors
 termcols=$(tput cols)
 bold="$(tput bold)"
 fontnormal="$(tput init)"
@@ -61,13 +106,12 @@ blue="$(tput setaf 4)"
 magenta="$(tput setaf 5)"
 cyan="$(tput setaf 6)"
 white="$(tput setaf 7)"
-# Colors Finish
 }
 
 function rootMode {
 if ! [ $# -eq 0 ]; then
 XDG_DE=$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
-if [[ $XDG_DE == "kde" ]]; then 
+if [[ $XDG_DE = "kde" ]]; then 
 sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $@
 else 
 sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $@
@@ -88,3 +132,8 @@ else
 echo echo "$red""You didn't write anything to run.""$white"
 fi
 }
+
+function aliasUpdate {
+rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -O ~/.alias.fish
+}
+

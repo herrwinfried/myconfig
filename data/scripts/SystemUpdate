@@ -1,0 +1,381 @@
+#!/bin/bash
+
+ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+FileName=$(basename "${BASH_SOURCE[0]}")
+# It will find the supported packages and enable them.
+# In case "false" is set, you have to enable it manually one by one.
+auto=true
+
+# If you want to enable it manually,
+# remove the "#" from the relevant packages.
+
+# zypper=true
+# dnf=false
+# microdnf=false
+# transactionalUpdate=false
+# apt=false
+# brew=false
+# flatpak=false
+# snap=false
+# ---------------------
+
+
+######### Colors ############
+termcols=$(tput cols)       #
+bold="$(tput bold)"         #
+fontnormal="$(tput init)"   #
+fontreset="$(tput reset)"   #
+underline="$(tput smul)"    #
+standout="$(tput smso)"     #
+normal="$(tput sgr0)"       #
+black="$(tput setaf 0)"     #
+red="$(tput setaf 1)"       #
+green="$(tput setaf 2)"     #
+yellow="$(tput setaf 3)"    #
+blue="$(tput setaf 4)"      #
+magenta="$(tput setaf 5)"   #
+cyan="$(tput setaf 6)"      #
+white="$(tput setaf 7)"     #
+#############################
+
+function sudoreq {
+    sudo -v || { echo -e $red"Cancel..."$white; exit 1; }
+}
+
+function sudofinish {
+sudo --reset-timestamp
+}
+
+function zypper_pack {
+    Rolling=$1
+    Yes=$2
+
+    if [ $Rolling = "yes" ]; then
+        Rolling="dup"
+    else
+        Rolling="up"
+    fi
+
+    if [[ $Yes = "yes" || $Yes = "-y"  || $Yes = "true" ]]; then
+        Yes="-y"
+    else
+        Yes=""
+    fi
+
+    Package="zypper"
+    defaultPackage="$Package --gpg-auto-import-keys"
+    UpdatePackage="$Rolling --details -l $Yes"
+    RefreshPackage="ref"
+
+    echo "sudo sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+}
+
+function dnf_pack {
+    Rolling=$1
+    Yes=$2
+
+    if [ $Rolling = "yes" ]; then
+        Rolling="distro-sync"
+    else
+        Rolling="update"
+    fi
+
+    if [[ $Yes = "yes" || $Yes = "-y"  || $Yes = "true" ]]; then
+        Yes="-y"
+    else
+        Yes=""
+    fi
+
+    Package="dnf"
+    defaultPackage="$Package"
+    UpdatePackage="$Rolling --nogpgcheck $Yes"
+    RefreshPackage="makecache"
+
+    echo "sudo sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+}
+
+function microdnf_pack {
+    Rolling=$1
+    Yes=$2
+
+    if [ $Rolling = "yes" ]; then
+        Rolling="distro-sync"
+    else
+        Rolling="update"
+    fi
+
+    if [[ $Yes = "yes" || $Yes = "-y"  || $Yes = "true" ]]; then
+        Yes="-y"
+    else
+        Yes=""
+    fi
+
+    Package="microdnf"
+    defaultPackage="$Package"
+    UpdatePackage="$Rolling --nogpgcheck $Yes"
+    RefreshPackage="makecache"
+
+    echo "sudo sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+}
+
+function transactionalUpdate_pack {
+    Package="transactional-update"
+    defaultPackage="$Package"
+    UpdatePackage="update"
+
+    echo "sudo $defaultPackage $UpdatePackage"
+}
+
+function apt_pack {
+    Yes=$1
+    if [[ $Yes = "yes" || $Yes = "-y"  || $Yes = "true" ]]; then
+        Yes="-y"
+    else
+        Yes=""
+    fi
+
+    Package="apt"
+    defaultPackage="$Package"
+    UpdatePackage="upgrade --allow-unauthenticated $Yes"
+    RefreshPackage="update"
+
+    echo "sudo $defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
+}
+
+function brew_pack {
+    Package="brew"
+    defaultPackage="$Package"
+    UpdatePackage="upgrade"
+    RefreshPackage="update"
+
+    echo "$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
+}
+
+function flatpak_pack {
+    Yes=$1
+
+    if [[ $Yes = "yes" || $Yes = "-y"  || $Yes = "true" ]]; then
+        Yes="-y"
+    else
+        Yes=""
+    fi
+
+    Package="flatpak"
+    defaultPackage="$Package"
+    UpdatePackage="upgrade $Yes"
+
+    echo "sudo $defaultPackage $UpdatePackage && $defaultPackage $UpdatePackage"
+}
+
+function snap_pack {
+    Package="snap"
+    defaultPackage="$Package"
+    UpdatePackage="refresh"
+
+    echo "sudo $defaultPackage $UpdatePackage"
+}
+
+function auto_package {
+    if [ $auto = "true" ]; then
+        if type -P transactional-update > /dev/null; then
+            transactionalUpdate=true
+        elif type -P microdnf > /dev/null; then
+            microdnf=true
+        elif type -P zypper > /dev/null; then
+            zypper=true
+        elif type -P dnf > /dev/null; then
+            dnf=true
+        elif type -P apt > /dev/null; then
+            apt=true
+        fi
+
+        if type -P brew > /dev/null; then
+            brew=true
+        fi
+
+        if type -P flatpak > /dev/null; then
+            flatpak=true
+        fi
+
+        if type -P snap > /dev/null; then
+            snap=true
+        fi
+    fi
+}
+
+function checkcommand {
+    if type -P $1 > /dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function package_install {
+    Arg=$1
+    . /etc/os-release
+    NAME_new=$(echo $NAME | tr '[:upper:]' '[:lower:]')
+
+    if [[ $zypper == "true" ]]; then
+        if checkcommand zypper; then
+            if [[ $NAME_new == *tumbleweed* ]]; then
+                eval "$(zypper_pack yes $1)"
+            else
+                eval "$(zypper_pack no $1)"
+            fi
+        fi
+    fi
+
+    if [[ $dnf == "true" ]]; then
+        if checkcommand dnf; then
+            if [[ $NAME_new == *tumbleweed* ]]; then
+                eval "$(dnf_pack yes $1)"
+            else
+                eval "$(dnf_pack no $1)"
+            fi
+        fi
+    fi
+
+    if [[ $microdnf == "true" ]]; then
+        if checkcommand microdnf; then
+            if [[ $NAME_new == *tumbleweed* ]]; then
+                eval "$(microdnf_pack yes $1)"
+            else
+                eval "$(microdnf_pack no $1)"
+            fi
+        fi
+    fi
+
+    if [[ $transactionalUpdate == "true" ]]; then
+        if checkcommand transactional-update; then
+            eval "$(transactionalUpdate_pack)"
+        fi
+    fi
+
+    if [[ $apt == "true" ]]; then
+        if checkcommand apt; then
+            eval "$(apt_pack $1)"
+        fi
+    fi
+
+    if [[ $brew == "true" ]]; then
+        if checkcommand brew; then
+            eval "$(brew_pack)"
+        fi
+    fi
+
+    if [[ $flatpak == "true" ]]; then
+        if checkcommand flatpak; then
+            eval "$(flatpak_pack $1)"
+        fi
+    fi
+
+    if [[ $snap == "true" ]]; then
+        if checkcommand snap; then
+            eval "$(snap_pack)"
+        fi
+    fi
+
+    sudofinish
+}
+
+function HelpFunction {
+echo "$green""The purpose of this script is to reduce the command line functionality for those who use multiple package managers."
+echo "$yellow""Parameters you can choose:"
+echo "$blue""$FileName ""$red""update""                                                 ""$green"" | this script downloads again from the internet."
+echo "$magenta""$FileName ""                                                       ""$blue"" | If Auto is turned on, it automatically updates the package systems. It finds "
+echo "$white""                                                                  ""$blue"" | in the system one by one. If auto is not turned on, it updates the packages selected by the user. (See script source for more information)"                                                                                 
+echo "$magenta""$FileName ""$green""yes""                                                    ""$blue"" | automatically adds the -y(yes) definition to supported package managers. Supported packages: zypper, dnf, microdnf, flatpak"
+echo "                                                                                            ""$red""(Doesn't ask you to confirm what they're going to do)"
+echo ""
+if checkcommand zypper; then
+echo "$magenta""$FileName ""$yellow""zypper ""                                                ""$blue"" | It updates your system using ZYPPER package manager"
+echo ""
+fi
+
+if checkcommand dnf; then
+echo "$magenta""$FileName ""$yellow""dnf ""                                                   ""$blue"" | It updates your system using DNF package manager"
+echo ""
+fi
+
+if checkcommand transactional-update; then
+echo "$magenta""$FileName ""$yellow""transactional-update ""                                  ""$blue"" | It updates your system using transactional-update manager"
+echo ""
+fi
+
+if checkcommand microdnf; then
+echo "$magenta""$FileName ""$yellow""microdnf ""                                              ""$blue"" | It updates your system using MicroDNF package manager"
+echo ""
+fi
+
+if checkcommand brew; then
+echo "$magenta""$FileName ""$yellow""brew ""                                                  ""$blue"" | It updates your system using brew package manager"
+echo ""
+fi
+
+if checkcommand flatpak; then
+echo "$magenta""$FileName ""$yellow""flatpak ""                                               ""$blue"" | It updates your system using flatpak package manager"
+echo ""
+fi
+
+if checkcommand snap; then
+echo "$magenta""$FileName ""$yellow""snap ""                                                  ""$blue"" | It updates your system using Snap package manager"
+echo ""
+fi
+
+    exit 1
+}
+
+if [ $# -ne 0 ]; then
+    Yes=false
+
+    i=1
+    j=$#
+
+    while [ $i -le $j ]; do
+        n=$(echo $1 | tr '[:upper:]' '[:lower:]')
+
+        if [[ $n == "--help" ]] || [[ $n == "-h" ]] || [[ $n == "help" ]]; then
+            HelpFunction
+        elif [ $1 = "update" ]; then
+        curl -L https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/SystemUpdate -o $ScriptLocal/SystemUpdate
+        exit 1
+        elif [[ $n == "zypper" ]]; then
+            zypper=true
+            transactionalUpdate=false
+        elif [[ $n == "dnf" ]]; then
+            dnf=true
+            microdnf=false
+        elif [[ $n == "microdnf" ]]; then
+            dnf=false
+            microdnf=true
+        elif [[ $n == "transactional-update" ]]; then
+            zypper=false
+            transactionalUpdate=true
+        elif [[ $n == "apt" ]]; then
+            apt=true
+        elif [[ $n == "brew" ]]; then
+            brew=true
+        elif [[ $n == "flatpak" ]]; then
+            flatpak=true
+        elif [[ $n == "snap" ]]; then
+            snap=true
+        elif [[ $n == "yes" ]]; then
+            Yes=true
+
+        else
+        echo "$red""invalid argument $n $white"
+        sleep 1
+        fi
+
+        i=$((i + 1))
+        shift 1
+    done
+fi
+
+sudoreq
+if [[ $zypper != "true" && $dnf != "true"  && $microdnf != "true" && $transactionalUpdate != "true" ]] && [[ $brew != "true" && $flatpak != "true"  && $snap != "true" ]]; then
+auto_package
+fi
+package_install $Yes
+sudofinish

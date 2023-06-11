@@ -1,11 +1,17 @@
 #!/bin/bash
 
-Username="winfried"
-HomePWD="/home/$Username"
-Folder="MyConfig/files"
-output="$HomePWD/$Folder"
-HOSTNAME_NEW="herrwinfried"
-home="winfried"
+#It makes more sense to use direct os-release instead of lsb-release
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_VERSION | tr '[:upper:]' '[:lower:]')
+
+NEW_HOSTNAME="herrwinfried"
+
+Username=$USER
+HomePWD=$HOME
+ExternalFolder="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/files"
 
 # Colors
 termcols=$(tput cols)
@@ -25,73 +31,93 @@ cyan="$(tput setaf 6)"
 white="$(tput setaf 7)"
 # Colors Finish
 
-function checkroot {
-if [[ $EUID -ne 0 ]]; then
-     echo "$red Süper Kullanıcı/root olmanız gerekir. $white"
-   exit 1
-fi
-}
-function onlywsl(){
+function checkwsl() {
 unameout=$(uname -r | tr '[:upper:]' '[:lower:]');
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
-echo $yellow Sanırım WSL Distro kullanmıyorsunuz.$red İşlem iptal edildi. $white
-exit 1
+if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] || \
+[ -f /proc/sys/fs/binfmt_misc/WSLInterop ] || \
+[ $WSL_DISTRO_NAME ] || \
+[ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" = "0xffffffff" ] && [ $WSL_DISTRO_NAME ]; then
+return 0
+else
+return 1
 fi
 }
 
-function onlypc(){
-unameout=$(uname -r | tr '[:upper:]' '[:lower:]');
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" == "0xffffffff" ]; then
-echo $yellow Sanırım Desktop kullanmıyorsunuz.$red İşlem iptal edildi. $white
-exit 1
-fi
+function sudoreq {
+    sudo -v || { echo -e $red"Cancel..."$white; exit 1; }
 }
 
-function requirepackage() {
-################REQUIRED##################################################################
-packageList=""
-if ! [ -x "$(command -v lsb_release)" ]; then
-    echo "$yellow Dikkat ! lsb-release Paketi Bulunmadığından otomatik yüklenecek." >&2
-  if [ -x "$(command -v apt)" ]; then
-packageList+=" lsb-release"
-elif [ -x "$(command -v zypper)" ]; then
-packageList+=" lsb-release"
-fi
-fi
+function sudofinish {
+sudo --reset-timestamp
+}
 
-if ! [ -x "$(command -v git)" ]; then
-    echo "$yellow Dikkat ! git Paketi Bulunmadığından otomatik yüklenecek." >&2
-    if [ -x "$(command -v apt)" ]; then
-packageList+=" git"
-elif [ -x "$(command -v zypper)" ]; then
-packageList+=" git"
-fi
-fi
+function cdExternalFolder {
+mkdir -p $ExternalFolder
+cd $ExternalFolder
+}
 
-if ! [ -x "$(command -v wget)" ]; then
-    echo "$yellow Dikkat ! wget Paketi Bulunmadığından otomatik yüklenecek." >&2
-      if [ -x "$(command -v apt)" ]; then
-packageList+=" wget"
-elif [ -x "$(command -v zypper)" ]; then
-packageList+=" wget"
-fi
-fi
-if [ ! -z "$packageList" ]; then
-      if [ -x "$(command -v apt)" ]; then
-sudo apt install -y $packageList
-elif [ -x "$(command -v zypper)" ]; then
-sudo zypper --gpg-auto-import-keys install -y -l $packageList
-fi
-fi
-################REQUIRED FINISH##################################################################
+function checkcommand {
+    if type -P $1 > /dev/null; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 function openSUSETW_ALIAS {
-PackageName="zypper --gpg-auto-import-keys"
-RPMArg="--no-gpg-checks"
-PackageInstall="install -y -l"
-UpdateArg="dup -y"
-PackageRemove="remove -y"
-FlatpakInstall="flatpak install -y flathub"
-SnapInstall="snap install"    
+# ZYPPER OR DNF
+#   0        1
+SUSE_TYPE=0
+if ! checkcommand dnf ; then
+SUSE_TYPE=0
+fi
+################
+
+if [ $SUSE_TYPE -eq 0 ]; then
+PackagePrep="zypper"
+Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
+PackageUpdate="dup -y -l -R"
+PackageRefresh="refresh"
+
+PackageRemove="rm -u -y -R"
+PackageInstall="install -y -l -R"
+
+elif [ $SUSE_TYPE -eq 1 ]; then
+
+PackagePrep="dnf"
+Package="$PackagePrep --nogpgcheck"
+PackageUpdate="dup -y"
+PackageRefresh="makecache"
+
+PackageRemove="rm -y"
+PackageInstall="install -y"
+fi
+
 }
+
+
+BrewPackagePrep="brew"
+BrewPackage="$BrewPackagePrep"
+BrewPackageUpdate="update -y"
+
+BrewPackageRemove="uninstall -y"
+BrewPackageInstall="install -y"
+
+
+
+FlatpakPackagePrep="flatpak"
+FlatpakPackage="$FlatpakPackagePrep"
+FlatpakPackageUpdate="update -y"
+
+FlatpakPackageRemove="uninstall -y"
+FlatpakPackageInstall="install -y"
+
+
+
+SnapPackagePrep="snap"
+SnapPackage="$SnapPackagePrep"
+SnapPackageUpdate="refresh"
+
+SnapPackageRemove="remove"
+SnapPackageInstall="install"
+

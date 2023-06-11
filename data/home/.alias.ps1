@@ -3,6 +3,36 @@ if (-Not $isLinux) {
     Exit 1
 }
 
+$OhMyPoshTheme="~/.poshthemes/default.omp.json"
+
+if (Test-Path "$env:HOME/bin") {
+    $env:PATH += ":$env:HOME/bin"
+}
+
+if (Test-Path "$env:HOME/development") {
+    $env:PATH += ":$env:HOME/development"
+}
+
+if (Test-Path "$env:HOME/.local/bin") {
+    $env:PATH += ":$env:HOME/.local/bin"
+}
+
+if (Test-Path "$env:HOME/bin/docker") {
+    $env:DOCKER_HOST = "unix:///run/user/1000/docker.sock"
+}
+
+Function checkwsl {
+    $unameout=$(uname -r | tr '[:upper:]' '[:lower:]');
+    if ( (( $unameout.ToLower() -like "*microsoft*" ) -or ( $unameout.ToLower() -like "*wsl*" )) -or 
+    (Test-Path /proc/sys/fs/binfmt_misc/WSLInterop) -or 
+    ( $env:WSL_DISTRO_NAME ) -or 
+    (((cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d":") -ne "0xffffffff") -and $env:WSL_DISTRO_NAME )) {
+
+        return $True
+    } else {
+        return $False
+    }
+}    
 Function Test-CommandExists {
       Param ($command)
       $oldPreference = $ErrorActionPreference
@@ -15,25 +45,33 @@ Function Test-CommandExists {
       Finally {$ErrorActionPreference=$oldPreference}
      }
   
-  $OhMyPoshTheme="~/.poshthemes/default.omp.json"
+  if (Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
+    Add-Content -Path $PROFILE.CurrentUserAllHosts -Value '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv) | Invoke-Expression'
   
-  # OpenSUSE CNF
-  if (Test-Path "/etc/command_not_found") {
-      . /etc/command_not_found
-  }
-  
-  
+    function brewInstall {
+        brew install $Args 2>$null
+    }
+    
+    function brewInstallCask {
+        brew install --cask $Args 2>$null
+    }
+
+}
+
   if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
       oh-my-posh init pwsh --config $OhMyPoshTheme | Invoke-Expression 
   }
   
   #IF NOT WSL
-  if ((cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d":") -ne "0xffffffff") {
+    if (-NOT $(checkwsl) ) {
   
+        if (Test-CommandExists podman) {
   function podmanRun {
       Write-Host "podman system service --time=0 tcp:0.0.0.0:12979"
       podman system service --time=0 tcp:0.0.0.0:12979
   }
+  
+}
   
   if (Test-CommandExists ancs4linux-ctl) {
   function ios_pair {
@@ -69,3 +107,9 @@ Function Test-CommandExists {
       Write-Error "You didn't write anything to run."
   }
   }
+
+  function aliasUpdate {
+    [String]$xArgs='rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -O ~/.alias.fish'
+    Invoke-Expression $xArgs
+  }
+
