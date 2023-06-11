@@ -1,10 +1,18 @@
 #!/bin/bash
 MainLine="linux"
 
-Username="winfried"
-HomePWD="/home/$Username"
-Folder="myconfig/files"
-output="$HomePWD/$Folder"
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_VERSION | tr '[:upper:]' '[:lower:]')
+
+NEW_HOSTNAME="herrwinfried"
+
+Username=$USER
+HomePWD=$HOME
+ExternalFolder="$HomePWD/myconfig/files"
+
 
 
 if [ -d "myconfig" ]; then
@@ -13,4 +21,4 @@ fi
 
 git clone https://github.com/herrwinfried/myconfig/ -b $MainLine
 
-mkdir $output
+mkdir $ExternalFolder

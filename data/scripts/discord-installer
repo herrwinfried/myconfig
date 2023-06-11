@@ -17,8 +17,9 @@ Version=""
 ExecCom="Discord"
 else
 echo "ERROR! Example: discord-installer PTB"
-exit 0
+exit 1
 fi
+
 distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
 if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
 
@@ -41,7 +42,7 @@ Type=Application
 Categories=Network;InstantMessaging;
 Path=/opt/Discord$Version" > /usr/share/applications/discord$Version.desktop
 
-curl -L https://discord.com/api/download/$Version?platform=linux&format=tar.gz -o /tmp/discord$Version.tar.gz
+curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
 sudo mkdir -p /opt/Discord$Version
 
 if [ -d "/tmp/discord$Version.tar.gz" ]; then

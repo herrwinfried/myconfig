@@ -1,49 +1,39 @@
 #!/bin/bash
 
-function a {
-
-package="neofetch screenfetch hwinfo htop ffmpeg zsh git git-lfs curl wget lsb-release opi lzip unzip e2fsprogs nano"
-
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" == "0xffffffff" ]; then
-sudo $PackageName $PackageInstall $package
- 
-elif [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
-packageFlatpak="org.telegram.desktop io.github.mimbrero.WhatsAppDesktop im.riot.Riot"
-sudo $PackageName $PackageInstall $package
-sudo $FlatpakInstall $packageFlatpak
-
-sudo flatpak install -y kdeapps org.kde.xwaylandvideobridge
-
+Package_a="neofetch screenfetch hwinfo htop ffmpeg zsh zsh fish bash-completion git git-lfs curl wget lsb-release opi lzip unzip unrar e2fsprogs nano"
+Package_a_Flatpak="flathub org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.5 org.kde.PlatformTheme.QGnomePlatform//6.5"
+if ! checkwsl ; then
+Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop im.riot.Riot"
 fi
-}
 
-function b {
-package="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" == "0xffffffff" ]; then
-sudo $PackageName $PackageInstall $package
+Package_a_Flatpak2="kdeapps org.kde.xwaylandvideobridge"
 
-elif [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
-packageList+=" discord flameshot AdobeICCProfiles anydesk"
-sudo $PackageName $PackageInstall $package
+Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts java-19-openjdk"
 
+if ! checkwsl ; then
+Package_b+=" discord flameshot AdobeICCProfiles anydesk noisetorch memtest86+"
 fi
-}
 
-function c {
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
-package="pinta lutris minetest gamemoded libgamemode0 libgamemodeauto0 obs-studio kdenlive"
-packageFlatpak="org.onlyoffice.desktopeditors com.usebottles.bottles org.gtk.Gtk3theme.Adwaita-dark"
-packageSnap="termius-app authy"
+Package_c="pinta lutris minetest gamemoded libgamemode0 libgamemodeauto0"
+Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.usebottles.bottles com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
 
-sudo $PackageName $PackageInstall $package
-sudo $FlatpakInstall $packageFlatpak
-sudo $SnapInstall $packageSnap
 
-sudo flatpak override --filesystem=/usr/share/themes/
-sudo flatpak override --env GTK_THEME=Adwaita-dark
+
+
+sudo $Package $PackageInstall $Package_a
+sudoreq
+sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
+sudoreq
+sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
+
+sudoreq
+sudo $Package $PackageInstall $Package_b
+
+#NOT WSL
+if ! checkwsl ; then
+sudoreq
+sudo $Package $PackageInstall $Package_c
+sudoreq
+sudo $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
 fi
-}
-
-a
-b
-c
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

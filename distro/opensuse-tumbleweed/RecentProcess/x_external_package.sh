@@ -1,7 +1,19 @@
 #!/bin/bash
 
+flatpakref
+
+sudoreq #--
+
 rpms
+
+sudoreq #--
+
 runs
-ln -s /etc/sysconfig /etc/init.d
+
+sudoreq #--
+sudo ln -s /etc/sysconfig /etc/init.d
 bundles
+
+sudoreq #--
+
 appimages

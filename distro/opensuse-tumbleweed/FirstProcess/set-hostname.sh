@@ -1,6 +1,12 @@
 #!/bin/bash
 
+if ! checkwsl ; then
 
-if [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" != "0xffffffff" ]; then
-sudo hostnamectl set-hostname $HOSTNAME_NEW
+if [[ $(hostname) == $NEW_HOSTNAME ]]; then
+echo $red"You have the same hostname. That's why I won't change it.$white"
+else
+sudo hostnamectl set-hostname $NEW_HOSTNAME
+fi
+
+
 fi

@@ -1,0 +1,40 @@
+function command_not_found_handle
+    set cmd state rest
+    set -i pid ppid pgrp session tty_nr tpgid
+
+    # do not run when inside Midnight Commander or within a Pipe
+    if test -n "$MC_SID" -o ! -t 1
+        echo "$argv[1]: command not found" >&2
+        return 127
+    end
+
+    # do not run when within a subshell
+    read -l pid cmd state ppid pgrp session tty_nr tpgid rest  < /proc/self/stat
+    if test (status --current-process-id) -eq $tpgid
+        echo "$argv[1]: command not found" >&2
+        return 127
+    end
+
+    # test for /usr/sbin and /sbin
+    if test -x "/usr/sbin/$argv[1]" -o -x "/sbin/$argv[1]"
+        if test -x "/usr/sbin/$argv[1]"
+            set prefix '/usr'
+        else
+            set prefix ''
+        end
+        echo "Absolute path to '$argv[1]' is '$prefix/sbin/$argv[1]', so running it may require superuser privileges (eg. root)." >&2
+        return 127
+    end
+
+    if test -n "$COMMAND_NOT_FOUND_AUTO"
+        # call command-not-found directly
+        if test -x /usr/bin/python3 -a -x /usr/bin/command-not-found
+            /usr/bin/command-not-found $argv[1] zypp
+        end
+    else
+        # print only info about command-not-found
+        echo -e "If '$argv[1]' is not a typo you can use command-not-found to lookup the package that contains it, like this:\ncnf $argv[1]" >&2
+    end
+
+    return 127
+end

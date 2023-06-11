@@ -1,9 +1,8 @@
 #!/bin/bash
-sudo $PackageName $UpdateArg
-sudo $PackageName $PackageInstall curl tar libicu72 libopenssl1_0_0 jq
+sudo $Package $PackageInstall curl tar libicu73 libopenssl1_0_0 jq
 
 
-pwshcore=$(curl -s https://api.github.com/repos/PowerShell/PowerShell/releases/latest| jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
+pwshcore=$(curl -s "https://api.github.com/repos/PowerShell/PowerShell/releases/latest" | jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
 
 if [ -d "/tmp/powershell.tar.gz" ]; then
 sudo rm -rf /tmp/powershell*
@@ -15,6 +14,7 @@ fi
 sleep 3
 
 curl -L $pwshcore -o /tmp/powershell.tar.gz
+sudoreq
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh

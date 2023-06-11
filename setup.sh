@@ -1,13 +1,13 @@
 #!/bin/bash
-ScriptLocal=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+ScriptFolder=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . ./VARIBLES.sh
 
-checkroot
-requirepackage
+if [[ $distro = *opensuse\ tumbleweed* ]]; then
+openSUSETW_ALIAS
 
-distroselect=$(lsb_release -d | awk -F"\t" '{print $2}')
-
-if [ "$distroselect" == "openSUSE Tumbleweed" ]; then
+sudoreq
 . ./distro/opensuse-tumbleweed.sh
-##OPENSUSE FINISH
+sudofinish
+else
+echo "It is currently not compatible with your Operating system." && exit 1
 fi
