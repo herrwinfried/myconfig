@@ -50,8 +50,10 @@ if test -f /home/linuxbrew/.linuxbrew/bin/brew
     end
 end
 
+if test "$TERM" != "linux"
 if test -x (command -v oh-my-posh)
      oh-my-posh init fish --config $OhMyPoshTheme | source
+end
 end
 
 if checkwsl

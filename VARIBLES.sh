@@ -11,7 +11,7 @@ NEW_HOSTNAME="herrwinfried"
 
 Username=$USER
 HomePWD=$HOME
-ExternalFolder="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )/files"
+ExternalFolder="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/files"
 
 # Colors
 termcols=$(tput cols)
@@ -32,32 +32,35 @@ white="$(tput setaf 7)"
 # Colors Finish
 
 function checkwsl() {
-unameout=$(uname -r | tr '[:upper:]' '[:lower:]');
-if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] || \
-[ -f /proc/sys/fs/binfmt_misc/WSLInterop ] || \
-[ $WSL_DISTRO_NAME ] || \
-[ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" = "0xffffffff" ] && [ $WSL_DISTRO_NAME ]; then
-return 0
-else
-return 1
-fi
+    unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
+    if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] ||
+        [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] ||
+        [ $WSL_DISTRO_NAME ] ||
+        [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" = "0xffffffff" ] && [ $WSL_DISTRO_NAME ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 function sudoreq {
-    sudo -v || { echo -e $red"Cancel..."$white; exit 1; }
+    sudo -v || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
 }
 
 function sudofinish {
-sudo --reset-timestamp
+    sudo --reset-timestamp
 }
 
 function cdExternalFolder {
-mkdir -p $ExternalFolder
-cd $ExternalFolder
+    mkdir -p $ExternalFolder
+    cd $ExternalFolder
 }
 
 function checkcommand {
-    if type -P $1 > /dev/null; then
+    if type -P $1 >/dev/null; then
         return 0
     else
         return 1
@@ -65,36 +68,45 @@ function checkcommand {
 }
 
 function openSUSETW_ALIAS {
-# ZYPPER OR DNF
-#   0        1
-SUSE_TYPE=0
-if ! checkcommand dnf ; then
-SUSE_TYPE=0
-fi
-################
+    # ZYPPER OR DNF
+    #   0        1
+    SUSE_TYPE=0
+    if ! checkcommand dnf; then
+        SUSE_TYPE=0
+    fi
+    ################
 
-if [ $SUSE_TYPE -eq 0 ]; then
-PackagePrep="zypper"
-Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
-PackageUpdate="dup -y -l -R"
-PackageRefresh="refresh"
+    if [ $SUSE_TYPE -eq 0 ]; then
+        PackagePrep="zypper"
+        Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
+        PackageUpdate="dup -y -l -R"
+        PackageRefresh="refresh"
 
-PackageRemove="rm -u -y -R"
-PackageInstall="install -y -l -R"
+        PackageRemove="rm -u -y -R"
+        PackageInstall="install -y -l -R"
 
-elif [ $SUSE_TYPE -eq 1 ]; then
+    elif [ $SUSE_TYPE -eq 1 ]; then
 
-PackagePrep="dnf"
-Package="$PackagePrep --nogpgcheck"
-PackageUpdate="dup -y"
-PackageRefresh="makecache"
+        PackagePrep="dnf"
+        Package="$PackagePrep --nogpgcheck"
+        PackageUpdate="dup -y"
+        PackageRefresh="makecache"
 
-PackageRemove="rm -y"
-PackageInstall="install -y"
-fi
+        PackageRemove="rm -y"
+        PackageInstall="install -y"
+    fi
 
 }
 
+function fedora_ALIAS {
+    PackagePrep="dnf"
+    Package="$PackagePrep --nogpgcheck"
+    PackageUpdate="update -y"
+    PackageRefresh="makecache"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+}
 
 BrewPackagePrep="brew"
 BrewPackage="$BrewPackagePrep"
@@ -103,8 +115,6 @@ BrewPackageUpdate="update -y"
 BrewPackageRemove="uninstall -y"
 BrewPackageInstall="install -y"
 
-
-
 FlatpakPackagePrep="flatpak"
 FlatpakPackage="$FlatpakPackagePrep"
 FlatpakPackageUpdate="update -y"
@@ -112,12 +122,9 @@ FlatpakPackageUpdate="update -y"
 FlatpakPackageRemove="uninstall -y"
 FlatpakPackageInstall="install -y"
 
-
-
 SnapPackagePrep="snap"
 SnapPackage="$SnapPackagePrep"
 SnapPackageUpdate="refresh"
 
 SnapPackageRemove="remove"
 SnapPackageInstall="install"
-
