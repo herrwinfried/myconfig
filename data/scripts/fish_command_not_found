@@ -1,3 +1,4 @@
+if test -e /usr/bin/command-not-found
 function command_not_found_handle
     set cmd state rest
     set -i pid ppid pgrp session tty_nr tpgid
@@ -37,4 +38,5 @@ function command_not_found_handle
     end
 
     return 127
+end
 end

@@ -52,15 +52,16 @@ RUN zypper --gpg-auto-import-keys dup -y -l
 
 RUN zypper --gpg-auto-import-keys in -t pattern -y -l base
 
-RUN zypper --gpg-auto-import-keys in -y -l which shadow hostname busybox-net-tools zsh fish bash-completion
+RUN zypper --gpg-auto-import-keys in -y -l which shadow hostname zsh fish bash-completion iputils net-tools net-tools-deprecated
 
-RUN zypper --gpg-auto-import-keys in -y -l neofetch screenfetch hwinfo htop ffmpeg git git-lfs curl wget lsb-release opi lzip unzip unrar e2fsprogs nano powerline-fonts
+RUN zypper --gpg-auto-import-keys in -y -l neofetch screenfetch hwinfo htop ffmpeg git git-lfs curl wget lsb-release opi lzip unzip unrar e2fsprogs nano powerline-fonts sudo
 
 RUN zypper --gpg-auto-import-keys in -y -l curl tar libicu73 libopenssl1_0_0 jq
 
 #DNF Install
 RUN zypper --gpg-auto-import-keys install -y dnf libdnf-repo-config-zypp python3-dnf-plugin-versionlock python3-dnf-plugins-core
 RUN dnf makecache -y
+
 RUN if [ "$(cat /etc/dnf/dnf.conf | grep protect_running_kernel)" ]; then echo $red"protect_running_kernel is available. The value will be not written.$white"; else echo "protect_running_kernel=False" >> /etc/dnf/dnf.conf; fi
 
 RUN pwshcore=$(curl -s "https://api.github.com/repos/PowerShell/PowerShell/releases/latest" | jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url") ; curl -L $pwshcore -o /tmp/powershell.tar.gz
@@ -84,9 +85,11 @@ RUN zypper --gpg-auto-import-keys in -y -l dotnet-sdk-7.0
 
 RUN zypper --gpg-auto-import-keys in -y -l --recommends patterns-devel-base-devel_rpm_build
 
-RUN zypper --gpg-auto-import-keys in -t pattern -y -l --recommends devel_qt6 devel_kde_frameworks devel_qt5
+RUN zypper --gpg-auto-import-keys in -y -l --recommends patterns-kde-devel_qt6 patterns-kde-devel_qt5 patterns-kde-devel_kde_frameworks
 
 RUN zypper --gpg-auto-import-keys in -y -l rsync gtk3-devel java-19-openjdk nodejs-default npm-default python311
+
+
 
 # ADD USER
 
