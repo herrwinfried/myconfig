@@ -1,9 +1,3 @@
-if ($isLinux -Or $IsMacOS) {
-    Write-Error "For Windows only, are you sure you added the correct Script?"
-   Start-Sleep -Seconds 3
-    Exit 1
-}
-
 wingetx -Id Brave.Brave
 wingetx -Id Valve.Steam
 wingetx -Id EpicGames.EpicGamesLauncher

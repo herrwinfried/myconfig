@@ -1,0 +1,1 @@
+Copy-Item -Path "$ScriptRoot\docker" -Destination "$env:USERPROFILE\Desktop\dockerfiles" -Recurse

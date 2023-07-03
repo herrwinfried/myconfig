@@ -36,7 +36,7 @@
     {
         "defaults": 
         {
-            "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\default.png",
+            "backgroundImage": "C:\\Users\\winfried\\Pictures\\default.png",
             "backgroundImageOpacity": 0.09,
             "colorScheme": "Dracula",
             "font": 
@@ -48,7 +48,7 @@
         "list": 
         [
             {
-                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\powershell.png",
+                "backgroundImage": "C:\\Users\\winfried\\Pictures\\powershell.png",
                 "backgroundImageOpacity": 0.09,
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "font": 
@@ -60,7 +60,7 @@
                 "name": "Windows PowerShell"
             },
             {
-                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\pwsh.png",
+                "backgroundImage": "C:\\Users\\winfried\\Pictures\\pwsh.png",
                 "font": 
                 {
                     "face": "MesloLGS NF"
@@ -71,7 +71,7 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\opensuse.png",
+                "backgroundImage": "C:\\Users\\winfried\\Pictures\\opensuse.png",
                 "backgroundImageOpacity": 0.15,
                 "font": 
                 {
@@ -84,7 +84,7 @@
                 "source": "Windows.Terminal.Wsl"
             },
             {
-                "backgroundImage": "C:\\Users\\herrwinfried\\Pictures\\batch.jpg",
+                "backgroundImage": "C:\\Users\\winfried\\Pictures\\batch.jpg",
                 "backgroundImageOpacity": 0.05,
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
                 "font": 
@@ -101,12 +101,6 @@
                 "hidden": false,
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{1d2d9f1c-0192-5285-8115-38593c2c526e}",
-                "hidden": false,
-                "name": "Gentoo",
-                "source": "Windows.Terminal.Wsl"
             }
         ]
     },

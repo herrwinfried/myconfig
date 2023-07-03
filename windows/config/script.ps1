@@ -1,9 +1,3 @@
-if ($isLinux -Or $IsMacOS) {
-    Write-Error "For Windows only, are you sure you added the correct Script?"
-   Start-Sleep -Seconds 3
-    Exit 1
-}
-
 if (Test-Path -Path "$env:USERPROFILE\.alias.ps1") {
     Remove-Item "$env:USERPROFILE\.alias.ps1" -Recurse
 }
