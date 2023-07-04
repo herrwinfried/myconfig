@@ -21,7 +21,11 @@ sudo $Package $PackageInstall $Package_a
 sudoreq
 sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
 sudoreq
+#NOT WSL
+if ! checkwsl; then
 sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
+fi
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 sudoreq
 sudo $Package $PackageInstall $Package_b

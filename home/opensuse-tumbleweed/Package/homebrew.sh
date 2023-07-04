@@ -1,11 +1,10 @@
 #!/bin/bash
-
+sudo $Package $PackageInstall gcc
 OldPw=$(pwd)
 cd /home
-sudo mkdir -p /home/homebrew
 sudo mkdir -p /home/linuxbrew/
 sudo ln -s /home/homebrew/ /home/linuxbrew/.linuxbrew
-sudo curl -L https://github.com/Homebrew/brew/tarball/master | sudo tar xz --strip 1 -C homebrew
+sudo git clone https://github.com/Homebrew/brew /home/homebrew
 sudo chown -R $Username /home/homebrew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 sudoreq

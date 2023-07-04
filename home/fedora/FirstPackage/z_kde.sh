@@ -15,7 +15,7 @@ if ! checkwsl; then
     packageKDE+=" kolourpaint elisa-player dolphin-plugins nextcloud-client-dolphin"
 
     #   KDevelop App, KDevelop Additional Plugin Support, KDevelop PHP Plugin, QT HEIF Support
-    packageKDE+=" kdevelop5 kdevelop5-pg-qt kdevelop5-php qt-heif-image-plugin"
+    packageKDE+=" kdevelop kdevelop-pg-qt kdevelop-php qt-heif-image-plugin"
 
     sudo $Package $PackageInstall $packageKDE
 fi

@@ -1,5 +1,5 @@
 set -U fish_greeting
-set OhMyPoshTheme "~/.poshthemes/default.omp.json"
+set OhMyPoshTheme ~/.poshthemes/default.omp.json
 
 if test -d $HOME/bin
     set -x PATH $PATH $HOME/bin
@@ -22,20 +22,18 @@ if test -f /usr/local/bin/fish_command_not_found
 end
 
 
-function checkwsl 
-    set unameout (uname -r | tr '[:upper:]' '[:lower:]')
-    if string match -r "microsoft" $unameout; -o \
-        string match -r "wsl" $unameout; -o \
-        test -f /proc/sys/fs/binfmt_misc/WSLInterop; -o \
-        test -n "$WSL_DISTRO_NAME"; -o \
-        string match -r "0xffffffff" (cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d: ); -a \
-        test -n "$WSL_DISTRO_NAME"
-        return 0
+function checkwsl
+    set -l unameout (uname -r | tr '[:upper:]' '[:lower:]')
+    if string match -q -r "microsoft" $unameout; and \
+        string match -q -r "wsl" $unameout; and \
+        test -f /proc/sys/fs/binfmt_misc/WSLInterop; and \
+        test -n "$WSL_DISTRO_NAME"; and \
+        string match -q -r "0xffffffff" (cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d: )
+        return 0 > /dev/null
     else
         return 1
     end
 end
-
 
 
 if test -f /home/linuxbrew/.linuxbrew/bin/brew
@@ -51,13 +49,13 @@ if test -f /home/linuxbrew/.linuxbrew/bin/brew
 end
 
 if test "$TERM" != "linux"
-if test -x (command -v oh-my-posh)
+    if test -x (command -v oh-my-posh) && test -f $OhMyPoshTheme;
      oh-my-posh init fish --config $OhMyPoshTheme | source
-end
+    end
 end
 
 if checkwsl
-    if test -t ancs4linux-ctl
+    if test -x ancs4linux-ctl
         function ios_pair
             set iosAddress (ancs4linux-ctl get-all-hci | jq -r '.[0]')
             echo "Connect to " (hostname) " from your phone."
@@ -96,4 +94,11 @@ function aliasUpdate
     wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1 -O ~/.alias.ps1
     rm -r ~/.alias.fish
     wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish -O ~/.alias.fish
+end
+
+if test -x (command -v oh-my-posh); and test -f "$OhMyPoshTheme"
+    function OhMyPoshThemeUpdate
+        set themeFile "$HOME/.poshthemes/default.omp.json"
+        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/default.omp.json" -O "$themeFile"
+    end
 end

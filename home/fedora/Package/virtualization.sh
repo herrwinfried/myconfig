@@ -1,9 +1,9 @@
 #!/bin/bash
 
-package="qemu libvirt libguestfs libguestfs-appliance"
+package="libguestfs libguestfs-appliance"
 
 if ! checkwsl; then
-    package+=" grubby"
+    package+=" qemu libvirt grubby"
 fi
 
 sudo $Package $PackageInstall $package

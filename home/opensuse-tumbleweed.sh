@@ -39,49 +39,49 @@ function appimages {
 }
 
 
-for forScriptFile in $(ls $ScriptFolder/home/opensuse-tumbleweed/FirstProcess )
+for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/FirstProcess | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/FirstProcess/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/FirstProcess/$forScriptFile
 done
 #
 
 
-for forScriptFile in $(ls $ScriptFolder/home/opensuse-tumbleweed/Repository )
+for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/Repository | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/Repository/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/Repository/$forScriptFile
 done
 #
 
 
-for forScriptFile in $(ls $ScriptFolder/home/opensuse-tumbleweed/FirstPackage )
+for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/FirstPackage | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/FirstPackage/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/FirstPackage/$forScriptFile
 done
 #
 
 
-for forScriptFile in $(ls $ScriptFolder/home/opensuse-tumbleweed/Package )
+for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/Package | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/Package/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/Package/$forScriptFile
 done
 #
 
-for forScriptFile in $(ls $ScriptFolder/home/opensuse-tumbleweed/RecentProcess )
+for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/RecentProcess | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/RecentProcess/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/RecentProcess/$forScriptFile
 done

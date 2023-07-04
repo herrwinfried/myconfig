@@ -4,14 +4,15 @@
       {
         "alignment": "left",
         "segments": [
+         
           {
             "background": "#ffffff",
             "foreground": "#000000",
             "leading_diamond": "\ue0b6",
             "style": "diamond",
-            "template": "{{.Icon}}{{ if .WSL }}  {{ end }} ",
+            "template": "{{.Icon}}{{ if .WSL }}  {{ end }}{{ if .Env.Docker_enabled }}  {{ end }}",
             "type": "os"
-          },
+          },        
           {
             "background": "#628ada",
             "foreground": "#ffffff",

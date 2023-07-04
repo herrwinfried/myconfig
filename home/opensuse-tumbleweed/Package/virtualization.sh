@@ -1,9 +1,14 @@
 #!/bin/bash
 
-package="qemu libvirt patterns-server-kvm_server patterns-server-kvm_tools libguestfs libguestfs-appliance"
+package="libguestfs libguestfs-appliance"
 
 if ! checkwsl; then
-    package+=" grubby"
+    package+=" qemu libvirt patterns-server-kvm_server patterns-server-kvm_tools grubby"
 fi
 
 sudo $Package $PackageInstall $package
+if ! checkwsl; then
+sudo usermod -aG kvm,libvirt,input $Username
+sudo grubby --update-kernel=ALL --args="intel_iommu=on"
+sudo grubby --update-kernel=ALL --args="iommu=pt" 
+fi

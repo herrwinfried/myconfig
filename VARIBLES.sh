@@ -5,9 +5,11 @@
 
 OS_Name=$NAME
 OS_Version=$VERSION
-distro=$(echo $OS_Name $OS_VERSION | tr '[:upper:]' '[:lower:]')
-
+distro=$(echo $OS_Name $OS_Version | tr '[:upper:]' '[:lower:]')
+BOARD_VENDOR=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
 NEW_HOSTNAME="herrwinfried"
+
+source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
 
 Username=$USER
 HomePWD=$HOME
@@ -76,14 +78,20 @@ function openSUSETW_ALIAS {
     fi
     ################
 
+    if [ $SUSE_TYPE -eq 1 ]; then
+        if ! checkcommand dnf ; then
+            SUSE_TYPE=0
+        fi
+    fi
+
     if [ $SUSE_TYPE -eq 0 ]; then
         PackagePrep="zypper"
         Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
-        PackageUpdate="dup -y -l -R"
+        PackageUpdate="dup -y -l"
         PackageRefresh="refresh"
 
-        PackageRemove="rm -u -y -R"
-        PackageInstall="install -y -l -R"
+        PackageRemove="rm -u -y"
+        PackageInstall="in -y -l"
 
     elif [ $SUSE_TYPE -eq 1 ]; then
 
@@ -92,7 +100,7 @@ function openSUSETW_ALIAS {
         PackageUpdate="dup -y"
         PackageRefresh="makecache"
 
-        PackageRemove="rm -y"
+        PackageRemove="remove -y"
         PackageInstall="install -y"
     fi
 

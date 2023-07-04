@@ -19,6 +19,7 @@ if ! checkwsl; then
         sudoreq #--
 
     fi
+fi
     if [ -f "$HomePWD/bin/docker" ] || checkwsl && [ -x "$(command -v docker)" ]; then
 
         if [ -f "$HomePWD/bin/docker" ]; then
@@ -28,14 +29,14 @@ if ! checkwsl; then
         fi
 
         NowFinder=$(pwd)
-        cd $ScriptFolder/docker
+        cd $ScriptFolder/docker/dockerfile
         sudoreq #--
-        docker build -t winfried-opensuse-tw_development . -f ./tw_developer.dockerfile
+        docker build -t herrwinfried/dev_env:opensuse_tumbleweed . -f ./tw_developer.dockerfile 
         sudoreq #--
         mkdir -p ~/.config/dockerHost
+        chgrp wheel ~/.config/dockerHost
         ln -s ~/.config/dockerHost ~/dockerHost
-        docker create -it --name tw_development -v ~/.config/dockerHost:/home/host:rw winfried-opensuse-tw_development
+        docker create -it --name tw_development -p 3256:22 -v ~/.config/dockerHost:/home/host:rw herrwinfried/dev_env:opensuse_tumbleweed
         cd $NowFinder
         unset NowFinder
     fi
-fi

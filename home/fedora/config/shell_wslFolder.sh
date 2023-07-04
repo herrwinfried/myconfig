@@ -9,7 +9,7 @@ if ! checkwsl; then
     echo "
 #!/bin/bash
 
-sudo zypper in -y libguestfs libguestfs-appliance
+sudo dnf in -y libguestfs libguestfs-appliance
 
 mkdir -p /mnt/wslFedora
 Disk=XXXXX

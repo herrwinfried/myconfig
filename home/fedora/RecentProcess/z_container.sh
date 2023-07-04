@@ -15,6 +15,7 @@ if ! checkwsl; then
         sudoreq #--
 
     fi
+fi
     if [ -f "$HomePWD/bin/docker" ] || checkwsl && [ -x "$(command -v docker)" ]; then
 
         if [ -f "$HomePWD/bin/docker" ]; then
@@ -24,14 +25,13 @@ if ! checkwsl; then
         fi
 
         NowFinder=$(pwd)
-        cd $ScriptFolder/docker
+        cd $ScriptFolder/docker/dockerfile
         sudoreq #--
-        docker build -t winfried-fedora_development . -f ./fedora_developer.dockerfile 
+        docker build -t herrwinfried/dev_env:fedora38 . -f ./fedora_developer.dockerfile
         sudoreq #--
         mkdir -p ~/.config/dockerHost
         ln -s ~/.config/dockerHost ~/dockerHost
-        docker run -it --name fedora_development -v ~/.config/dockerHost:/home/host:rw winfried-fedora_development
+        docker create -it --name fedora_development -v ~/.config/dockerHost:/home/host:rw herrwinfried/dev_env:fedora38
         cd $NowFinder
         unset NowFinder
     fi
-fi
