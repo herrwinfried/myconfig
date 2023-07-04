@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f $HomePWD/Masaüstü/trash.desktop ]; then
+if [ -f $XDG_DESKTOP_DIR/trash.desktop ]; then
 
-    sudo chattr +i $HomePWD/Masaüstü/trash.desktop
+    sudo chattr +i $XDG_DESKTOP_DIR/trash.desktop
 
 fi

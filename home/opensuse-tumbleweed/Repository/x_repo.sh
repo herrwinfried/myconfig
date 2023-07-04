@@ -1,19 +1,17 @@
 #!/bin/bash
 
 function nvidiarepo {
-    sudo $Package addrepo --refresh https://download.nvidia.com/opensuse/tumbleweed NVIDIA
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo --refresh https://download.nvidia.com/opensuse/tumbleweed NVIDIA
 }
 
 function packmanrepo {
-    sudo $Package ar -cfp 90 https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/Essentials/ packman-essentials
-    #sudo $Package addrepo -cfp 90 'https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/' packman
-    sudo $Package $PackageRefresh
-    sudo $Package $PackageUpdate --from packman-essentials --allow-vendor-change
-    #sudo $Package $PackageUpdate --from packman --allow-vendor-change
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks ar -cfp 90 https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/Essentials/ packman-essentials
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks refresh
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks dup -y -l --from packman-essentials --allow-vendor-change
 }
 
 function asuscommunity {
-    sudo $Package ar --priority 50 -d https://download.opensuse.org/repositories/home:/luke_nukem:/asus/openSUSE_Tumbleweed/ asus-linux
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks ar --priority 50 -d https://download.opensuse.org/repositories/home:/luke_nukem:/asus/openSUSE_Tumbleweed/ asus-linux
     sudo rpm --import https://download.copr.fedorainfracloud.org/results/lukenukem/asus-linux/pubkey.gpg
 
     echo -e "
@@ -32,14 +30,14 @@ gpgkey=https://download.copr.fedorainfracloud.org/results/lukenukem/asus-linux/p
 function bravebrowser {
     sudo $Package $PackageInstall curl
     sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-    sudo $Package addrepo --refresh https://brave-browser-rpm-release.s3.brave.com/x86_64/ brave-browser
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo --refresh https://brave-browser-rpm-release.s3.brave.com/x86_64/ brave-browser
 }
 
 function anydeskrepo {
     echo -e "
 [anydesk]
 name=AnyDesk OpenSUSE - stable
-baseurl=http://rpm.anydesk.com/opensuse/$basearch/
+baseurl=http://rpm.anydesk.com/opensuse/\$basearch/
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
@@ -49,10 +47,10 @@ gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY
 function teamviewerrepo {
     echo -e "
 [teamviewer]
-name=TeamViewer - $basearch
+name=TeamViewer - \$basearch
 enabled=1
 autorefresh=0
-baseurl=https://linux.teamviewer.com/yum/stable/main/binary-$basearch/
+baseurl=https://linux.teamviewer.com/yum/stable/main/binary-\$basearch/
 type=rpm-md
 gpgcheck=1
 repo_gpgcheck=1
@@ -63,7 +61,7 @@ keeppackages=0
 
 function mongodbrepo {
     sudo rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
-    sudo $Package addrepo --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-org/6.0/x86_64/" mongodb
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-org/6.0/x86_64/" mongodb
 }
 
 function microsoft {
@@ -81,22 +79,22 @@ function vscode {
 }
 
 function snaprepo {
-    sudo $Package addrepo -d https://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed snappy
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo -d https://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed snappy
 }
 
 function megaSYNCrepo {
     sudo rpm --import https://mega.nz/linux/repo/openSUSE_Tumbleweed/repodata/repomd.xml.key
-    sudo $Package addrepo -d https://mega.nz/linux/repo/openSUSE_Tumbleweed/ MEGAsync
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo -d https://mega.nz/linux/repo/openSUSE_Tumbleweed/ MEGAsync
 }
 
 function chromerepo {
     sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub
-    sudo $Package addrepo -d http://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo -d http://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
 }
 
 function edgerepo {
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo $Package addrepo https://packages.microsoft.com/yumrepos/edge microsoft-edge
+    sudo zypper --gpg-auto-import-keys --no-gpg-checks addrepo https://packages.microsoft.com/yumrepos/edge microsoft-edge
 }
 
 nvidiarepo

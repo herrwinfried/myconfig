@@ -119,3 +119,9 @@ function aliasUpdate {
     Invoke-Expression $xArgs
 }
 
+if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
+    function OhMyPoshThemeUpdate {
+        $themeFile = "$HOME/.poshthemes/default.omp.json"
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/default.omp.json" -OutFile $themeFile
+    }
+}

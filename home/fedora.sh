@@ -39,49 +39,49 @@ function appimages {
 }
 
 
-for forScriptFile in $(ls $ScriptFolder/home/fedora/FirstProcess )
+for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/FirstProcess | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/fedora/FirstProcess/$forScriptFile
     . $ScriptFolder/home/fedora/FirstProcess/$forScriptFile
 done
 #
 
 
-for forScriptFile in $(ls $ScriptFolder/home/fedora/Repository )
+for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/Repository | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/fedora/Repository/$forScriptFile
     . $ScriptFolder/home/fedora/Repository/$forScriptFile
 done
 #
 
 
-for forScriptFile in $(ls $ScriptFolder/home/fedora/FirstPackage )
+for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/FirstPackage | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/fedora/FirstPackage/$forScriptFile
     . $ScriptFolder/home/fedora/FirstPackage/$forScriptFile
 done
 #
 
 
-for forScriptFile in $(ls $ScriptFolder/home/fedora/Package )
+for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/Package | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/fedora/Package/$forScriptFile
     . $ScriptFolder/home/fedora/Package/$forScriptFile
 done
 #
 
-for forScriptFile in $(ls $ScriptFolder/home/fedora/RecentProcess )
+for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/RecentProcess | grep "\.sh$" )
 do
 sudoreq
-	echo $magenta $forScriptFile $white && sleep 3
+	echo $magenta $forScriptFile $white && sleep 1
 	chmod +x $ScriptFolder/home/fedora/RecentProcess/$forScriptFile
     . $ScriptFolder/home/fedora/RecentProcess/$forScriptFile
 done

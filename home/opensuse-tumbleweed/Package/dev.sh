@@ -7,5 +7,5 @@ if ! checkwsl; then
     sudoreq
     sudo tar -xzf /tmp/jetbrains-toolbox.tar.gz -C /opt
     sudo mv /opt/jetbrains-toolbox-* /opt/jetbrains-toolbox
-    sudo $Package $PackageInstall code filezilla qt6-creator rsync
+    sudo $Package $PackageInstall code filezilla qt6-creator rsync gh glab
 fi

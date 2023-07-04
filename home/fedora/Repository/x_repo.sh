@@ -12,7 +12,7 @@ function bravebrowser {
 
 function mongodbrepo {
     sudo rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
-    sudo $Package config-manager -y --set-name MongoDB --add-repo https://repo.mongodb.org/yum/redhat/6/mongodb-org/6.0/x86_64/
+    sudo $Package config-manager -y --add-repo https://repo.mongodb.org/yum/redhat/6/mongodb-org/6.0/x86_64/
 }
 function powershell {
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -30,17 +30,22 @@ function asuscommunity {
 
 function megaSYNCrepo {
     sudo rpm --import https://mega.nz/linux/repo/openSUSE_Tumbleweed/repodata/repomd.xml.key
-    sudo $Package config-manager -y --set-disabled --set-name MEGAsync --add-repo https://mega.nz/linux/repo/Fedora_38
+    sudo $Package config-manager -y --set-disabled --add-repo https://mega.nz/linux/repo/Fedora_38
 }
 
 function chromerepo {
     sudo rpm --import https://dl.google.com/linux/linux_signing_key.pub
-    sudo $Package config-manager -y --set-disabled --set-name Google-Chrome --add-repo http://dl.google.com/linux/chrome/rpm/stable/x86_64
+    sudo $Package config-manager -y --set-disabled --add-repo http://dl.google.com/linux/chrome/rpm/stable/x86_64
 }
 
 function edgerepo {
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo $Package config-manager -y --set-name microsoft-edge --add-repo https://packages.microsoft.com/yumrepos/edge
+    sudo $Package config-manager -y --add-repo https://packages.microsoft.com/yumrepos/edge
+}
+
+function dockerrepo {
+    sudo $Package $PackageInstall dnf-plugins-core
+    sudo $Package config-manager -y --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 }
 
 rpmfusion
@@ -53,6 +58,8 @@ powershell
 megaSYNCrepo
 chromerepo
 edgerepo
+
+dockerrepo
 
 sudo $Package $PackageRefresh
 sudo $Package $PackageUpdate

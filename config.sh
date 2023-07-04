@@ -7,7 +7,7 @@ if [[ $distro = *opensuse\ tumbleweed* ]]; then
     openSUSETW_ALIAS
 
     sudoreq
-    for forScriptFile in $(ls $ScriptFolder/home/opensuse-tumbleweed/config); do
+    for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/config | grep "\.sh$"); do
         chmod +x $ScriptFolder/home/opensuse-tumbleweed/config/$forScriptFile
         . $ScriptFolder/home/opensuse-tumbleweed/config/$forScriptFile
     done
@@ -16,7 +16,7 @@ elif [[ $distro = *fedora\ linux* ]]; then
     fedora_ALIAS
     
     sudoreq
-    for forScriptFile in $(ls $ScriptFolder/home/fedora/config); do
+    for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/config | grep "\.sh$"); do
         chmod +x $ScriptFolder/home/fedora/config/$forScriptFile
         . $ScriptFolder/home/fedora/config/$forScriptFile
     done

@@ -26,8 +26,8 @@ echo "export PATH=/home/$Username/bin:\$PATH" >> $HomePWD/.alias
 systemctl --user enable --now docker.service
 systemctl --user enable --now docker.socket
 
-" >$HomePWD/Masaüstü/docker-user-socket.sh
-    chmod +x $HomePWD/Masaüstü/docker-user-socket.sh
+" > $XDG_DESKTOP_DIR/docker-user-socket.sh
+    chmod +x $XDG_DESKTOP_DIR/docker-user-socket.sh
     #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     #                               "🌏 Podman Desktop file"
@@ -35,7 +35,7 @@ systemctl --user enable --now docker.socket
     echo "
 #!/bin/bash
 systemctl --user enable --now podman.service podman.socket
-" >$HomePWD/Masaüstü/podman-user-socket.sh
-    chmod +x $HomePWD/Masaüstü/podman-user-socket.sh
+" > $XDG_DESKTOP_DIR/podman-user-socket.sh
+    chmod +x $XDG_DESKTOP_DIR/podman-user-socket.sh
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

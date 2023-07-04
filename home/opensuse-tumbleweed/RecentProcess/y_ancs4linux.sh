@@ -1,4 +1,6 @@
 #!/bin/bash
+if ! checkwsl; then
+
 OldPw=$(pwd)
 cd $ScriptFolder
 sudoreq #--
@@ -12,3 +14,5 @@ sudo ./ancs4linux/autorun/install.sh
 
 cd $OldPw
 unset OldPw
+
+fi
