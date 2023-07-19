@@ -30,9 +30,11 @@ cp $ScriptFolder/data/home/.bashrc $HomePWD/.bashrc
 
 cp $ScriptFolder/data/home/.zshrc $HomePWD/.zshrc
 
-if [ -f "/bin/fish" ]; then
+if [ -f "/bin/zsh" ]; then
+    sudo usermod -s /bin/zsh $Username
+fi
 
-    sudo usermod -s /bin/fish $Username
+if [ -f "/bin/fish" ]; then
 
     if [ ! -x "$(command -v fisher)" ]; then
 
