@@ -1,5 +1,10 @@
+if [ "$(uname -s)" != "Linux" ]; then
+echo "$(tput setaf 1)For Linux only, are you sure you added the correct alias file?$(tput setaf 7)"
+exit 1
+fi
 if [ ! -n "$ZSH_VERSION" ] && [ ! -n "$BASH_VERSION" ]; then
 echo "$(tput setaf 1)This file is for bash and ZSH. Are you sure you're using Bash or ZSH?$(tput setaf 7)"
+exit 1
 fi
 OhMyPoshTheme=~/.poshthemes/default.omp.json
 
@@ -157,18 +162,26 @@ Plugin_Install() {
 }
 # Function to prepend "sudo" to the command
 function prepend_sudo() {
+if [ -n "$BASH_VERSION" ]; then
+  if [[ $READLINE_LINE == "sudo "* ]]; then
+    READLINE_LINE=${READLINE_LINE#sudo }
+  else
+    READLINE_LINE="sudo $READLINE_LINE"
+  fi
+else
   if [[ $LBUFFER == "sudo "* ]]; then
     LBUFFER=${LBUFFER#sudo }
   else
     LBUFFER="sudo $LBUFFER"
   fi
+fi
 }
 
 if [ -n "$BASH_VERSION" ]; then
-bind -x '"\C-S": prepend_sudo'
+bind -x '"\es": prepend_sudo'
 else
 zle -N prepend_sudo
-bindkey '^S' prepend_sudo
+bindkey '^[s' prepend_sudo
 fi
 
 Plugin_Install

@@ -104,6 +104,12 @@ function openSUSETW_ALIAS {
         PackageInstall="install -y"
     fi
 
+
+if [ ! -x $(command -v xdg-user-dirs-update) ]; then
+sudo zypper in -y -l xdg-user-dirs
+xdg-user-dirs-update
+source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
 }
 
 function fedora_ALIAS {

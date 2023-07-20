@@ -12,8 +12,10 @@ if ! checkwsl; then
     sudoreq
     sudo usermod -G docker -a $Username
     ######### DOCKER ROOTLESS ##############################
-    curl -fsSL https://get.docker.com/rootless | sh
-    touch ~/Masaüstü/docker-user-socket.sh
+    /usr/bin/dockerd-rootless-setuptool.sh install
+        #OR
+        #curl -fsSL https://get.docker.com/rootless | sh
+    touch $XDG_DESKTOP_DIR/docker-user-socket.sh
 
     #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -31,7 +33,7 @@ systemctl --user enable --now docker.socket
     #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     #                               "🌏 Podman Desktop file"
-    touch ~/Masaüstü/podman-user-socket.sh
+    touch $XDG_DESKTOP_DIR/podman-user-socket.sh
     echo "
 #!/bin/bash
 systemctl --user enable --now podman.service podman.socket

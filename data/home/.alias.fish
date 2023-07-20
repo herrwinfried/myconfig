@@ -1,3 +1,8 @@
+if test (uname -s) != "Linux"
+    echo (tput setaf 1)"For Linux only, are you sure you added the correct alias file?"(tput setaf 7)
+    exit 1
+end
+
 set -U fish_greeting
 set OhMyPoshTheme ~/.poshthemes/default.omp.json
 
