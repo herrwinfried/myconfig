@@ -2,15 +2,12 @@
 sudo $Package $PackageInstall gcc
 OldPw=$(pwd)
 cd /home
-sudo mkdir -p /home/linuxbrew/
-sudo ln -s /home/homebrew/ /home/linuxbrew/.linuxbrew
-sudo git clone https://github.com/Homebrew/brew /home/homebrew
-sudo chown -R $Username /home/homebrew
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
 sudoreq
-
-brew update --force --quiet
-
+sudo mkdir -p /home/linuxbrew/.linuxbrew
+sudo chown -R $Username /home/linuxbrew/.linuxbrew
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+sudoreq
 chmod -R go-w "$(brew --prefix)/share/zsh"
 
 cd $OldPw

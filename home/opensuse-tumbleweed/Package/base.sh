@@ -7,9 +7,10 @@ Package_a_Flatpak="flathub org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita
 Package_a_Flatpak2="kdeapps org.kde.xwaylandvideobridge"
 
 Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
-Package_c="pinta lutris minetest gamemoded libgamemode0 libgamemodeauto0"
-Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.usebottles.bottles com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
+Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0"
+Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
 
+Package_d_Flatpak="flathub com.valvesoftware.Steam com.valvesoftware.Steam.CompatibilityTool.Proton com.valvesoftware.Steam.CompatibilityTool.Proton-GE net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
 if ! checkwsl; then
     Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop im.riot.Riot"
     Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
@@ -35,5 +36,7 @@ if ! checkwsl; then
     sudo $Package $PackageInstall $Package_c
     sudoreq
     sudo $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
+    sudoreq
+    sudo $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
