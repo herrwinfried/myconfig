@@ -6,7 +6,7 @@ if ! checkwsl; then
     packageKDE="partitionmanager kclock colord-kde krecorder dragonplayer"
 
     #  Mass renaming, Patch changes, Calendar, KDE Connect, Advanced Text Editor
-    packageKDE+=" krename kdiff3 kalendar kdeconnect-kde kate"
+    packageKDE+=" krename kdiff3 merkuro kdeconnect-kde kate"
 
     #   Search App, GPG GUI, Camera, Google Drive, discover flatpak support
     packageKDE+=" kfind kleopatra kamoso kio-gdrive discover-backend-flatpak"
