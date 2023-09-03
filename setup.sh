@@ -5,14 +5,20 @@ ScriptFolder=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 if [[ $distro = *opensuse\ tumbleweed* ]]; then
     openSUSETW_ALIAS
 
-    sudoreq
+rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
     . ./home/opensuse-tumbleweed.sh
     sudofinish
 
 elif [[ $distro = *fedora\ linux* ]]; then
     fedora_ALIAS
 
-    sudoreq
+ rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
     . ./home/fedora.sh
     sudofinish
 else

@@ -16,7 +16,7 @@ Categories=Network;InstantMessaging;
 Path=/opt/DiscordPTB" | sudo tee /usr/share/applications/discord-ptb.desktop
 
     curl -L "https://discord.com/api/download/ptb?platform=linux&format=tar.gz" -o /tmp/discordptb.tar.gz
-    sudoreq
+    
     sudo mkdir -p /opt/DiscordPTB
     sudo tar -xzf /tmp/discordptb.tar.gz -C /opt/
     sudo chmod 777 /opt/DiscordPTB

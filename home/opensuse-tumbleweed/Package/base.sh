@@ -16,11 +16,11 @@ if ! checkwsl; then
     Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
 fi
 
-sudoreq
+
 sudo $Package $PackageInstall $Package_a
-sudoreq
+
 sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
-sudoreq
+
 
 #NOT WSL
 if ! checkwsl; then
@@ -28,15 +28,15 @@ if ! checkwsl; then
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-sudoreq
+
 sudo $Package $PackageInstall $Package_b
 #NOT WSL
 if ! checkwsl; then
-    sudoreq
+    
     sudo $Package $PackageInstall $Package_c
-    sudoreq
+    
     sudo $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
-    sudoreq
+    
     sudo $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -7,7 +7,7 @@ sudo ln -s /home/homebrew/ /home/linuxbrew/.linuxbrew
 sudo git clone https://github.com/Homebrew/brew /home/homebrew
 sudo chown -R $Username /home/homebrew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-sudoreq
+
 
 brew update --force --quiet
 
@@ -28,7 +28,7 @@ function brewInstallCask {
     /home/linuxbrew/.linuxbrew/bin/brew install --cask $1 </dev/null
 }
 
-sudoreq
+
 if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     brewInstall oh-my-posh
 fi

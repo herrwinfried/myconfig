@@ -41,8 +41,8 @@ function appimages {
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/FirstProcess | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/FirstProcess/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/FirstProcess/$forScriptFile
 done
@@ -51,8 +51,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/Repository | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/Repository/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/Repository/$forScriptFile
 done
@@ -61,8 +61,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/FirstPackage | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/FirstPackage/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/FirstPackage/$forScriptFile
 done
@@ -71,8 +71,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/Package | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/Package/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/Package/$forScriptFile
 done
@@ -80,8 +80,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/RecentProcess | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/opensuse-tumbleweed/RecentProcess/$forScriptFile
     . $ScriptFolder/home/opensuse-tumbleweed/RecentProcess/$forScriptFile
 done

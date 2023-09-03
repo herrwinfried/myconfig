@@ -13,7 +13,7 @@ fi
 sleep 3
 
 curl -L $pwshcore -o /tmp/powershell.tar.gz
-sudoreq
+
 sudo mkdir -p /opt/microsoft/powershell
 sudo tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
 sudo ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh

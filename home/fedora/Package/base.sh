@@ -18,23 +18,23 @@ Package_c="pinta lutris minetest gamemode"
 Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.usebottles.bottles com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
 
 sudo $Package $PackageInstall $Package_a
-sudoreq
+
 sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
-sudoreq
+
 #NOT WSL
 if ! checkwsl; then
 sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-sudoreq
+
 sudo $Package $PackageInstall $Package_b
 
 #NOT WSL
 if ! checkwsl; then
-    sudoreq
+    
     sudo $Package $PackageInstall $Package_c
-    sudoreq
+    
     sudo $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

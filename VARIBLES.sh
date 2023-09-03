@@ -45,14 +45,25 @@ function checkwsl() {
     fi
 }
 
-function sudoreq {
-    sudo -v || {
+USER_PASSWORD=""
+function rootpassword {
+sudo --reset-timestamp
+read -s -p "$cyan""Password for$red root: $white" USER_PASSWORD
+echo -e "$yellow\nPassword checking... $white"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "$green""Password verified. $white\n"
+    SUDO="sudo -S"
+else
+    echo -e "$red""Password could not be verified $white\n"
+    rootpassword || {
         echo -e $red"Cancel..."$white
         exit 1
     }
+fi  
 }
 
 function sudofinish {
+    unset USER_PASSWORD
     sudo --reset-timestamp
 }
 
