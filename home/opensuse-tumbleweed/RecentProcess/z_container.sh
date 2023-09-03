@@ -8,15 +8,12 @@ if ! checkwsl; then
     fi
 
     if [ -x "$(command -v distrobox)" ] && [ -x "$(command -v podman)" ]; then
-        sudoreq #--
         mkdir -p $HomePWD/distrobox
         mkdir -p $HomePWD/distrobox/fedora
-        distrobox-create -i fedora:latest -n Fedora-dx -H $HomePWD/distrobox/fedora --pre-init-hooks 'dnf update -y && dnf install -y @core'
-        sudoreq #--
+        distrobox-create -i fedora:latest -n Fedora-dx -H $HomePWD/distrobox/fedora --pre-init-hooks 'dnf update -y && dnf install -y @core && dnf install -y sudo nano wget curl git'
 
         mkdir -p $HomePWD/distrobox/debian
-        distrobox-create -i debian:latest -n Debian-dx -H $HomePWD/distrobox/debian --pre-init-hooks 'apt update && apt upgrade -y && apt install -y libasound2 && sudo apt install -f -y'
-        sudoreq #--
+        distrobox-create -i debian:latest -n Debian-dx -H $HomePWD/distrobox/debian --pre-init-hooks 'apt update && apt upgrade -y && apt install -y libasound2 sudo nano wget curl git && apt install -f -y'
 
     fi
 fi
@@ -30,9 +27,7 @@ fi
 
         NowFinder=$(pwd)
         cd $ScriptFolder/docker/dockerfile
-        sudoreq #--
         docker build -t herrwinfried/dev_env:opensuse_tumbleweed . -f ./tw_developer.dockerfile 
-        sudoreq #--
         mkdir -p ~/.config/dockerHost
         chgrp wheel ~/.config/dockerHost
         ln -s ~/.config/dockerHost ~/dockerHost

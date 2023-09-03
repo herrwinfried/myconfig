@@ -41,8 +41,8 @@ function appimages {
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/FirstProcess | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/fedora/FirstProcess/$forScriptFile
     . $ScriptFolder/home/fedora/FirstProcess/$forScriptFile
 done
@@ -51,8 +51,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/Repository | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/fedora/Repository/$forScriptFile
     . $ScriptFolder/home/fedora/Repository/$forScriptFile
 done
@@ -61,8 +61,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/FirstPackage | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/fedora/FirstPackage/$forScriptFile
     . $ScriptFolder/home/fedora/FirstPackage/$forScriptFile
 done
@@ -71,8 +71,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/Package | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/fedora/Package/$forScriptFile
     . $ScriptFolder/home/fedora/Package/$forScriptFile
 done
@@ -80,8 +80,8 @@ done
 
 for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/RecentProcess | grep "\.sh$" )
 do
-sudoreq
-	echo $magenta $forScriptFile $white && sleep 1
+
+	echo -e $magenta $forScriptFile $white\n && sleep 1
 	chmod +x $ScriptFolder/home/fedora/RecentProcess/$forScriptFile
     . $ScriptFolder/home/fedora/RecentProcess/$forScriptFile
 done

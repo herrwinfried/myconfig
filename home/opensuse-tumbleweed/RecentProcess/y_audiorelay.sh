@@ -12,9 +12,7 @@ if ! checkwsl; then
         sudo rm -rf /opt/audiorelay
     fi
     sleep 3
-    sudoreq #--
     curl -L "https://dl.audiorelay.net/setups/linux/audiorelay-0.27.5.tar.gz" -o /tmp/audiorelay.tar.gz
-    sudoreq #--
     sudo mkdir -p /opt/audiorelay
     sudo tar -xzf /tmp/audiorelay.tar.gz -C /opt/audiorelay
 

@@ -8,11 +8,11 @@ if ! checkwsl; then
     fi
 
     if [ -x "$(command -v distrobox)" ] && [ -x "$(command -v podman)" ]; then
-        sudoreq #--
+        
         mkdir -p $HomePWD/distrobox
         mkdir -p $HomePWD/distrobox/debian
         distrobox-create -i debian:latest -n Debian-dx -H $HomePWD/distrobox/debian --pre-init-hooks 'apt update && apt upgrade -y && apt install -y libasound2 && sudo apt install -f -y'
-        sudoreq #--
+        
 
     fi
 fi
@@ -26,9 +26,9 @@ fi
 
         NowFinder=$(pwd)
         cd $ScriptFolder/docker/dockerfile
-        sudoreq #--
+        
         docker build -t herrwinfried/dev_env:fedora38 . -f ./fedora_developer.dockerfile
-        sudoreq #--
+        
         mkdir -p ~/.config/dockerHost
         ln -s ~/.config/dockerHost ~/dockerHost
         docker create -it --name fedora_development -v ~/.config/dockerHost:/home/host:rw herrwinfried/dev_env:fedora38

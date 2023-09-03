@@ -7,9 +7,9 @@ Package_a_Flatpak="flathub io.podman_desktop.PodmanDesktop"
 if ! checkwsl; then
 
     sudo $Package $PackageInstall $Package_a
-    sudoreq
+    
     sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
-    sudoreq
+    
     sudo usermod -G docker -a $Username
     ######### DOCKER ROOTLESS ##############################
     curl -fsSL https://get.docker.com/rootless | sh

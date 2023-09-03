@@ -6,7 +6,10 @@ ScriptFolder=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 if [[ $distro = *opensuse\ tumbleweed* ]]; then
     openSUSETW_ALIAS
 
-    sudoreq
+rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
     for forScriptFile in $(ls -1 $ScriptFolder/home/opensuse-tumbleweed/config | grep "\.sh$"); do
         chmod +x $ScriptFolder/home/opensuse-tumbleweed/config/$forScriptFile
         . $ScriptFolder/home/opensuse-tumbleweed/config/$forScriptFile
@@ -15,7 +18,10 @@ if [[ $distro = *opensuse\ tumbleweed* ]]; then
 elif [[ $distro = *fedora\ linux* ]]; then
     fedora_ALIAS
     
-    sudoreq
+rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
     for forScriptFile in $(ls -1 $ScriptFolder/home/fedora/config | grep "\.sh$"); do
         chmod +x $ScriptFolder/home/fedora/config/$forScriptFile
         . $ScriptFolder/home/fedora/config/$forScriptFile

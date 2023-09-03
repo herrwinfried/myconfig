@@ -38,12 +38,26 @@ cyan="$(tput setaf 6)"      #
 white="$(tput setaf 7)"     #
 #############################
 
-function sudoreq {
-    sudo -v || { echo -e $red"Cancel..."$white; exit 1; }
+USER_PASSWORD=""
+function rootpassword {
+sudo --reset-timestamp
+read -s -p "$cyan""Password for$red root: $white" USER_PASSWORD
+echo -e "$yellow\nPassword checking... $white"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "$green""Password verified. $white\n"
+    SUDO="sudo -S"
+else
+    echo -e "$red""Password could not be verified $white\n"
+    rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
+fi  
 }
 
 function sudofinish {
-sudo --reset-timestamp
+    unset USER_PASSWORD
+    sudo --reset-timestamp
 }
 
 function zypper_pack {
@@ -67,7 +81,7 @@ function zypper_pack {
     UpdatePackage="$Rolling --details -l $Yes"
     RefreshPackage="ref"
 
-    echo "sudo sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+    echo "$SUDO sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
 }
 
 function dnf_pack {
@@ -91,7 +105,7 @@ function dnf_pack {
     UpdatePackage="$Rolling --nogpgcheck $Yes"
     RefreshPackage="makecache"
 
-    echo "sudo sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+    echo "$SUDO sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
 }
 
 function microdnf_pack {
@@ -115,7 +129,7 @@ function microdnf_pack {
     UpdatePackage="$Rolling --nogpgcheck $Yes"
     RefreshPackage="makecache"
 
-    echo "sudo sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+    echo "$SUDO sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
 }
 
 function transactionalUpdate_pack {
@@ -123,7 +137,7 @@ function transactionalUpdate_pack {
     defaultPackage="$Package"
     UpdatePackage="update"
 
-    echo "sudo $defaultPackage $UpdatePackage"
+    echo "$SUDO $defaultPackage $UpdatePackage"
 }
 
 function apt_pack {
@@ -139,7 +153,7 @@ function apt_pack {
     UpdatePackage="upgrade --allow-unauthenticated $Yes"
     RefreshPackage="update"
 
-    echo "sudo $defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
+    echo "$SUDO $defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
 }
 
 function brew_pack {
@@ -164,7 +178,7 @@ function flatpak_pack {
     defaultPackage="$Package"
     UpdatePackage="upgrade $Yes"
 
-    echo "sudo $defaultPackage $UpdatePackage && $defaultPackage $UpdatePackage"
+    echo "$SUDO $defaultPackage $UpdatePackage && $defaultPackage $UpdatePackage"
 }
 
 function snap_pack {
@@ -172,7 +186,7 @@ function snap_pack {
     defaultPackage="$Package"
     UpdatePackage="refresh"
 
-    echo "sudo $defaultPackage $UpdatePackage"
+    echo "$SUDO $defaultPackage $UpdatePackage"
 }
 
 function auto_package {
@@ -373,7 +387,10 @@ if [ $# -ne 0 ]; then
     done
 fi
 
-sudoreq
+rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
 if [[ $zypper != "true" && $dnf != "true"  && $microdnf != "true" && $transactionalUpdate != "true" ]] && [[ $brew != "true" && $flatpak != "true"  && $snap != "true" ]]; then
 auto_package
 fi
