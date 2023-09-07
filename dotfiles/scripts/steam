@@ -1,0 +1,31 @@
+#!/bin/bash
+if [ -x "$(command -v flatpak)" ]; then
+    if flatpak list --columns=application | grep -q "com.valvesoftware.Steam"; then
+    if ! [ $# -eq 0 ]; then
+    flatpak run --branch=stable --arch=x86_64 --command=/app/bin/steam-wrapper com.valvesoftware.Steam "$@"
+    else 
+    flatpak run --branch=stable --arch=x86_64 --command=/app/bin/steam-wrapper com.valvesoftware.Steam
+    fi
+
+    fi
+elif rpm -q steam; then
+    if ! [ $# -eq 0 ]; then
+    /usr/bin/steam "$@"
+    else 
+    /usr/bin/steam
+    fi
+elif -f /usr/bin/steam; then
+if ! [ $# -eq 0 ]; then
+    /usr/bin/steam "$@"
+    else 
+    /usr/bin/steam
+    fi
+elif -f /usr/games/steam; then
+if ! [ $# -eq 0 ]; then
+    /usr/games/steam "$@"
+    else 
+    /usr/games/steam
+    fi
+else
+    echo "Not Found Steam"
+fi
