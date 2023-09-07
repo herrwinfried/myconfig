@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo chmod +x $ScriptFolder/data/scripts/*
-sudo cp $ScriptFolder/data/scripts/* /usr/local/bin/
+$SUDO chmod +x $ScriptFolder/dotfiles/scripts/*
+$SUDO cp $ScriptFolder/dotfiles/scripts/* /usr/local/bin/

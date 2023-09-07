@@ -10,10 +10,10 @@ if ! checkwsl; then
     if [ -x "$(command -v distrobox)" ] && [ -x "$(command -v podman)" ]; then
         mkdir -p $HomePWD/distrobox
         mkdir -p $HomePWD/distrobox/fedora
-        distrobox-create -i fedora:latest -n Fedora-dx -H $HomePWD/distrobox/fedora --pre-init-hooks 'dnf update -y && dnf install -y @core && dnf install -y sudo nano wget curl git'
+        distrobox-create -i fedora:latest -n Fedora-dx -H $HomePWD/distrobox/fedora --pre-init-hooks 'dnf update -y && dnf install -y @core && dnf install -y sudo nano wget curl git cracklib-dicts xdg-user-dirs'
 
         mkdir -p $HomePWD/distrobox/debian
-        distrobox-create -i debian:latest -n Debian-dx -H $HomePWD/distrobox/debian --pre-init-hooks 'apt update && apt upgrade -y && apt install -y libasound2 sudo nano wget curl git && apt install -f -y'
+        distrobox-create -i debian:latest -n Debian-dx -H $HomePWD/distrobox/debian --pre-init-hooks 'apt update && apt upgrade -y && apt install -y libasound2 sudo nano wget curl git xdg-user-dirs && apt install -f -y'
 
     fi
 fi

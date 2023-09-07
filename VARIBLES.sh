@@ -9,8 +9,9 @@ distro=$(echo $OS_Name $OS_Version | tr '[:upper:]' '[:lower:]')
 BOARD_VENDOR=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
 NEW_HOSTNAME="herrwinfried"
 
+if [ -x $(command -v xdg-user-dirs-update) ]; then
 source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-
+fi
 Username=$USER
 HomePWD=$HOME
 ExternalFolder="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/files"
@@ -47,8 +48,12 @@ function checkwsl() {
 
 USER_PASSWORD=""
 function rootpassword {
+if [[ $EUID -eq 0 ]]; then
+     echo "$red You must not be Super User/Root. $white"
+   exit 1
+fi
 sudo --reset-timestamp
-read -s -p "$cyan""Password for$red root: $white" USER_PASSWORD
+read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
 echo -e "$yellow\nPassword checking... $white"
 if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
     echo -e "$green""Password verified. $white\n"
@@ -131,8 +136,32 @@ function fedora_ALIAS {
 
     PackageRemove="remove -y"
     PackageInstall="install -y"
+
+if [ ! -x $(command -v xdg-user-dirs-update) ]; then
+sudo dnf install -y xdg-user-dirs
+xdg-user-dirs-update
+source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
+
 }
 
+function debian_ALIAS {
+    PackagePrep="apt"
+    Package="$PackagePrep"
+    PackageUpdate="upgrade -y"
+    PackageRefresh="update"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+
+    if [ ! -x $(command -v xdg-user-dirs-update) ]; then
+sudo apt install -y xdg-user-dirs
+xdg-user-dirs-update
+source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
+}
+
+#------------------------------
 BrewPackagePrep="brew"
 BrewPackage="$BrewPackagePrep"
 BrewPackageUpdate="update -y"

@@ -1,4 +1,5 @@
 #!/bin/bash
+
 Package_a="hwinfo screenfetch neofetch htop git git-lfs curl wget"
 Package_a+=" zsh bash-completion fish lsb-release opi e2fsprogs nano"
 Package_a+=" lzip unrar unzip java-20-openjdk"
@@ -7,36 +8,38 @@ Package_a_Flatpak="flathub org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita
 Package_a_Flatpak2="kdeapps org.kde.xwaylandvideobridge"
 
 Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
-Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0"
-Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
+Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0 mangohud mangohud-32bit goverlay"
+Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy im.riot.Riot"
 
-Package_d_Flatpak="flathub com.valvesoftware.Steam com.valvesoftware.Steam.CompatibilityTool.Proton com.valvesoftware.Steam.CompatibilityTool.Proton-GE net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
+
 if ! checkwsl; then
-    Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop im.riot.Riot"
+    Package_d_Flatpak="flathub com.valvesoftware.Steam net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl io.github.trigg.discover_overlay"
+    Package_d_Flatpak+=" com.valvesoftware.Steam.CompatibilityTool.Proton com.valvesoftware.Steam.CompatibilityTool.Proton-GE com.valvesoftware.Steam.Utility.MangoHud"
+    
+    Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
+    
     Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
 fi
+$SUDO $Package $PackageInstall $Package_a
 
-
-sudo $Package $PackageInstall $Package_a
-
-sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
+$SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
 
 
 #NOT WSL
 if ! checkwsl; then
-    sudo $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
+    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-sudo $Package $PackageInstall $Package_b
+$SUDO $Package $PackageInstall $Package_b
 #NOT WSL
 if ! checkwsl; then
     
-    sudo $Package $PackageInstall $Package_c
+    $SUDO $Package $PackageInstall $Package_c
     
-    sudo $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
+    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
     
-    sudo $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
+    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
