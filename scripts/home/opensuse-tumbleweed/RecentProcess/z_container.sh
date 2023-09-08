@@ -28,10 +28,10 @@ fi
         NowFinder=$(pwd)
         cd $ScriptFolder/docker/dockerfile
         docker build -t herrwinfried/dev_env:opensuse_tumbleweed . -f ./tw_developer.dockerfile 
-        mkdir -p ~/.config/dockerHost
-        chgrp wheel ~/.config/dockerHost
-        ln -s ~/.config/dockerHost ~/dockerHost
-        docker create -it --name tw_development -p 3256:22 -v ~/.config/dockerHost:/home/host:rw herrwinfried/dev_env:opensuse_tumbleweed
+        mkdir -p $XDG_PUBLICSHARE_DIR/dockerHost
+        chgrp wheel $XDG_PUBLICSHARE_DIR/dockerHost
+        ln -s $XDG_PUBLICSHARE_DIR/dockerHost ~/dockerHost
+        docker create -it --name tw_development -p 3256:22 -v $XDG_PUBLICSHARE_DIR/dockerHost:/home/host:rw herrwinfried/dev_env:opensuse_tumbleweed
         cd $NowFinder
         unset NowFinder
     fi

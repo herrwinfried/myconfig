@@ -42,6 +42,6 @@ if checkwsl; then
     gsettings set org.gnome.desktop.interface icon-theme Fluent-dark
     gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
 
-    $SUDO cp $ScriptFolder/dotfiles/wsl.conf /etc/wsl.conf
+    $SUDO cp $ScriptFolder1/dotfiles/wsl.conf /etc/wsl.conf
 
 fi
