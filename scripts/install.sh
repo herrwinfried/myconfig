@@ -1,5 +1,6 @@
 #!/bin/bash
 ScriptFolder=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+ScriptFolder1=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && cd .. && pwd)
 . ./VARIBLES.sh 
 rootpassword
 HOME_ARG=0
@@ -39,6 +40,49 @@ check_scriptfolder() {
   else
     return 1
   fi
+}
+
+function flatpakref {
+
+	cdExternalFolder
+    find . -iname '*.flatpakref' -exec chmod +x ./"{}" \;
+	find . -iname '*.flatpakref' -exec $FlatpakPackage $FlatpakPackageInstall ./"{}" \;
+	$FlatpakPackage $FlatpakPackageUpdate
+}
+
+function rpms {
+
+	cdExternalFolder
+    find . -iname '*.rpm' -exec chmod +x ./"{}" \;
+	find . -iname '*.rpm' -exec $SUDO $Package $PackageInstall ./"{}" \;
+    sudo $Package $PackageUpdate
+}
+function debs {
+
+	cdExternalFolder
+    find . -iname '*.deb' -exec chmod +x ./"{}" \;
+	find . -iname '*.deb' -exec $SUDO $Package $PackageInstall ./"{}" \;
+    sudo $Package $PackageUpdate
+}
+
+function runs {
+	cdExternalFolder
+	find . -iname '*.run' -exec chmod +x ./"{}" \;
+	find . -iname '*.run' -exec $SUDO ./"{}" \;
+}
+
+function bundles {
+	cdExternalFolder
+	find . -iname "*.bundle" -exec chmod +x ./"{}" \;
+	find . -iname "*.bundle" -exec $SUDO ./"{}" \;
+
+}
+
+function appimages {
+
+	cdExternalFolder
+	find . -iname "*.appimage" -exec chmod +x ./"{}" \;
+	find . -iname "*.appimage" -exec sudo ./"{}" \;
 }
 
 i=1

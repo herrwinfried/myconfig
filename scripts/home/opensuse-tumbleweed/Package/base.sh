@@ -19,7 +19,7 @@ if ! checkwsl; then
     
     Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
     
-    Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
+    Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+ python311-pipx"
 fi
 $SUDO $Package $PackageInstall $Package_a
 
