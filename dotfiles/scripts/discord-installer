@@ -1,0 +1,171 @@
+#!/bin/bash
+
+ScriptLocal=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+FileName=$(basename "${BASH_SOURCE[0]}")
+
+USER_PASSWORD=""
+function rootpassword {
+if [[ $EUID -eq 0 ]]; then
+     echo "$red You must not be Super User/Root. $white"
+   exit 1
+fi
+sudo --reset-timestamp
+read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
+echo -e "$yellow\nPassword checking... $white"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "$green""Password verified. $white\n"
+    SUDO="sudo -S"
+else
+    echo -e "$red""Password could not be verified $white\n"
+    rootpassword || {
+        echo -e $red"Cancel..."$white
+        exit 1
+    }
+fi  
+}
+
+function sudofinish {
+    unset USER_PASSWORD
+    sudo --reset-timestamp
+}
+
+function checkcommand {
+    if type -P $1 >/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function errorHelp {
+    echo "ERROR! Example: discord-installer PTB"
+    echo "canary, ptb, stable"
+    exit 1
+}
+
+if [ $# -eq 0 ]; then
+    errorHelp
+fi
+
+n1=$(echo $1 | tr '[:upper:]' '[:lower:]')
+
+if [ $n1 == "update" ]; then
+    curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/$FileName" -o $ScriptLocal/$FileName
+    exit 1
+elif [ $n1 == "canary" ]; then
+    Version="canary"
+    ExecCom="DiscordCanary"
+elif [ $n1 == "ptb" ]; then
+    Version="ptb"
+    ExecCom="DiscordPTB"
+elif [ $n1 == "stable" ]; then
+    Version=""
+    ExecCom="Discord"
+else
+    errorHelp
+fi
+
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_VERSION | tr '[:upper:]' '[:lower:]')
+
+function openSUSETW_ALIAS {
+    # ZYPPER OR DNF
+    #   0        1
+    SUSE_TYPE=0
+    if ! checkcommand dnf; then
+        SUSE_TYPE=0
+    fi
+    ################
+
+    if [ $SUSE_TYPE -eq 1 ]; then
+        if ! checkcommand dnf; then
+            SUSE_TYPE=0
+        fi
+    fi
+
+    if [ $SUSE_TYPE -eq 0 ]; then
+        PackagePrep="zypper"
+        Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
+        PackageUpdate="dup -y -l"
+        PackageRefresh="refresh"
+
+        PackageRemove="rm -u -y"
+        PackageInstall="in -y -l"
+
+    elif [ $SUSE_TYPE -eq 1 ]; then
+        PackagePrep="dnf"
+        Package="$PackagePrep --nogpgcheck"
+        PackageUpdate="dup -y"
+        PackageRefresh="makecache"
+
+        PackageRemove="remove -y"
+        PackageInstall="install -y"
+    fi
+}
+
+function fedora_ALIAS {
+    PackagePrep="dnf"
+    Package="$PackagePrep --nogpgcheck"
+    PackageUpdate="update -y"
+    PackageRefresh="makecache"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+}
+function debian_ALIAS {
+    PackagePrep="apt"
+    Package="$PackagePrep"
+    PackageUpdate="upgrade -y"
+    PackageRefresh="update"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+}
+
+if [[ $distro = *opensuse\ tumbleweed* ]]; then
+    openSUSETW_ALIAS
+elif [[ $distro = *fedora* ]]; then
+    fedora_ALIAS
+elif [[ $distro = *debian* ]]; then
+    debian_ALIAS
+else
+    echo "It is currently not compatible with your Operating system." && exit 1
+fi
+
+rootpassword
+
+sudo $Package $PackageUpdate
+sudo $Package $PackageInstall curl tar
+
+echo "[Desktop Entry]
+Name=Discord $Version
+StartupWMClass=discord$Version
+Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
+GenericName=Internet Messenger
+Exec=/opt/$ExecCom/$ExecCom
+Icon=discord-$Version
+Type=Application
+Categories=Network;InstantMessaging;
+Path=/opt/$ExecCom" | sudo tee /usr/share/applications/discord-$Version.desktop
+
+curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
+sudo mkdir -p /opt/$ExecCom
+
+if [ -d "/tmp/discord$Version.tar.gz" ]; then
+    sudo rm -rf /tmp/discord*
+fi
+
+if [ -d "/opt/$ExecCom" ]; then
+    sudo rm -rf /opt/$ExecCom
+fi
+
+sleep 3
+
+sudo tar -xzf /tmp/discord$Version.tar.gz -C /opt/
+sudo chmod 777 /opt/$ExecCom
+sudo chmod 777 /opt/$ExecCom/*
+
+sudofinish
