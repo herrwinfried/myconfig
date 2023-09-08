@@ -10,6 +10,7 @@ Package_a_Flatpak2="kdeapps org.kde.xwaylandvideobridge"
 Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
 Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0 mangohud mangohud-32bit goverlay"
 Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy im.riot.Riot"
+Package_c_Flatpak+=" org.freedesktop.Platform.VulkanLayer.MangoHud//22.08 org.freedesktop.Platform.VulkanLayer.MangoHud//21.08"
 
 
 if ! checkwsl; then

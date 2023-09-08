@@ -14,6 +14,12 @@ sudo sh -c 'zypper in -y wget curl git' && git clone https://github.com/herrwinf
 ```bash
 sudo sh -c 'dnf install -y wget curl git' && git clone https://github.com/herrwinfried/myconfig.git -b linux && mkdir -p myconfig/files && chmod +x myconfig/*.sh
 ```
+
+## debian
+
+```bash
+sudo sh -c 'apt install -y wget curl git' && git clone https://github.com/herrwinfried/myconfig.git -b linux && mkdir -p myconfig/files && chmod +x myconfig/*.sh
+```
 ### The file extension that the `files` folder supports *
 - .run
 - .appimage
@@ -21,4 +27,4 @@ sudo sh -c 'dnf install -y wget curl git' && git clone https://github.com/herrwi
 - .rpm
 - .flatpakref
 
-\* Only OpenSUSE Tumbleweed and fedora
+\* Only OpenSUSE Tumbleweed

@@ -84,7 +84,11 @@ function checkcommand {
         return 1
     fi
 }
-
+function HELP_FUNC {
+echo -e "
+$cyan Soon...
+"
+}
 function openSUSETW_ALIAS {
     # ZYPPER OR DNF
     #   0        1
