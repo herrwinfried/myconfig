@@ -48,7 +48,7 @@ RUN chown root:root /etc/zypp/repos.d/microsoft-prod.repo
 
 #MongoDB Repository
 RUN rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
-RUN zypper -n --gpg-auto-import-keys addrepo --gpgcheck "https://repo.mongodb.org/zypper -n/suse/15/mongodb-org/6.0/x86_64/" mongodb
+RUN zypper -n --gpg-auto-import-keys addrepo --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-org/6.0/x86_64/" mongodb
 
 RUN zypper -n --gpg-auto-import-keys refresh
 RUN zypper -n --gpg-auto-import-keys dup -y -l
@@ -91,7 +91,7 @@ RUN echo "root:${rootPassword}" | chpasswd
 #HOMEBREW 
 RUN mkdir -p /home/linuxbrew/.linuxbrew
 RUN chown -R ${user} /home/linuxbrew/.linuxbrew
-RUN su -l ${user} -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && chmod -R go-w "$(brew --prefix)/share/zsh"'
+RUN su -l ${user} -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" ; chmod -R go-w "$(brew --prefix)/share/zsh"'
 # DEVELOPMENT
 RUN dnf -q --nogpgcheck install --setopt=install_weak_deps=False -y patterns-devel-base-devel_basis patterns-devel-C-C++-devel_C_C++ 
 
@@ -104,10 +104,6 @@ RUN dnf -q --nogpgcheck install --setopt=install_weak_deps=False -y dotnet-sdk-7
 RUN dnf -q --nogpgcheck install -y patterns-devel-mono-devel_mono
 
 RUN dnf -q --nogpgcheck install --setopt=install_weak_deps=False -y patterns-devel-base-devel_rpm_build
-
-RUN dnf -q --nogpgcheck install -y patterns-kde-devel_qt6 
-RUN dnf -q --nogpgcheck install -y patterns-kde-devel_qt5 
-RUN zypper -n --gpg-auto-import-keys install -y --recommends patterns-kde-devel_kde_frameworks
 
 RUN dnf -q --nogpgcheck install --setopt=install_weak_deps=False -y rsync gtk3-devel java-20-openjdk nodejs-default npm-default python311
 # CONFIG
