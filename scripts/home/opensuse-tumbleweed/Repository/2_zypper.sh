@@ -74,7 +74,7 @@ function GITHUB_UNOFFICIAL_ZYPP {
     $SUDO rpm --import https://rpm.packages.shiftkey.dev/gpg.key
     $SUDO sh -c 'echo -e "[shiftkey-packages]\nname=GitHub Desktop\nbaseurl=https://rpm.packages.shiftkey.dev/rpm/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://rpm.packages.shiftkey.dev/gpg.key" > /etc/zypp/repos.d/shiftkey-packages.repo'
     $SUDO zypper --gpg-auto-import-keys --no-gpg-checks refresh
-    $SUDO zypper --gpg-auto-import-keys --no-gpg-checks mr -n "GitHub Desktop" -d
+    $SUDO zypper --gpg-auto-import-keys --no-gpg-checks modifyrepo -d "GitHub Desktop"
 }
 
 function VSCODE_ZYPP {
