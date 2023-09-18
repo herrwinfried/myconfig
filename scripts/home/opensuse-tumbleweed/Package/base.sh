@@ -21,26 +21,26 @@ if ! checkwsl; then
     Package_d_Flatpak="flathub com.valvesoftware.Steam net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl io.github.trigg.discover_overlay net.davidotek.pupgui2"
     Package_d_Flatpak+=" com.valvesoftware.Steam.CompatibilityTool.Proton com.valvesoftware.Steam.CompatibilityTool.Proton-GE com.valvesoftware.Steam.Utility.MangoHud"
 fi
-$SUDO $Package $PackageInstall $Package_a
+SUDO $Package $PackageInstall $Package_a
 
-$SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
+SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
 
 
 #NOT WSL
 if ! checkwsl; then
-    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
+    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-$SUDO $Package $PackageInstall $Package_b
+SUDO $Package $PackageInstall $Package_b
 #NOT WSL
 if ! checkwsl; then
     
-    $SUDO $Package $PackageInstall $Package_c
+    SUDO $Package $PackageInstall $Package_c
     
-    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
+    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
     
-    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
+    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
 fi
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

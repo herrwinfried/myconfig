@@ -2,7 +2,7 @@
 
 if ! checkwsl; then
 
-    $SUDO $Package $PackageInstall curl tar
+    SUDO $Package $PackageInstall curl tar
 
     echo "[Desktop Entry]
 Name=Discord PTB
@@ -13,14 +13,14 @@ Exec=/opt/DiscordPTB/DiscordPTB
 Icon=discord-ptb
 Type=Application
 Categories=Network;InstantMessaging;
-Path=/opt/DiscordPTB" | $SUDO tee /usr/share/applications/discord-ptb.desktop
+Path=/opt/DiscordPTB" | SUDO tee /usr/share/applications/discord-ptb.desktop
 
     curl -L "https://discord.com/api/download/ptb?platform=linux&format=tar.gz" -o /tmp/discordptb.tar.gz
     
-    $SUDO mkdir -p /opt/DiscordPTB
-    $SUDO tar -xzf /tmp/discordptb.tar.gz -C /opt/
-    $SUDO chmod 777 /opt/DiscordPTB
-    $SUDO chmod 777 /opt/DiscordPTB/*
+    SUDO mkdir -p /opt/DiscordPTB
+    SUDO tar -xzf /tmp/discordptb.tar.gz -C /opt/
+    SUDO chmod 777 /opt/DiscordPTB
+    SUDO chmod 777 /opt/DiscordPTB/*
 
     /opt/DiscordPTB/DiscordPTB & 
     sleep 5

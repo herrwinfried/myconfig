@@ -7,11 +7,11 @@ if ! checkwsl; then
     if [[ ! -d "$XDG_DESKTOP_DIR/dotscript" ]]; then 
         mkdir -p "$XDG_DESKTOP_DIR/dotscript"
     fi
-    $SUDO $Package $PackageInstall $Package_a
+    SUDO $Package $PackageInstall $Package_a
     
-    $SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
+    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
     
-    $SUDO usermod -G docker -a $Username
+    SUDO usermod -G docker -a $Username
     ######### DOCKER ROOTLESS ##############################
     /usr/bin/dockerd-rootless-setuptool.sh install
         #OR
