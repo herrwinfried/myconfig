@@ -23,6 +23,14 @@ function sudofinish {
     sudo --reset-timestamp
 }
 
+function checkcommand {
+    if type -P $1 >/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 . /etc/os-release
 
 OS_Name=$NAME
