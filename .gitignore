@@ -2,6 +2,6 @@
 *.zip*
 *.7z*
 *.rar*
-ancs4linux
-themeconfig
-files
+*ancs4linux
+*themeconfig
+*files
