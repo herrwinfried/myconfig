@@ -2,16 +2,16 @@
 
 ### Root
 #cd $ScriptFolder1/dotfiles/home; cp -r * /root/; cp -r .* /root/
-$SUDO mkdir -p /root/.config
-$SUDO mkdir -p /root/.config/powershell
-$SUDO cp -r $ScriptFolder1/dotfiles/home/.alias* /root/
-$SUDO cp -r $ScriptFolder1/dotfiles/home/.config/* /root/.config
+SUDO mkdir -p /root/.config
+SUDO mkdir -p /root/.config/powershell
+SUDO cp -r $ScriptFolder1/dotfiles/home/.alias* /root/
+SUDO cp -r $ScriptFolder1/dotfiles/home/.config/* /root/.config
 
-$SUDO ln -sf $HomePWD/.poshthemes /root/.poshthemes
+SUDO ln -sf $HomePWD/.poshthemes /root/.poshthemes
 
-$SUDO cp $ScriptFolder1/dotfiles/home/.bashrc /root/.bashrc
+SUDO cp $ScriptFolder1/dotfiles/home/.bashrc /root/.bashrc
 
-$SUDO cp $ScriptFolder1/dotfiles/home/.zshrc /root/.zshrc
+SUDO cp $ScriptFolder1/dotfiles/home/.zshrc /root/.zshrc
 
 ###USER
 
@@ -31,7 +31,7 @@ cp $ScriptFolder1/dotfiles/home/.bashrc $HomePWD/.bashrc
 cp $ScriptFolder1/dotfiles/home/.zshrc $HomePWD/.zshrc
 
 if [ -f "/bin/zsh" ]; then
-    $SUDO usermod -s /bin/zsh $Username
+    SUDO usermod -s /bin/zsh $Username
 fi
 
 if [ -f "/bin/fish" ]; then

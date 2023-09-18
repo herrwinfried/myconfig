@@ -57,7 +57,9 @@ read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
 echo -e "$yellow\nPassword checking... $white"
 if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
     echo -e "$green""Password verified. $white\n"
-    SUDO="echo '$USER_PASSWORD' | sudo -S"
+    function SUDO {
+        echo '$USER_PASSWORD' | sudo -S $@
+    }
 else
     echo -e "$red""Password could not be verified $white\n"
     rootpassword

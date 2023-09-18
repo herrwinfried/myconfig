@@ -1,9 +1,9 @@
 #!/bin/bash
-$SUDO $Package $PackageInstall gcc
+SUDO $Package $PackageInstall gcc
 OldPw=$(pwd)
 
-$SUDO mkdir -p /home/linuxbrew/.linuxbrew
-$SUDO chown -R $Username /home/linuxbrew/.linuxbrew
+SUDO mkdir -p /home/linuxbrew/.linuxbrew
+SUDO chown -R $Username /home/linuxbrew/.linuxbrew
 NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 chmod -R go-w "$(brew --prefix)/share/zsh"

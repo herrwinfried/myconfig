@@ -6,7 +6,7 @@ if [ -x "$(command -v flatpak)" ]; then
     flatpak --user override --filesystem=$HomePWD/.local/share/applications
     flatpak --user override --filesystem=$HomePWD/.fonts
     flatpak --user override --env GTK_THEME=Breeze
-    $SUDO flatpak override --env GTK_THEME=Breeze
+    SUDO flatpak override --env GTK_THEME=Breeze
 
 
     flatpak override --user --filesystem=xdg-config/MangoHud:ro com.valvesoftware.Steam

@@ -23,5 +23,5 @@ if ! checkwsl; then
     #   Icon Editor, HeX Editor
     packageKDE+=" okteta ikona"
 
-    $SUDO $Package $PackageInstall $packageKDE
+    SUDO $Package $PackageInstall $packageKDE
 fi
