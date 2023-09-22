@@ -2,7 +2,8 @@
 
 Package_a="hwinfo screenfetch neofetch htop git git-lfs curl wget"
 Package_a+=" zsh bash-completion fish lsb-release opi e2fsprogs nano"
-Package_a+=" lzip unrar unzip java-20-openjdk"
+Package_a+=" lzip unrar unzip java-20-openjdk cnf-rs cnf-rs-bash cnf-rs-zsh cnf-rs-locale"
+Package_a+=" rsync gh glab"
 
 Package_a_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.5 org.kde.PlatformTheme.QGnomePlatform//6.5"
 Package_a_Flatpak2="kdeapps org.kde.xwaylandvideobridge"

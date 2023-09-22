@@ -136,8 +136,8 @@ fi
 
 rootpassword
 
-sudo $Package $PackageUpdate
-sudo $Package $PackageInstall curl tar
+SUDO $Package $PackageUpdate
+SUDO $Package $PackageInstall curl tar
 
 echo "[Desktop Entry]
 Name=Discord $Version
@@ -148,23 +148,23 @@ Exec=/opt/$ExecCom/$ExecCom
 Icon=discord-$Version
 Type=Application
 Categories=Network;InstantMessaging;
-Path=/opt/$ExecCom" | sudo tee /usr/share/applications/discord-$Version.desktop
+Path=/opt/$ExecCom" | SUDO tee /usr/share/applications/discord-$Version.desktop
 
 curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
-sudo mkdir -p /opt/$ExecCom
+SUDO mkdir -p /opt/$ExecCom
 
 if [ -d "/tmp/discord$Version.tar.gz" ]; then
-    sudo rm -rf /tmp/discord*
+    SUDO rm -rf /tmp/discord*
 fi
 
 if [ -d "/opt/$ExecCom" ]; then
-    sudo rm -rf /opt/$ExecCom
+    SUDO rm -rf /opt/$ExecCom
 fi
 
 sleep 3
 
-sudo tar -xzf /tmp/discord$Version.tar.gz -C /opt/
-sudo chmod 777 /opt/$ExecCom
-sudo chmod 777 /opt/$ExecCom/*
+SUDO tar -xzf /tmp/discord$Version.tar.gz -C /opt/
+SUDO chmod 777 /opt/$ExecCom
+SUDO chmod 777 /opt/$ExecCom/*
 
-sudofinish
+SUDOfinish

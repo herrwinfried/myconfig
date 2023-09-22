@@ -3,6 +3,10 @@ if (-Not $isLinux) {
     Exit 1
 }
 
+if ([string]::IsNullOrEmpty($env:LC_ALL)) {
+    $env:LANG = "C.utf8"
+    $env:LC_ALL = $env:LANG
+}
 $OhMyPoshTheme = "~/.poshthemes/default.omp.json"
 
 if (Test-Path "$env:HOME/bin") {
@@ -87,41 +91,50 @@ if (-NOT $(checkwsl) ) {
 }
   
 function rootMode {
-    if (-Not $Args.Count -eq 0) {
-        $XDG_DE = $($XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
-        [String]$xArgs = $(Write-Output $Args) 
+    if ($Args.Length -eq 0) {
+        Write-Host "Usage: rootMode <command>"
+        exit 1
+    } else {
+        $XDG_DE = $env:XDG_CURRENT_DESKTOP.ToLower()
         if ($XDG_DE -eq "kde") {
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $xArgs
+            Start-Process -Wait -FilePath "pkexec" -ArgumentList @(
+                "env",
+                "DISPLAY=$env:DISPLAY",
+                "XAUTHORITY=$env:XAUTHORITY",
+                "KDE_SESSION_VERSION=5",
+                "KDE_FULL_SESSION=true",
+                $Args
+            )
+        } else {
+            Start-Process -Wait -FilePath "pkexec" -ArgumentList @(
+                "env",
+                "DISPLAY=$env:DISPLAY",
+                "XAUTHORITY=$env:XAUTHORITY",
+                $Args
+            )
         }
-        else {
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $xArgs
-        }
-    }
-    else {
-        Write-Error "You didn't write anything to run."
     }
 }
   
 function englishRun {
-    if (-Not $Args.Count -eq 0) {
-        [String]$xArgs = $(Write-Output $Args)
-        $env:LC_ALL = 'C' 
-        $env:LANG = $env:LC_ALL 
-        Invoke-Expression $xArgs
-    }
-    else {
-        Write-Error "You didn't write anything to run."
+    if ($Args.Length -eq 0) {
+        Write-Host "Usage: englishRun <command>"
+        exit 1
+    } else {
+        $env:LC_ALL = "C.utf8"
+        $env:LANG = $env:LC_ALL
+        & $Args
     }
 }
 
 function aliasUpdate {
-    [String]$xArgs = 'rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -O ~/.alias.fish'
+    [String]$xArgs = 'rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.fish" -O ~/.alias.fish'
     Invoke-Expression $xArgs
 }
 
 if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
     function OhMyPoshThemeUpdate {
         $themeFile = "$HOME/.poshthemes/default.omp.json"
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/default.omp.json" -OutFile $themeFile
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/default.omp.json" -OutFile $themeFile
     }
 }

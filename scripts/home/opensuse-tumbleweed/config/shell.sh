@@ -1,9 +1,11 @@
 #!/bin/bash
 
 ### Root
-#cd $ScriptFolder1/dotfiles/home; cp -r * /root/; cp -r .* /root/
+
 SUDO mkdir -p /root/.config
 SUDO mkdir -p /root/.config/powershell
+SUDO mkdir -p /root/.config/MangoHud
+
 SUDO cp -r $ScriptFolder1/dotfiles/home/.alias* /root/
 SUDO cp -r $ScriptFolder1/dotfiles/home/.config/* /root/.config
 
@@ -17,6 +19,8 @@ SUDO cp $ScriptFolder1/dotfiles/home/.zshrc /root/.zshrc
 
 mkdir -p $HomePWD/.config
 mkdir -p $HomePWD/.config/powershell
+mkdir -p $HomePWD/.config/MangoHud
+
 cp -r $ScriptFolder1/dotfiles/home/.alias* $HomePWD
 cp -r $ScriptFolder1/dotfiles/home/.config/* $HomePWD/.config
 mkdir -p $HomePWD/.poshthemes

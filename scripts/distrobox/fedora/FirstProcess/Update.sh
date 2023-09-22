@@ -1,4 +1,4 @@
 #!/bin/bash
 
-$SUDO $Package $PackageRefresh
-$SUDO $Package $PackageUpdate
+SUDO $Package $PackageRefresh
+SUDO $Package $PackageUpdate
