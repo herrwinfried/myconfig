@@ -49,7 +49,9 @@ read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
 echo -e "$yellow\nPassword checking... $white"
 if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
     echo -e "$green""Password verified. $white\n"
-    SUDO="echo '$USER_PASSWORD' | sudo -S"
+    function SUDO {
+        echo "$USER_PASSWORD" | sudo -S "$@"
+    }
 else
     echo -e "$red""Password could not be verified $white\n"
     rootpassword
@@ -82,7 +84,7 @@ function zypper_pack {
     UpdatePackage="$Rolling --details -l $Yes"
     RefreshPackage="ref"
 
-    echo "$SUDO sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+    SUDO sh -c "$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
 }
 
 function dnf_pack {
@@ -106,7 +108,7 @@ function dnf_pack {
     UpdatePackage="$Rolling --nogpgcheck $Yes"
     RefreshPackage="makecache"
 
-    echo "$SUDO sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+    SUDO sh -c "$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
 }
 
 function microdnf_pack {
@@ -130,7 +132,7 @@ function microdnf_pack {
     UpdatePackage="$Rolling --nogpgcheck $Yes"
     RefreshPackage="makecache"
 
-    echo "$SUDO sh -c '$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage'"
+    SUDO sh -c "$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
 }
 
 function transactionalUpdate_pack {
@@ -138,7 +140,7 @@ function transactionalUpdate_pack {
     defaultPackage="$Package"
     UpdatePackage="update"
 
-    echo "$SUDO $defaultPackage $UpdatePackage"
+    SUDO $defaultPackage $UpdatePackage
 }
 
 function apt_pack {
@@ -154,7 +156,7 @@ function apt_pack {
     UpdatePackage="upgrade --allow-unauthenticated $Yes"
     RefreshPackage="update"
 
-    echo "$SUDO $defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
+    SUDO su -c "$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
 }
 
 function brew_pack {
@@ -163,7 +165,7 @@ function brew_pack {
     UpdatePackage="upgrade"
     RefreshPackage="update"
 
-    echo "$defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage"
+    $defaultPackage $RefreshPackage && $defaultPackage $UpdatePackage
 }
 
 function flatpak_pack {
@@ -179,7 +181,7 @@ function flatpak_pack {
     defaultPackage="$Package"
     UpdatePackage="upgrade $Yes"
 
-    echo "$SUDO $defaultPackage $UpdatePackage && $defaultPackage $UpdatePackage"
+    SUDO su -c "$defaultPackage $UpdatePackage && $defaultPackage $UpdatePackage"
 }
 
 function snap_pack {
@@ -187,7 +189,7 @@ function snap_pack {
     defaultPackage="$Package"
     UpdatePackage="refresh"
 
-    echo "$SUDO $defaultPackage $UpdatePackage"
+    SUDO $defaultPackage $UpdatePackage
 }
 
 function auto_package {
@@ -234,9 +236,9 @@ function package_install {
     if [[ $zypper == "true" ]]; then
         if checkcommand zypper; then
             if [[ $NAME_new == *tumbleweed* ]]; then
-                eval "$(zypper_pack yes $1)"
+                zypper_pack yes $1
             else
-                eval "$(zypper_pack no $1)"
+                zypper_pack no $1
             fi
         fi
     fi
@@ -244,9 +246,9 @@ function package_install {
     if [[ $dnf == "true" ]]; then
         if checkcommand dnf; then
             if [[ $NAME_new == *tumbleweed* ]]; then
-                eval "$(dnf_pack yes $1)"
+                dnf_pack yes $1
             else
-                eval "$(dnf_pack no $1)"
+                dnf_pack no $1
             fi
         fi
     fi
@@ -254,40 +256,40 @@ function package_install {
     if [[ $microdnf == "true" ]]; then
         if checkcommand microdnf; then
             if [[ $NAME_new == *tumbleweed* ]]; then
-                eval "$(microdnf_pack yes $1)"
+                microdnf_pack yes $1
             else
-                eval "$(microdnf_pack no $1)"
+                microdnf_pack no $1
             fi
         fi
     fi
 
     if [[ $transactionalUpdate == "true" ]]; then
         if checkcommand transactional-update; then
-            eval "$(transactionalUpdate_pack)"
+            transactionalUpdate_pack
         fi
     fi
 
     if [[ $apt == "true" ]]; then
         if checkcommand apt; then
-            eval "$(apt_pack $1)"
+            apt_pack $1
         fi
     fi
 
     if [[ $brew == "true" ]]; then
         if checkcommand brew; then
-            eval "$(brew_pack)"
+            brew_pack
         fi
     fi
 
     if [[ $flatpak == "true" ]]; then
         if checkcommand flatpak; then
-            eval "$(flatpak_pack $1)"
+            flatpak_pack $1
         fi
     fi
 
     if [[ $snap == "true" ]]; then
         if checkcommand snap; then
-            eval "$(snap_pack)"
+            snap_pack
         fi
     fi
 
@@ -353,7 +355,7 @@ if [ $# -ne 0 ]; then
         if [[ $n == "--help" ]] || [[ $n == "-h" ]] || [[ $n == "help" ]]; then
             HelpFunction
         elif [ $1 = "update" ]; then
-        curl -L https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/SystemUpdate -o $ScriptLocal/SystemUpdate
+        curl -L https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/scripts/SystemUpdate -o $ScriptLocal/SystemUpdate
         exit 1
         elif [[ $n == "zypper" ]]; then
             zypper=true

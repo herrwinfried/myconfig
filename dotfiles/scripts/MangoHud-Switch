@@ -1,0 +1,40 @@
+#!/bin/bash
+
+function setLinkFile() {
+  Arg1=$1
+  if [ -f "$HOME/.config/MangoHud/MangoHudS0.conf" ] && [ -f "$HOME/.config/MangoHud/MangoHud.conf" ]; then
+    rm "$HOME/.config/MangoHud/MangoHud.conf"
+    ln -sf "$HOME/.config/MangoHud/$Arg1.conf" "$HOME/.config/MangoHud/MangoHud.conf" && echo "Change: $Arg1"
+  else
+    echo "ERROR: NOT CHANGE"
+  fi
+}
+
+
+if [ ! -f "$HOME/.config/MangoHud/MangoHudS0.conf" ] && [ ! -f "$HOME/.config/MangoHud/MangoHudS1.conf" ]; then
+  echo "Not Found File"
+else
+  if [ ! -d "$HOME/.var/me" ]; then
+    mkdir -p "$HOME/.var/me"
+  fi
+
+etc_os_release=$(md5sum /etc/os-release)
+my_os_release=$(md5sum "$HOME/.var/me/os-release")
+if [ "$etc_os_release" != "$my_os_release" ]; then
+  cp -f /etc/os-release "$HOME/.var/me/os-release"
+fi
+unset etc_os_release
+unset my_os_release
+
+  current_link=$(readlink -f "$HOME/.config/MangoHud/MangoHud.conf")
+  if [ "$current_link" == "$HOME/.config/MangoHud/MangoHudS0.conf" ]; then
+    setLinkFile "MangoHudS1"
+  elif [ "$current_link" == "$HOME/.config/MangoHud/MangoHudS1.conf" ]; then
+    setLinkFile "MangoHudS0"
+  else
+    if [ ! -f "$HOME/.config/MangoHud/MangoHud.conf" ]; then
+      ln -sf "$HOME/.config/MangoHud/MangoHudS0.conf" "$HOME/.config/MangoHud/MangoHud.conf"
+      echo "Change: MangoHudS0"
+    fi
+  fi
+fi

@@ -14,9 +14,9 @@ wget "https://www.termius.com/download/linux/Termius.deb" -P "$download_dir"
 
 chmod +x "$deb_file"
 
-$SUDO dpkg -i "$deb_file"
+SUDO dpkg -i "$deb_file"
 
-$SUDO $Package $PackageInstall -f
+SUDO $Package $PackageInstall -f
 
 if command -v termius; then
     distrobox-export -a termius

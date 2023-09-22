@@ -18,10 +18,10 @@ if ! checkwsl; then
     packageKDE+=" kolourpaint elisa dolphin-plugins nextcloud-desktop-dolphin"
 
     #   KDevelop App, KDevelop Additional Plugin Support, KDevelop PHP Plugin, KDevelop Python Plugin
-    packageKDE+=" kdevelop5 kdevelop5-pg-qt kdevelop5-plugin-php kdevelop5-plugin-python3"
+            #packageKDE+=" kdevelop5 kdevelop5-pg-qt kdevelop5-plugin-php kdevelop5-plugin-python3"
 
     #   Icon Editor, HeX Editor
-    packageKDE+=" okteta ikona"
+            #packageKDE+=" okteta ikona"
 
     SUDO $Package $PackageInstall $packageKDE
 fi

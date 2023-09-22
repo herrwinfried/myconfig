@@ -1,0 +1,125 @@
+#!/bin/bash
+
+USER_PASSWORD=""
+function rootpassword {
+if [[ $EUID -eq 0 ]]; then
+     echo "$red You must not be Super User/Root. $white"
+   exit 1
+fi
+sudo --reset-timestamp
+read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
+echo -e "$yellow\nPassword checking... $white"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "$green""Password verified. $white\n"
+    function SUDO {
+        echo "$USER_PASSWORD" | sudo -S "$@"
+    }
+else
+    echo -e "$red""Password could not be verified $white\n"
+    rootpassword
+fi  
+}
+
+function sudofinish {
+    unset USER_PASSWORD
+    sudo --reset-timestamp
+}
+
+function checkcommand {
+    if type -P $1 >/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_VERSION | tr '[:upper:]' '[:lower:]')
+
+function openSUSETW_ALIAS {
+    # ZYPPER OR DNF
+    #   0        1
+    SUSE_TYPE=0
+    if ! checkcommand dnf; then
+        SUSE_TYPE=0
+    fi
+    ################
+
+    if [ $SUSE_TYPE -eq 1 ]; then
+        if ! checkcommand dnf; then
+            SUSE_TYPE=0
+        fi
+    fi
+
+    if [ $SUSE_TYPE -eq 0 ]; then
+        PackagePrep="zypper"
+        Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
+        PackageUpdate="dup -y -l"
+        PackageRefresh="refresh"
+
+        PackageRemove="rm -u -y"
+        PackageInstall="in --allow-unsigned-rpm -y -l"
+
+    elif [ $SUSE_TYPE -eq 1 ]; then
+        PackagePrep="dnf"
+        Package="$PackagePrep --nogpgcheck"
+        PackageUpdate="dup -y"
+        PackageRefresh="makecache"
+
+        PackageRemove="remove -y"
+        PackageInstall="install -y"
+    fi
+}
+
+function fedora_ALIAS {
+    PackagePrep="dnf"
+    Package="$PackagePrep --nogpgcheck"
+    PackageUpdate="update -y"
+    PackageRefresh="makecache"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+}
+
+function debian_ALIAS {
+    PackagePrep="apt"
+    Package="$PackagePrep"
+    PackageUpdate="upgrade -y"
+    PackageRefresh="update"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+}
+
+if [[ $distro = *opensuse\ tumbleweed* ]]; then
+    openSUSETW_ALIAS
+elif [[ $distro = *fedora* ]]; then
+    fedora_ALIAS
+elif [[ $distro = *debian* ]]; then
+    debian_ALIAS
+else
+    echo "It is currently not compatible with your Operating system." && exit 1
+fi
+
+function install {
+    SUDO $Package $PackageUpdate
+    SUDO $Package $PackageInstall curl tar jq
+
+    if [ -d "/tmp/GitHubDesktop.rpm" ]; then
+        SUDO rm -rf /tmp/Github*
+    fi
+
+    sleep 3
+    desktopURL=$(curl -s "https://api.github.com/repos/shiftkey/desktop/releases/latest" | jq -r ".assets[] | select(.name | test(\".rpm\")) | .browser_download_url")
+    curl -L $desktopURL -o /tmp/GitHubDesktop.rpm
+    SUDO $Package $PackageInstall /tmp/GitHubDesktop.rpm
+}
+
+rootpassword
+
+install
+
+SUDOfinish

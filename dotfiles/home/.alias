@@ -6,6 +6,10 @@ if [ ! -n "$ZSH_VERSION" ] && [ ! -n "$BASH_VERSION" ]; then
 echo "$(tput setaf 1)This file is for bash and ZSH. Are you sure you're using Bash or ZSH?$(tput setaf 7)"
 exit 1
 fi
+if [ -z "$LC_ALL" ]; then
+LANG=C.utf8
+LC_ALL=$LANG
+fi
 OhMyPoshTheme=~/.poshthemes/default.omp.json
 
 if [ -d "$HOME/bin" ]; then
@@ -39,6 +43,9 @@ plugin_dirs=(
 # Define plugin names
 plugin_names=(
 )
+
+# CNF
+test -s /etc/bash_command_not_found && . /etc/bash_command_not_found
 fi
 
 if [ -n "$ZSH_VERSION" ]; then
@@ -60,6 +67,10 @@ plugin_names=(
   "zsh-syntax-highlighting"
   "zsh-completions"
 )
+
+# CNF
+test -s /etc/zsh_command_not_found && . /etc/zsh_command_not_found
+
 fi
 
 function Base_Font {
@@ -203,31 +214,30 @@ if checkwsl; then
 fi
 
 function rootMode {
-    if ! [ $# -eq 0 ]; then
+  if [ $# -eq 0 ]; then
+    echo "Usage: $0 <command>"
+    exit 1
+else
         XDG_DE=$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
         if [[ $XDG_DE = "kde" ]]; then
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $@
+            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true "$@"
         else
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $@
+            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY "$@"
         fi
-
-    else
-        echo "$red""You didn't write anything to run.""$white"
     fi
 }
 
 function englishRun {
-    if ! [ $# -eq 0 ]; then
-
-        LC_ALL=C LANG=$LC_ALL $@
-
-    else
-        echo echo "$red""You didn't write anything to run.""$white"
+  if [ $# -eq 0 ]; then
+    echo "Usage: $0 <command>"
+    exit 1
+else
+        LC_ALL=C.utf8 LANG=$LC_ALL "$@"
     fi
 }
 
 function aliasUpdate {
-    rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -O ~/.alias.fish
+    rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.fish" -O ~/.alias.fish
 }
 
 if [ -x "$(command -v oh-my-posh)" ] && [ -f $OhMyPoshTheme ]; then
@@ -238,7 +248,7 @@ if [ -x "$(command -v oh-my-posh)" ] && [ -f $OhMyPoshTheme ]; then
 
 function OhMyPoshThemeUpdate {
 $themeFile = "$HOME/.poshthemes/default.omp.json"
-wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/default.omp.json" -O $themeFile
+wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/default.omp.json" -O $themeFile
 }
 fi
 

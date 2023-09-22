@@ -14,9 +14,8 @@ wget "https://download.binance.com/electron-desktop/linux/production/binance-x86
 
 chmod +x "$rpm_file"
 
-$SUDO $Package $PackageInstall "$rpm_file"
+SUDO $Package $PackageInstall "$rpm_file"
 
 if command -v binance; then
     distrobox-export -a binance
 fi
-

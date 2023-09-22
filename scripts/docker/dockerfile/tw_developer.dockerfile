@@ -132,7 +132,7 @@ RUN su -l ${user} -c "wget https://raw.githubusercontent.com/herrwinfried/myconf
 RUN su -l ${user} -c "ln -s /home/host/.ssh ${HomePWD}/.ssh"
 
 RUN su -s /bin/fish -l ${user} -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
-RUN su -s /bin/fish -l ${user} -c "fisher install dracula/fish"
+
 RUN su -l ${user} -c "touch ${HomePWD}/sshstart.sh"
 RUN su -l ${user} -c "echo -e '#!/bin/bash\n/usr/sbin/sshd -D' | tee ${HomePWD}/sshstart.sh"
 RUN su -l ${user} -c "chmod +x ${HomePWD}/sshstart.sh"

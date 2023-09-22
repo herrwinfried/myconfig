@@ -9,9 +9,13 @@ distro=$(echo $OS_Name $OS_Version | tr '[:upper:]' '[:lower:]')
 BOARD_VENDOR=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
 NEW_HOSTNAME="herrwinfried"
 
-if [ -x $(command -v xdg-user-dirs-update) ]; then
+if [ -x $(command -v xdg-user-dirs-update) ] && [ ! -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs ]; then
+xdg-user-dirs-update
+source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+else
 source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
 fi
+
 Username=$USER
 HomePWD=$HOME
 ExternalFolder="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/files"
@@ -58,7 +62,7 @@ echo -e "$yellow\nPassword checking... $white"
 if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
     echo -e "$green""Password verified. $white\n"
     function SUDO {
-        echo '$USER_PASSWORD' | sudo -S $@
+        echo "$USER_PASSWORD" | sudo -S "$@"
     }
 else
     echo -e "$red""Password could not be verified $white\n"

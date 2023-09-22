@@ -4,6 +4,11 @@ if test (uname -s) != "Linux"
 end
 
 set -U fish_greeting
+if test -z "$LC_ALL"
+    set LANG C.utf8
+    set -x LC_ALL $LANG
+end
+
 set OhMyPoshTheme ~/.poshthemes/default.omp.json
 
 if test -d $HOME/bin
@@ -22,9 +27,14 @@ if test -f $HOME/bin/docker
     set -x DOCKER_HOST unix:///run/user/1000/docker.sock
 end
 
-if test -f /usr/local/bin/fish_command_not_found
+
+if test -f /usr/bin/cnf-rs -a -f /usr/local/bin/fish_command_not_found-rs
+    source /usr/local/bin/fish_command_not_found-rs
+
+else if test -f /usr/bin/command-not-found -a -f /usr/local/bin/fish_command_not_found
     source /usr/local/bin/fish_command_not_found
 end
+
 
 
 function checkwsl
@@ -70,40 +80,42 @@ if checkwsl
 end
 
 function rootMode
-    if test (count $argv) -ne 0
+    if count $argv -eq 0
+        echo "Usage: $argv[0] <command>"
+        exit 1
+    else
         set XDG_DE (echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
         if test $XDG_DE = "kde"
             sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $argv
         else
             sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $argv
         end
-    else
-        echo "$red""You didn't write anything to run.""$white"
     end
 end
 
 function englishRun
-    if test (count $argv) -ne 0
-        set -x LC_ALL C
-        set -x LANG $LC_ALL
-        eval $argv
+    if test (count $argv) -eq 0
+        echo "Usage: $argv[0] <command>"
+        exit 1
     else
-        echo "$red""You didn't write anything to run.""$white"
+        set -x LC_ALL C.utf8 LANG $LC_ALL
+        eval "$argv"
     end
 end
 
+
 function aliasUpdate
     rm -r ~/.alias
-    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias -O ~/.alias
+    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias -O ~/.alias
     rm -r ~/.alias.ps1
-    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1 -O ~/.alias.ps1
+    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.ps1 -O ~/.alias.ps1
     rm -r ~/.alias.fish
-    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish -O ~/.alias.fish
+    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.fish -O ~/.alias.fish
 end
 
 if test -x (command -v oh-my-posh); and test -f "$OhMyPoshTheme"
     function OhMyPoshThemeUpdate
         set themeFile "$HOME/.poshthemes/default.omp.json"
-        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/default.omp.json" -O "$themeFile"
+        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/default.omp.json" -O "$themeFile"
     end
 end

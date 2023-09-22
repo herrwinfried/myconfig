@@ -9,11 +9,15 @@ if ! checkwsl; then
 
     if [ -x "$(command -v distrobox)" ] && [ -x "$(command -v podman)" ]; then
         mkdir -p $HomePWD/distrobox
-        mkdir -p $HomePWD/distrobox/fedora
-        distrobox-create -i fedora:latest -n Fedora-dx -H $HomePWD/distrobox/fedora --pre-init-hooks 'dnf update -y && dnf install -y @core && dnf install -y sudo nano wget curl git cracklib-dicts xdg-user-dirs'
+        echo -e "[Desktop Entry]\nIcon=package-upgrade-auto" | tee $HomePWD/distrobox/.directory
+        mkdir -p $HomePWD/distrobox/home
+        mkdir -p $HomePWD/distrobox/home/osusetw
+        mkdir -p $HomePWD/distrobox/home/fedora
+        mkdir -p $HomePWD/distrobox/home/debian
 
-        mkdir -p $HomePWD/distrobox/debian
-        distrobox-create -i debian:latest -n Debian-dx -H $HomePWD/distrobox/debian --pre-init-hooks 'apt update && apt upgrade -y && apt install -y libasound2 sudo nano wget curl git xdg-user-dirs && apt install -f -y'
+        distrobox-create -i registry.opensuse.org/opensuse/distrobox:latest -n dev_suse --nvidia --init -H $HomePWD/distrobox/home/osusetw --pre-init-hooks 'sudo zypper in -y -l cmake-full' -ap 'systemd xdg-user-dirs' 
+        distrobox-create -i fedora:latest -n fedora --nvidia -H $HomePWD/distrobox/home/fedora -ap 'xdg-user-dirs'
+        distrobox-create -i debian:latest -n debian --nvidia -H $HomePWD/distrobox/home/debian -ap 'xdg-user-dirs'
 
     fi
 fi

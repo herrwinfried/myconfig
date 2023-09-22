@@ -14,7 +14,9 @@ read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
 echo -e "$yellow\nPassword checking... $white"
 if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
     echo -e "$green""Password verified. $white\n"
-    SUDO="echo '$USER_PASSWORD' | sudo -S"
+    function SUDO {
+        echo "$USER_PASSWORD" | sudo -S "$@"
+    }
 else
     echo -e "$red""Password could not be verified $white\n"
     rootpassword
@@ -47,7 +49,7 @@ fi
 n1=$(echo $1 | tr '[:upper:]' '[:lower:]')
 
 if [ $n1 == "update" ]; then
-    curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/$FileName" -o $ScriptLocal/$FileName
+    curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/scripts/$FileName" -o $ScriptLocal/$FileName
     exit 1
 elif [ $n1 == "canary" ]; then
     Version="canary"
@@ -134,8 +136,8 @@ fi
 
 rootpassword
 
-sudo $Package $PackageUpdate
-sudo $Package $PackageInstall curl tar
+SUDO $Package $PackageUpdate
+SUDO $Package $PackageInstall curl tar
 
 echo "[Desktop Entry]
 Name=Discord $Version
@@ -146,23 +148,23 @@ Exec=/opt/$ExecCom/$ExecCom
 Icon=discord-$Version
 Type=Application
 Categories=Network;InstantMessaging;
-Path=/opt/$ExecCom" | sudo tee /usr/share/applications/discord-$Version.desktop
+Path=/opt/$ExecCom" | SUDO tee /usr/share/applications/discord-$Version.desktop
 
 curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
-sudo mkdir -p /opt/$ExecCom
+SUDO mkdir -p /opt/$ExecCom
 
 if [ -d "/tmp/discord$Version.tar.gz" ]; then
-    sudo rm -rf /tmp/discord*
+    SUDO rm -rf /tmp/discord*
 fi
 
 if [ -d "/opt/$ExecCom" ]; then
-    sudo rm -rf /opt/$ExecCom
+    SUDO rm -rf /opt/$ExecCom
 fi
 
 sleep 3
 
-sudo tar -xzf /tmp/discord$Version.tar.gz -C /opt/
-sudo chmod 777 /opt/$ExecCom
-sudo chmod 777 /opt/$ExecCom/*
+SUDO tar -xzf /tmp/discord$Version.tar.gz -C /opt/
+SUDO chmod 777 /opt/$ExecCom
+SUDO chmod 777 /opt/$ExecCom/*
 
-sudofinish
+SUDOfinish

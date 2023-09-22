@@ -184,7 +184,7 @@ else
       exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/RecentProcess"
 
       if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/config"
+      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/config"
     fi
     fi
     fi
@@ -248,7 +248,7 @@ else
       exe_script "$ScriptFolder/distrobox/fedora/RecentProcess"
 
       if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/fedora/config"
+      exe_script "$ScriptFolder/distrobox/fedora/config"
     fi
     fi
     fi
@@ -311,7 +311,7 @@ else
       exe_script "$ScriptFolder/distrobox/debian/RecentProcess"
 
       if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/debian/config"
+      exe_script "$ScriptFolder/distrobox/debian/config"
     fi
     fi
     fi

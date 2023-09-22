@@ -10,7 +10,7 @@
             "foreground": "#000000",
             "leading_diamond": "\ue0b6",
             "style": "diamond",
-            "template": "{{.Icon}}{{ if .WSL }}  {{ end }}{{ if .Env.Docker_enabled }}  {{ end }}",
+            "template": "{{.Icon}}{{ if .WSL }}  {{ end }}{{ if .Env.Docker_enabled }}  {{ end }} ",
             "type": "os"
           },        
           {
@@ -107,6 +107,13 @@
             "foreground": "#CD4277",
             "style": "plain",
             "template": " {{ if .Root }}<#45F1C2><b>\u26a1</b></>{{ end }}<b>{{ .UserName }}</b>",
+            "type": "text"
+          },
+          {
+            
+            "foreground": "#ffffff",
+            "style": "plain",
+            "template": " {{ if .Env.Distrobox_enabled }}{{ end }}",
             "type": "text"
           },
           {
