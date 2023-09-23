@@ -15,7 +15,11 @@ if ! checkwsl; then
     ######### DOCKER ROOTLESS ##############################
     /usr/bin/dockerd-rootless-setuptool.sh install
         #OR
-        #curl -fsSL https://get.docker.com/rootless | sh
+    # if [ -f "$HomePWD/bin/dockerd-rootless-setuptool.sh" ]; then
+    #     $HomePWD/bin/dockerd-rootless-setuptool.sh install
+    # else
+    #     curl -fsSL https://get.docker.com/rootless | sh
+    # fi
     touch $XDG_DESKTOP_DIR/dotscript/docker-user-socket.sh
 
     #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

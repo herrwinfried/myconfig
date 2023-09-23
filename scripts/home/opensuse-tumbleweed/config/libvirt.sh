@@ -18,10 +18,10 @@ else
     echo $red"Grub2 configuration file not found. Please check your operating system.$white"
 fi
 
-echo "$yellow"sudo sed -i "s/#user = "qemu"/user = "$(id -un)"/g" /etc/libvirt/qemu.conf $white
-SUDO sed -i "s/#user = "qemu"/user = "$(id -un)"/g" /etc/libvirt/qemu.conf
-echo "$yellow"sed -i "s/#group = "qemu"/group = "$(id -gn)"/g" /etc/libvirt/qemu.conf $white
-SUDO sed -i "s/#group = "qemu"/group = "$(id -gn)"/g" /etc/libvirt/qemu.conf
+echo "$yellow"sed -i "s/#/user = \"qemu\"/user = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf $white
+SUDO sed -i "s/#user = \"qemu\"/user = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf
+echo "$yellow"sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf $white
+SUDO sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf
 
 echo $green"Adding $Username to kvm, libvirt, input groups...$cyan(sudo usermod -aG kvm,libvirt,input $Username)$white"
 SUDO usermod -aG kvm,libvirt,input $Username 

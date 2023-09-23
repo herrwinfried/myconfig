@@ -18,7 +18,7 @@ fi
 
 Username=$USER
 HomePWD=$HOME
-ExternalFolder="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/files"
+ExternalFolder="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && cd .. && pwd)/files"
 
 # Colors
 termcols=$(tput cols)

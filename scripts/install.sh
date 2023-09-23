@@ -8,6 +8,7 @@ SERVER_ARG=0
 # CONTAINER_ARG=0
 DISTROBOX_ARG=0
 CONFIG_ARG=0
+ONLYCONFIG_ARG=0
 PRESETUP_ARG=0
 
 
@@ -42,47 +43,45 @@ check_scriptfolder() {
   fi
 }
 
-function flatpakref {
+function externalPackage {
+    cdExternalFolder
+    files=$(ls -1 *.flatpakref *.rpm *.deb *.run *.bundle *.appimage 2>/dev/null)
 
-	cdExternalFolder
-    find . -iname '*.flatpakref' -exec chmod +x ./"{}" \;
-	find . -iname '*.flatpakref' -exec $FlatpakPackage $FlatpakPackageInstall ./"{}" \;
-	$FlatpakPackage $FlatpakPackageUpdate
-}
-
-function rpms {
-
-	cdExternalFolder
-    find . -iname '*.rpm' -exec chmod +x ./"{}" \;
-	find . -iname '*.rpm' -exec $SUDO $Package $PackageInstall ./"{}" \;
-    sudo $Package $PackageUpdate
-}
-function debs {
-
-	cdExternalFolder
-    find . -iname '*.deb' -exec chmod +x ./"{}" \;
-	find . -iname '*.deb' -exec $SUDO $Package $PackageInstall ./"{}" \;
-    sudo $Package $PackageUpdate
-}
-
-function runs {
-	cdExternalFolder
-	find . -iname '*.run' -exec chmod +x ./"{}" \;
-	find . -iname '*.run' -exec $SUDO ./"{}" \;
-}
-
-function bundles {
-	cdExternalFolder
-	find . -iname "*.bundle" -exec chmod +x ./"{}" \;
-	find . -iname "*.bundle" -exec $SUDO ./"{}" \;
-
-}
-
-function appimages {
-
-	cdExternalFolder
-	find . -iname "*.appimage" -exec chmod +x ./"{}" \;
-	find . -iname "*.appimage" -exec sudo ./"{}" \;
+        if [ -n "$files" ]; then
+        for file in $files; do
+            chmod +x "$file"
+            case "$file" in
+                *.flatpakref)
+               if [ -x $(command -v flatpak) ]; then
+                    SUDO $FlatpakPackage $FlatpakPackageInstall "$file"
+                    SUDO $FlatpakPackage $FlatpakPackageUpdate
+                    SUDO $Package $PackageUpdate
+                fi
+                    ;;
+                *.rpm)
+                if [ -x $(command -v zypper) ] || [ -x $(command -v dnf) ] && [ -x $(command -v rpm) ]; then
+                    SUDO $Package $PackageInstall "$file"
+                    SUDO $Package $PackageUpdate
+                fi
+                    ;;
+                *.deb)
+                if [ -x $(command -v apt) ] && [ -x $(command -v dpkg) ]; then
+                    SUDO $Package $PackageInstall "$file"
+                    SUDO $Package $PackageUpdate
+                fi
+                    ;;
+                *.run)
+                    SUDO ./"$file"
+                    ;;
+                *.bundle)
+                    SUDO ./"$file"
+                    ;;
+                *.appimage)
+                    SUDO ./"$file"
+                    ;;
+            esac
+        done
+    fi
 }
 
 i=1
@@ -109,6 +108,9 @@ while [ $i -le $j ]; do
     "--config" | "-c")
       CONFIG_ARG=1
       ;;
+    "--only-config" | "-cc")
+      ONLYCONFIG_ARG=1
+      ;;
     *)
       echo "$red Invalid argument-$i: $n $white"
       ;;
@@ -117,7 +119,7 @@ while [ $i -le $j ]; do
   shift 1
 done
 
-if [ $HOME_ARG -eq 0 ] && [ $SERVER_ARG -eq 0 ] && [ $DISTROBOX_ARG -eq 0 ] && [ $CONFIG_ARG -eq 0 ]; then
+if [ $HOME_ARG -eq 0 ] && [ $SERVER_ARG -eq 0 ] && [ $DISTROBOX_ARG -eq 0 ] && [ $ONLYCONFIG_ARG -eq 0 ] && [ $CONFIG_ARG -eq 0 ] && [ $PRESETUP_ARG -eq 0 ]; then
   echo $yellow"You selected no arguments... I'm finishing the script...$white"
   exit 1;
 else
@@ -136,6 +138,10 @@ else
       exe_script "$ScriptFolder/home/opensuse-tumbleweed/Presetup"
       echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
       echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
+      exit 1;
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/home/opensuse-tumbleweed/config"
       exit 1;
     fi
       exe_script "$ScriptFolder/home/opensuse-tumbleweed/Repository"
@@ -160,6 +166,10 @@ else
       echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
       exit 1;
     fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/server/opensuse-tumbleweed/config"
+      exit 1;
+    fi
       exe_script "$ScriptFolder/server/opensuse-tumbleweed/Repository"
       exe_script "$ScriptFolder/server/opensuse-tumbleweed/FirstProcess"
       exe_script "$ScriptFolder/server/opensuse-tumbleweed/Package"
@@ -176,7 +186,15 @@ else
         echo "NOT SUPPORT [distrobox]"
     else
     if [ $PRESETUP_ARG -eq 1 ]; then
-    echo "NOT SUPPORT [distrobox.presetup]"
+      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Repository"
+      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Presetup"
+      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
+      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
+      exit 1;
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/config"
+      exit 1;
     fi
       exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Repository"
       exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/FirstProcess"
@@ -202,6 +220,10 @@ else
       echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
       exit 1;
     fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/home/fedora/config"
+      exit 1;
+    fi
       exe_script "$ScriptFolder/home/fedora/Repository"
       exe_script "$ScriptFolder/home/fedora/FirstProcess"
       exe_script "$ScriptFolder/home/fedora/Package"
@@ -224,6 +246,10 @@ else
       echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
       exit 1;
     fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/server/fedora/config"
+      exit 1;
+    fi
       exe_script "$ScriptFolder/server/fedora/Repository"
       exe_script "$ScriptFolder/server/fedora/FirstProcess"
       exe_script "$ScriptFolder/server/fedora/Package"
@@ -240,7 +266,15 @@ else
         echo "NOT SUPPORT [distrobox]"
     else
     if [ $PRESETUP_ARG -eq 1 ]; then
-    echo "NOT SUPPORT [distrobox.presetup]"
+      exe_script "$ScriptFolder/distrobox/fedora/Repository"
+      exe_script "$ScriptFolder/distrobox/fedora/Presetup"
+      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
+      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
+      exit 1;
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/distrobox/fedora/config"
+      exit 1;
     fi
       exe_script "$ScriptFolder/distrobox/fedora/Repository"
       exe_script "$ScriptFolder/distrobox/fedora/FirstProcess"
@@ -265,6 +299,10 @@ else
       echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
       exit 1;
     fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/home/debian/config"
+      exit 1;
+    fi
       exe_script "$ScriptFolder/home/debian/Repository"
       exe_script "$ScriptFolder/home/debian/FirstProcess"
       exe_script "$ScriptFolder/home/debian/Package"
@@ -280,11 +318,15 @@ else
       if ! check_scriptfolder "server" "debian"; then
         echo "NOT SUPPORT [server]"
     else
-    if [ $PRESETUP_ARG -eq 1]; then
+    if [ $PRESETUP_ARG -eq 1 ]; then
       exe_script "$ScriptFolder/server/debian/Repository"
       exe_script "$ScriptFolder/server/debian/Presetup"
       echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
       echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
+      exit 1;
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/server/debian/config"
       exit 1;
     fi
       exe_script "$ScriptFolder/server/debian/Repository"
@@ -303,7 +345,15 @@ else
         echo "NOT SUPPORT [distrobox]"
     else
     if [ $PRESETUP_ARG -eq 1 ]; then
-    echo "NOT SUPPORT [distrobox.presetup]"
+      exe_script "$ScriptFolder/distrobox/debian/Repository"
+      exe_script "$ScriptFolder/distrobox/debian/Presetup"
+      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
+      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
+      exit 1;
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/distrobox/debian/config"
+      exit 1;
     fi
       exe_script "$ScriptFolder/distrobox/debian/Repository"
       exe_script "$ScriptFolder/distrobox/debian/FirstProcess"

@@ -4,7 +4,7 @@ if test (uname -s) != "Linux"
 end
 
 set -U fish_greeting
-if test -z "$LC_ALL"
+if test -z "$LC_ALL" -a -z "$LANG"
     set LANG C.utf8
     set -x LC_ALL $LANG
 end
@@ -23,7 +23,7 @@ if test -d $HOME/.local/bin
     set -x PATH $PATH $HOME/.local/bin
 end
 
-if test -f $HOME/bin/docker
+if test -f "$HOME/bin/docker" -o -f "/usr/bin/docker"
     set -x DOCKER_HOST unix:///run/user/1000/docker.sock
 end
 
