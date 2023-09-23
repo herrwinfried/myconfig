@@ -28,8 +28,6 @@ cp -r $ScriptFolder1/dotfiles/default.omp.json $HomePWD/.poshthemes
 
 mkdir -p $HomePWD/source
 
-ln -s /opt/lampp/htdocs $HomePWD/lamppHtdocs
-
 cp $ScriptFolder1/dotfiles/home/.bashrc $HomePWD/.bashrc
 
 cp $ScriptFolder1/dotfiles/home/.zshrc $HomePWD/.zshrc

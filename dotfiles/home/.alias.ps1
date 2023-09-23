@@ -3,7 +3,7 @@ if (-Not $isLinux) {
     Exit 1
 }
 
-if ([string]::IsNullOrEmpty($env:LC_ALL)) {
+if (([string]::IsNullOrEmpty($env:LC_ALL)) -and ([string]::IsNullOrEmpty($env:LANG))) {
     $env:LANG = "C.utf8"
     $env:LC_ALL = $env:LANG
 }
@@ -21,9 +21,10 @@ if (Test-Path "$env:HOME/.local/bin") {
     $env:PATH += ":$env:HOME/.local/bin"
 }
 
-if (Test-Path "$env:HOME/bin/docker") {
+if ((Test-Path "$env:HOME/bin/docker") -or (Test-Path "/usr/bin/docker")) {
     $env:DOCKER_HOST = "unix:///run/user/1000/docker.sock"
 }
+
 
 Function checkwsl {
     $unameout = $(uname -r | tr '[:upper:]' '[:lower:]');
