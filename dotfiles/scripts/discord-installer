@@ -139,7 +139,7 @@ rootpassword
 SUDO $Package $PackageUpdate
 SUDO $Package $PackageInstall curl tar
 
-echo "[Desktop Entry]
+sudo su -c "echo \"[Desktop Entry]
 Name=Discord $Version
 StartupWMClass=discord$Version
 Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
@@ -148,7 +148,7 @@ Exec=/opt/$ExecCom/$ExecCom
 Icon=discord-$Version
 Type=Application
 Categories=Network;InstantMessaging;
-Path=/opt/$ExecCom" | SUDO tee /usr/share/applications/discord-$Version.desktop
+Path=/opt/$ExecCom\" | tee /usr/share/applications/discord-$Version.desktop"
 
 curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
 SUDO mkdir -p /opt/$ExecCom
