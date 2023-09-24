@@ -18,7 +18,7 @@ if ! checkwsl; then
 
     SUDO touch /usr/share/applications/audiorelay.desktop
 
-    echo "[Desktop Entry]
+SUDO su -c " echo \"[Desktop Entry]
 Name=Audiorelay
 StartupWMClass=audiorelay
 Comment=Sound server
@@ -26,6 +26,6 @@ Exec=/opt/audiorelay/bin/AudioRelay
 Icon=/opt/audiorelay/lib/AudioRelay.png
 Type=Application
 Categories=System
-Path=/opt/audiorelay" | SUDO tee /usr/share/applications/audiorelay.desktop
+Path=/opt/audiorelay\" | tee /usr/share/applications/audiorelay.desktop"
 
 fi
