@@ -1,0 +1,25 @@
+if (IsAdministrator) {
+    $ScriptFolderTemp = Join-Path $PSScriptRoot "..\..\.."
+    . "$ScriptFolderTemp\VARIABLE.ps1"
+    
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Value 1
+
+# Show CheckBox `[ ]` 1 -> enable
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "AutoCheckSelect" -Value 1
+
+# Show File Extention 0 -> disable
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value 0
+
+# Show recently used files 0 -> disable
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackDocs" -Value 0
+
+# Show frequently used folders 0 -> disable
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackProgs" -Value 0
+
+# Show files from office.com 0 -> disable
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowCloudFilesInQuickAccess" -Value 0
+
+#Stop-Process -Name "explorer" -Force
+} else {
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+}
