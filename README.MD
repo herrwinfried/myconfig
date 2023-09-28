@@ -8,11 +8,11 @@ Kendime göre yaptığım konfigürasyonlar var. Lütfen kendi bilincinize göre
 
 ## Powershell
 ```pwsh
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/windows/download.bat" -OutFile "$env:USERPROFILE\Desktop\MyConfig_download.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/windows/scripts/download.bat" -OutFile "$env:USERPROFILE\Desktop\MyConfig_download.bat"
 ```
 
 ## CMD
 ```cmd
-curl -o %USERPROFILE%\Desktop\MyConfig_download.bat https://raw.githubusercontent.com/herrwinfried/myconfig/windows/download.bat
+curl -o %USERPROFILE%\Desktop\MyConfig_download.bat https://raw.githubusercontent.com/herrwinfried/myconfig/windows/scripts/download.bat
 ```
 
