@@ -12,8 +12,8 @@ $BOARD_VENDOR = (Get-CimInstance Win32_ComputerSystemProduct).Vendor.ToLower()
 
 $NEW_HOSTNAME = "herrwinfried"
 
-Username=$env:USERNAME
-HomePWD=$env:USERPROFILE
+$Username=$env:USERNAME
+$HomePWD=$env:USERPROFILE
 
 function IsAdministrator {
     $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
@@ -71,7 +71,9 @@ function PackageProviderInstall {
 function New-Font-Online {
     param(
         [Parameter(Mandatory, HelpMessage="web address of the file")][ValidateNotNullOrEmpty()][string]$url,
-        [Parameter(Mandatory, HelpMessage="font full name including .ttf or .otf")][ValidateNotNullOrEmpty()][string]$Family
+        [Parameter(Mandatory, HelpMessage="font full name including .ttf or .otf")][ValidateNotNullOrEmpty()][string]$Family,
+        [Parameter(HelpMessage="is System?")][Alias("s")]
+        [switch]$System
     )
         <#
     .DESCRIPTION
@@ -80,11 +82,16 @@ function New-Font-Online {
     .EXAMPLE
     New-Font-Online -url "https://example.com/meslonf.ttf" -Family "xMesloNF.ttf"
     It downloads from https://example.com/meslonf.ttf, uploads it to the 
-    C:\Windows\fonts folder as xMesloNF.ttf, and regedit specifies the font name.
+    $env:USERPROFILE\AppData\Local\Microsoft\Windows\Fonts folder as xMesloNF.ttf, and regedit specifies the font name.
 
     #>
-    [string]$Destination = "C:\Windows\fonts"
-    [string]$Registry = "HKLM:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    if ($System) {
+        [string]$Destination = "C:\Windows\fonts"
+        [string]$Registry = "HKLM:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    } else {
+        [string]$Destination = "$env:USERPROFILE\AppData\Local\Microsoft\Windows\Fonts"
+        [string]$Registry = "HKCU:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    }
 
     $validExtensions = @(".ttf", ".otf") 
 
@@ -100,8 +107,12 @@ function New-Font-Online {
             Invoke-WebRequest -Uri $url -OutFile $Family
             $fontFullName = Join-Path -Path $Destination -ChildPath $Family
             Move-Item -Path $Family -Destination $fontFullName -Force
-
-            Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value $Family
+            if ($System) {
+                Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value $Family
+            } else {
+                Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value "$Destination\$Family"
+        }
+           
         }
         else {
             $existingFontFile = Get-ItemProperty -Path "$Registry\$fontRegistryKey" | Select-Object -ExpandProperty "(default)"
@@ -116,8 +127,10 @@ function New-Font-Online {
 function New-Font {
     param(
         [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$source,
-        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$Family
-  )
+        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$Family,
+        [Parameter(HelpMessage="is System?")][Alias("s")]
+        [switch]$System
+    )
           <#
     .DESCRIPTION
     Adds global font to the selected font file.
@@ -125,11 +138,17 @@ function New-Font {
     .EXAMPLE
     New-Font -source "c:/myfont/meslonf.ttf" -Family "xMesloNF.ttf" 
     Copies c:/myfont/meslon.ttf and adds xMesloNF.ttf to
-     C:\Windows\fonts folder and regedit specifies the font name.
+     $env:USERPROFILE\AppData\Local\Microsoft\Windows\Fonts folder and regedit specifies the font name.
 
     #>
-  [string]$Destination = "C:\Windows\fonts"
-  [string]$Registry = "HKLM:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+
+    if ($System) {
+        [string]$Destination = "C:\Windows\fonts"
+        [string]$Registry = "HKLM:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    } else {
+        [string]$Destination = "$env:USERPROFILE\AppData\Local\Microsoft\Windows\Fonts"
+        [string]$Registry = "HKCU:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    }
   $validExtensions = @(".ttf", ".otf") 
 
   $fileExtension = [System.IO.Path]::GetExtension($Family)
@@ -143,8 +162,11 @@ function New-Font {
       if (-not (Test-Path "$Registry\$fontRegistryKey")) {
         $fontFullName = Join-Path -Path $Destination -ChildPath $Family
         Move-Item -Path $Family -Destination $fontFullName -Force
-
-        Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value $Family
+        if ($System) {
+            Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value $Family
+        } else {
+            Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value "$Destination\$Family"
+    }
         }
         else {
             $existingFontFile = Get-ItemProperty -Path "$Registry\$fontRegistryKey" | Select-Object -ExpandProperty "(default)"
@@ -158,7 +180,9 @@ function New-Font {
 
 function Remove-Font {
     param(
-        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$Family
+        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$Family,
+        [Parameter(HelpMessage="is System?")][Alias("s")]
+        [switch]$System
     )
 
     <#
@@ -171,7 +195,11 @@ function Remove-Font {
     deletes it from the registry.
     #>
 
-    [string]$Registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    if ($System) {
+        [string]$Registry = "HKLM:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    } else {
+        [string]$Registry = "HKCU:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts"
+    }
 
     $fontRegistryKey = [System.IO.Path]::GetFileNameWithoutExtension($Family)
 
@@ -183,7 +211,11 @@ function Remove-Font {
         Write-Warning "Font entry not found in the registry: $Family"
     }
 
-    $fontFile = Join-Path -Path "C:\Windows\fonts" -ChildPath $Family
+    if ($System) {
+        $fontFile = Join-Path -Path "C:\Windows\fonts" -ChildPath $Family
+    } else {
+        $fontFile = Join-Path -Path "$env:USERPROFILE\AppData\Local\Microsoft\Windows\Fonts" -ChildPath $Family
+    }
 
     if (Test-Path $fontFile) {
         Remove-Item -Path $fontFile -Force

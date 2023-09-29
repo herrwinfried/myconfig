@@ -1,8 +1,4 @@
-$Host.UI.RawUI.WindowTitle = "HerrWinfried - MyConfig Installer"
-$ScriptFolder = $PSScriptRoot
-. $ScriptFolder/VARIBLES.ps1
-
-param (
+param(
     [Alias("h")]
     [switch]$Help,
     [Alias("u", "home")]
@@ -18,6 +14,9 @@ param (
     [Alias("cc")]
     [switch]$OnlyConfig
 )
+$Host.UI.RawUI.WindowTitle = "HerrWinfried - MyConfig Installer"
+$ScriptFolder = $PSScriptRoot
+. $ScriptFolder/VARIBLES.ps1
 
 if ($Help) {
     exit 1;

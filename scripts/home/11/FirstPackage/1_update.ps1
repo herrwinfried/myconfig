@@ -1,13 +1,22 @@
-if (IsAdministrator) {
-    $ScriptFolderTemp = Join-Path $PSScriptRoot "..\..\.."
-    . "$ScriptFolderTemp\VARIABLE.ps1"
-
-    Install-PackageProvider -Name NuGet -Force
-    Install-Module -Name PSWindowsUpdate -Force
-} else {
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs
+function IsAdministrator {
+    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+if (IsAdministrator) {
 
-if (-not (IsAdministrator)) {
-    winget update -r
+Set-Location $PSScriptRoot\..\..\..\
+$TempFolder=$(pwd)
+    . "$TempFolder\VARIBLES.ps1"
+Set-Location $PSScriptRoot
+Start-Sleep -s 1
+    PackageProviderInstall -ProviderName NuGet
+    ModuleInstall -ModuleName PSWindowsUpdate
+	Import-Module PSWindowsUpdate
+	Get-WindowsUpdate -AcceptAll -Download
+	Get-WindowsUpdate -AcceptAll -Install
+} else {
+Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs
+
+winget update -r
 }

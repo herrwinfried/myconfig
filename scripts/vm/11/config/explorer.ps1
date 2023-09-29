@@ -1,6 +1,15 @@
+function IsAdministrator {
+    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
 if (IsAdministrator) {
-    $ScriptFolderTemp = Join-Path $PSScriptRoot "..\..\.."
-    . "$ScriptFolderTemp\VARIABLE.ps1"
+
+Set-Location $PSScriptRoot\..\..\..\
+$TempFolder=$(pwd)
+    . "$TempFolder\VARIBLES.ps1"
+Set-Location $PSScriptRoot
     
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Value 1
 

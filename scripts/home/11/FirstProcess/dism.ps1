@@ -1,6 +1,15 @@
+function IsAdministrator {
+    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
 if (IsAdministrator) {
-    $ScriptFolderTemp = Join-Path $PSScriptRoot "..\..\.."
-    . "$ScriptFolderTemp\VARIABLE.ps1"
+
+Set-Location $PSScriptRoot\..\..\..\
+$TempFolder=$(pwd)
+    . "$TempFolder\VARIBLES.ps1"
+Set-Location $PSScriptRoot
     
 # Enable Hyper-v All feature
 dism.exe /online /enable-feature /featurename:Microsoft-Hyper-V-All /all /norestart
@@ -22,6 +31,7 @@ dism.exe /online /enable-feature /featurename:DirectPlay /all /norestart
 dism.exe /online /enable-feature /featurename:Printing-XPSServices-Features /all /norestart
 # Enable Print To PDF
 dism.exe /online /enable-feature /featurename:Printing-PrintToPDFServices-Features /all /norestart
+
 } else {
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
 }
