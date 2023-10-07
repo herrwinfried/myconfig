@@ -98,15 +98,18 @@ function New-Font-Online {
     $fileExtension = [System.IO.Path]::GetExtension($Family)
 
     if ($validExtensions -contains $fileExtension.ToLower()) {
+	if (-NOT (Test-Path $Destination)) {
+	New-Item -Path $Destination -ItemType Directory
+	}
         $fontType = if ($fileExtension -eq ".otf") { "OpenType" } else { "TrueType" }
 
         $fontRegistryKey = [System.IO.Path]::GetFileNameWithoutExtension($Family)
         $fontRegistryKey = "$fontRegistryKey ($fontType)"
 
         if (-not (Test-Path "$Registry\$fontRegistryKey")) {
-            Invoke-WebRequest -Uri $url -OutFile $Family
+            Invoke-WebRequest -Uri $url -OutFile $env:TEMP/$Family
             $fontFullName = Join-Path -Path $Destination -ChildPath $Family
-            Move-Item -Path $Family -Destination $fontFullName -Force
+            Move-Item -Path $env:TEMP/$Family -Destination $fontFullName -Force
             if ($System) {
                 Set-ItemProperty -Path $Registry -Name $fontRegistryKey -Value $Family
             } else {
@@ -154,6 +157,9 @@ function New-Font {
   $fileExtension = [System.IO.Path]::GetExtension($Family)
 
   if ($validExtensions -contains $fileExtension.ToLower()) {
+	if (-NOT (Test-Path $Destination)) {
+	New-Item -Path $Destination -ItemType Directory
+	}
       $fontType = if ($fileExtension -eq ".otf") { "OpenType" } else { "TrueType" }
 
       $fontRegistryKey = [System.IO.Path]::GetFileNameWithoutExtension($Family)

@@ -9,6 +9,7 @@ if (IsAdministrator) {
 Set-Location $PSScriptRoot\..\..\..\
 $TempFolder=$(pwd)
     . "$TempFolder\VARIBLES.ps1"
+
 Set-Location $PSScriptRoot
 
 New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf" -Family "MesloLGS NF Bold Italic.ttf"
