@@ -37,7 +37,7 @@ function WingetInstall {
         [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][String]$Id
         )
         if (Test-CommandExists winget) {
-            $runCommand = "winget.exe install --id $Id --accept-package-agreements --accept-source-agreements"
+            $runCommand = "winget.exe install --id $Id --accept-package-agreements --accept-source-agreements --force"
             Invoke-Expression $runCommand
             } else {
                 Write-Warning "winget was not found, so it will not be installed. The program with ID $Id ."
@@ -246,6 +246,7 @@ function Download-File {
         [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$url,
         [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$desc
     )
+    Remove-File $desc
     Invoke-WebRequest $url -OutFile $desc
 }
 

@@ -16,7 +16,8 @@ Start-Sleep -s 1
 	Get-WindowsUpdate -AcceptAll -Download
 	Get-WindowsUpdate -AcceptAll -Install
 } else {
+     
+winget update -r
 Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs
 
-winget update -r
 }
