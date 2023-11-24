@@ -30,6 +30,7 @@ exe_script() {
   for forScriptFile in $(ls -1 "$script_folder" | grep "\.sh$"); do
     echo -e "$magenta $forScriptFile $white\n" && sleep 1
     chmod +x "$script_folder/$forScriptFile"
+    dos2unix "$script_folder/$forScriptFile"
     . "$script_folder/$forScriptFile"
   done
 }
