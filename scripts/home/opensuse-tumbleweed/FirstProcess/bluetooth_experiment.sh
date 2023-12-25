@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if ! checkwsl; then
-    # sudo zypper in -y bluez-auto-enable-devices
-    #sed -i "s/#Experimental = false/Experimental = true/" /etc/bluetooth/main.conf
+    # SUDO zypper in -y bluez-auto-enable-devices
+    #SUDO sed -i "s/#Experimental = false/Experimental = true/" /etc/bluetooth/main.conf
     ################################################################################
 
     if [ "$(cat /etc/systemd/system/bluetooth.service.d/override.conf | grep 'ExecStart=/usr/libexec/bluetooth/bluetoothd -E')" ]; then
@@ -12,7 +12,7 @@ if ! checkwsl; then
         SUDO touch /etc/systemd/system/bluetooth.service.d/override.conf
         echo "[Service]
 ExecStart=
-ExecStart=/usr/libexec/bluetooth/bluetoothd -E" | sudo tee /etc/systemd/system/bluetooth.service.d/override.conf
+ExecStart=/usr/libexec/bluetooth/bluetoothd -E" | SUDO tee /etc/systemd/system/bluetooth.service.d/override.conf
         SUDO systemctl daemon-reload
         SUDO systemctl restart bluetooth
     fi

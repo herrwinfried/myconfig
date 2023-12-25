@@ -9,8 +9,4 @@ else
     SUDO su -c "echo "protect_running_kernel=False" | tee -a /etc/dnf/dnf.conf"
 fi
 
-if [ "$(cat /etc/dnf/dnf.conf | grep excludepkgs)" ]; then
-    echo $red"excludepkgs is available. The value will be not written.$white"
-else
-    SUDO su -c "echo "excludepkgs=suse-prime" | tee -a /etc/dnf/dnf.conf"
-fi
+SUDO dnf versionlock exclude suse-prime

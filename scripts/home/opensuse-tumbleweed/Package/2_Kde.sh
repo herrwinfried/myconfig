@@ -17,6 +17,8 @@ if ! checkwsl; then
     #   Paint(Like WinXP), Music Player, Dolphin extra plugin, nextcloud images for dolphin
     packageKDE+=" kolourpaint elisa dolphin-plugins nextcloud-desktop-dolphin"
 
+    # Video edit , KDE Games
+    packageKDE+=" kdenlive patterns-kde-kde_games"
     #   KDevelop App, KDevelop Additional Plugin Support, KDevelop PHP Plugin, KDevelop Python Plugin
             #packageKDE+=" kdevelop5 kdevelop5-pg-qt kdevelop5-plugin-php kdevelop5-plugin-python3"
 

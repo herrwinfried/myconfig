@@ -136,7 +136,6 @@ fi
 
 rootpassword
 
-SUDO $Package $PackageUpdate
 SUDO $Package $PackageInstall curl tar
 
 sudo su -c "echo \"[Desktop Entry]

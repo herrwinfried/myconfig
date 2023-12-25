@@ -2,9 +2,15 @@
 
 if ! checkwsl; then
     if lspci | grep -qi -E "nvidia|NVIDIA"; then
-        SUDO $Package $PackageInstall nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-utils-G06 nvidia-video-G06 #xf86-video-intel
+        SUDO $Package $PackageInstall nvidia-drivers-G06 nvidia-driver-G06-kmp-default \
+        nvidia-video-G06 nvidia-gl-G06 nvidia-compute-G06 \
+        nvidia-video-G06-32bit nvidia-gl-G06-32bit nvidia-compute-G06-32bit;
     fi
     SUDO groupadd wheel
     SUDO usermod -aG wheel $Username
 
 fi
+
+# 
+
+
