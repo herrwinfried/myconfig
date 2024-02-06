@@ -1,1 +1,0 @@
-. $HOME/.alias.ps1

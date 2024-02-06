@@ -1,1 +1,0 @@
-wingetx -Id Nvidia.GeForceExperience
