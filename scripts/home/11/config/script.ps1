@@ -1,6 +1,6 @@
 $OldPWD = Get-Location
 Set-Location $PSScriptRoot\..\..\..\..\dotfiles
-$DotfilesFolder=$(pwd)
+$DotfilesFolder=$(Get-Location)
 
 Remove-File "$env:USERPROFILE\.alias.ps1"
 

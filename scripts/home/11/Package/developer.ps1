@@ -1,4 +1,4 @@
-WingetInstall -Id Git.Git
+WingetInstall -Interactive 1 -Id Git.Git
 WingetInstall -Id GitHub.GitLFS
 WingetInstall -Id GnuPG.Gpg4win
 WingetInstall -Id GnuPG.GnuPG

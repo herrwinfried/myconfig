@@ -1,2 +1,2 @@
-# for home
-script I run on normal host
+# for vm
+script I run on virtual machine

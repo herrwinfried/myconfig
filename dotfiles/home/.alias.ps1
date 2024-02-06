@@ -21,17 +21,23 @@ Function Test-CommandExists {
 }
 
 if (Test-CommandExists winget) {
-function WingetInstall {
-    param (
-        [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][String]$Id
-        )
-        if (Test-CommandExists winget) {
-            $runCommand = "winget.exe install --id $Id --accept-package-agreements --accept-source-agreements"
-            Invoke-Expression $runCommand
-            } else {
-                Write-Warning "winget was not found, so it will not be installed. The program with ID $Id ."
-            }
-}
+    function WingetInstall {
+        param (
+            [Parameter()][bool]$Interactive = $false,
+            [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][String]$Id
+            )
+            if (Test-CommandExists winget) {
+                if ($Interactive) {
+                    $runCommand = "winget.exe install --interactive --id $Id --accept-package-agreements --accept-source-agreements --force"
+                } else {
+                    $runCommand = "winget.exe install --id $Id --accept-package-agreements --accept-source-agreements --force"
+                }
+                
+                Invoke-Expression $runCommand
+                } else {
+                    Write-Warning "winget was not found, so it will not be installed. The program with ID $Id ."
+                }
+    }
 }
 
 function New-Font-Online {

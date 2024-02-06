@@ -85,7 +85,7 @@ $OSFolder="11"
             exit 1
         }
         if ($OnlyConfig) {
-            exe_script "$ScriptFolder/home/$OSFolder/config"
+            exe_script "$ScriptFolder/home/$OSFolder/Config"
             exit 1
         }
         exe_script "$ScriptFolder/home/$OSFolder/FirstProcess"
@@ -93,7 +93,7 @@ $OSFolder="11"
         exe_script "$ScriptFolder/home/$OSFolder/Package"
         exe_script "$ScriptFolder/home/$OSFolder/RecentProcess"
         if ($Config) {
-        exe_script "$ScriptFolder/home/$OSFolder/config"
+        exe_script "$ScriptFolder/home/$OSFolder/Config"
         }
 
     }
@@ -108,7 +108,7 @@ $OSFolder="11"
             exit 1
         }
         if ($OnlyConfig) {
-            exe_script "$ScriptFolder/vm/$OSFolder/config"
+            exe_script "$ScriptFolder/vm/$OSFolder/Config"
             exit 1
         }
         exe_script "$ScriptFolder/vm/$OSFolder/FirstProcess"
@@ -116,7 +116,7 @@ $OSFolder="11"
         exe_script "$ScriptFolder/vm/$OSFolder/Package"
         exe_script "$ScriptFolder/vm/$OSFolder/RecentProcess"
         if ($Config) {
-        exe_script "$ScriptFolder/vm/$OSFolder/config"
+        exe_script "$ScriptFolder/vm/$OSFolder/Config"
         }
 
     }
@@ -131,7 +131,7 @@ $OSFolder="11"
             exit 1
         }
         if ($OnlyConfig) {
-            exe_script "$ScriptFolder/server/$OSFolder/config"
+            exe_script "$ScriptFolder/server/$OSFolder/Config"
             exit 1
         }
         exe_script "$ScriptFolder/server/$OSFolder/FirstProcess"
@@ -139,7 +139,7 @@ $OSFolder="11"
         exe_script "$ScriptFolder/server/$OSFolder/Package"
         exe_script "$ScriptFolder/server/$OSFolder/RecentProcess"
         if ($Config) {
-        exe_script "$ScriptFolder/server/$OSFolder/config"
+        exe_script "$ScriptFolder/server/$OSFolder/Config"
         }
 
     }

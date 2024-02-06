@@ -7,7 +7,7 @@ function IsAdministrator {
 if (IsAdministrator) {
 
 Set-Location $PSScriptRoot\..\..\..\
-$TempFolder=$(pwd)
+$TempFolder=$(Get-Location)
     . "$TempFolder\VARIBLES.ps1"
 Set-Location $PSScriptRoot
     

@@ -4,13 +4,15 @@ function IsAdministrator {
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-# if (IsAdministrator) {
-# Set-Location $PSScriptRoot\..\..\..\
-# $TempFolder=$(pwd)
-   # . "$TempFolder\VARIBLES.ps1"
-# Set-Location $PSScriptRoot
-# Rename-Computer -NewName "$NEW_HOSTNAME"
-# } else {
-#     Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
-# }
-Write-Debug "-_- / rename-computer"
+if (IsAdministrator) {
+Set-Location $PSScriptRoot\..\..\..\
+$TempFolder=$(Get-Location)
+   . "$TempFolder\VARIBLES.ps1"
+Set-Location $PSScriptRoot
+$CURRENT_HOSTNAME = ($env:computername).ToLower()
+if ($CURRENT_HOSTNAME -ne $NEW_HOSTNAME) {
+    Rename-Computer -NewName "$NEW_HOSTNAME"
+}
+} else {
+    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+}

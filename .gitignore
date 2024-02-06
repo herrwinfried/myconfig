@@ -2,6 +2,4 @@
 *.zip*
 *.7z*
 *.rar*
-ancs4linux
-themeconfig
-files
+0*.ps1
