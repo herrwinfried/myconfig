@@ -13,7 +13,7 @@ Package_b+=" libreoffice libreoffice-l10n-tr poppler-tools"
 
 Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0 mangohud mangohud-32bit goverlay"
 Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
-Package_c_Flatpak+=" org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
+Package_c_Flatpak+=" com.stremio.Stremio com.github.wwmm.easyeffects org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
 
 if checkwsl; then
 Package_b+=" libreoffice-gnome libreoffice-gtk3"
@@ -24,7 +24,8 @@ if ! checkwsl; then
     
     Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
     Package_c+=" steam protontricks"
-    Package_d_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl io.github.trigg.discover_overlay net.davidotek.pupgui2"
+    Package_d_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl" 
+    Package_d_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2"
 
 fi
 SUDO $Package $PackageInstall $Package_a

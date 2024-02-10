@@ -2,7 +2,7 @@
 
 Packman0="ffmpeg $(echo gstreamer-plugins-{good,bad,ugly,libav}) libavcodec-full"
 
-Package_a="net-tools net-tools-deprecated"
+Package_a="net-tools"
 
 if checkwsl; then
     Package_a+=" noto-sans-fonts gsettings-desktop-schemas libwayland-client0 libwayland-cursor0 libwayland-server0 xwayland humanity-icon-theme materia-gtk-theme gnome-tweaks qt5ct"
