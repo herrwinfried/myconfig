@@ -1,13 +1,17 @@
+#!/bin/bash
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_Version | tr '[:upper:]' '[:lower:]')
+  if [[ $distro = *opensuse\ tumbleweed* ]]; then
+BOARD_VENDOR=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
+
 if [[ $BOARD_VENDOR == *"asus"* ]]; then
 SUDO $Package $PackageInstall curl tar jq
 
 asustheme=$(curl -s "https://api.github.com/repos/AdisonCavani/distro-grub-themes/releases/latest" | jq -r ".assets[] | select(.name | test(\"asus.tar\")) | .browser_download_url")
 DEFAULT_GRUB_THEME="GRUB_THEME=/boot/grub2/themes/openSUSE/theme.txt"
-
-
-new_grub_theme="GRUB_THEME=/boot/grub2.d/themes/asus/theme.txt"
-current_grub_theme=$(grep -E "^GRUB_THEME=" /etc/default/grub)
-
 if [ -d "/tmp/asus.tar" ]; then
     SUDO rm -rf /tmp/asus*
 fi
@@ -27,7 +31,8 @@ curl -L "$asustheme" -o "/tmp/asus.tar"
 SUDO mkdir -p /boot/grub2.d/themes/asus
 SUDO tar -xf "/tmp/asus.tar" -C /boot/grub2.d/themes/asus
 
-
+new_grub_theme="GRUB_THEME=/boot/grub2.d/themes/asus/theme.txt"
+current_grub_theme=$(grep -E "^GRUB_THEME=" /etc/default/grub)
 
 if [ "$current_grub_theme" != "$new_grub_theme" ]; then
     SUDO sed -i "s|^GRUB_THEME=.*|$new_grub_theme|" /etc/default/grub
@@ -36,3 +41,4 @@ if [ "$current_grub_theme" != "$new_grub_theme" ]; then
 fi
 
 fi
+    fi

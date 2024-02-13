@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# https://gist.github.com/jabbas/a8785710a5e8655045fc0be67385e887
+
+for d in /sys/kernel/iommu_groups/*/devices/*; do
+  n=${d#*/iommu_groups/*}; n=${n%%/*}
+  printf 'IOMMU Group %s ' "$n"
+  lspci -nns "${d##*/}"
+done

@@ -6,7 +6,6 @@ Package_a+=" lzip unrar unzip java-21-openjdk cnf-rs cnf-rs-bash cnf-rs-zsh cnf-
 Package_a+=" rsync python311-pip wl-clipboard"
 
 Package_a_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.5 org.kde.PlatformTheme.QGnomePlatform//6.5"
-Package_a_Flatpak2="kdeapps org.kde.xwaylandvideobridge"
 
 Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
 Package_b+=" libreoffice libreoffice-l10n-tr poppler-tools"
@@ -21,8 +20,7 @@ fi
 
 if ! checkwsl; then   
     Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
-    
-    Package_b+=" discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
+    Package_b+=" xwaylandvideobridge discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
     Package_c+=" steam protontricks"
     Package_d_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl" 
     Package_d_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2"
@@ -31,13 +29,6 @@ fi
 SUDO $Package $PackageInstall $Package_a
 
 SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
-
-
-#NOT WSL
-if ! checkwsl; then
-    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak2
-fi
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 SUDO $Package $PackageInstall $Package_b
