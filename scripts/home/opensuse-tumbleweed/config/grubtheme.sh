@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [[ $BOARD_VENDOR == *"asus"* ]]; then
 SUDO $Package $PackageInstall curl tar jq
 

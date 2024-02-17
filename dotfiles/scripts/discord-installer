@@ -37,7 +37,7 @@ function checkcommand {
 }
 
 function errorHelp {
-    echo "ERROR! Example: discord-installer PTB"
+    echo "ERROR! Example: $0 PTB"
     echo "canary, ptb, stable"
     exit 1
 }
@@ -136,7 +136,6 @@ fi
 
 rootpassword
 
-SUDO $Package $PackageUpdate
 SUDO $Package $PackageInstall curl tar
 
 sudo su -c "echo \"[Desktop Entry]
@@ -167,4 +166,4 @@ SUDO tar -xzf /tmp/discord$Version.tar.gz -C /opt/
 SUDO chmod 777 /opt/$ExecCom
 SUDO chmod 777 /opt/$ExecCom/*
 
-SUDOfinish
+sudofinish

@@ -30,6 +30,7 @@ exe_script() {
   for forScriptFile in $(ls -1 "$script_folder" | grep "\.sh$"); do
     echo -e "$magenta $forScriptFile $white\n" && sleep 1
     chmod +x "$script_folder/$forScriptFile"
+    dos2unix "$script_folder/$forScriptFile"
     . "$script_folder/$forScriptFile"
   done
 }
@@ -119,6 +120,12 @@ while [ $i -le $j ]; do
   shift 1
 done
 
+
+function presetup_message {
+      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
+      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
+      exit 1;
+}
 if [ $HOME_ARG -eq 0 ] && [ $SERVER_ARG -eq 0 ] && [ $DISTROBOX_ARG -eq 0 ] && [ $ONLYCONFIG_ARG -eq 0 ] && [ $CONFIG_ARG -eq 0 ] && [ $PRESETUP_ARG -eq 0 ]; then
   echo $yellow"You selected no arguments... I'm finishing the script...$white"
   exit 1;
@@ -126,249 +133,97 @@ else
   if [ $HOME_ARG -eq 1 ] && [ $SERVER_ARG -eq 1 ]; then
     basic_if_warning
   fi
-
+  DistroFolder=""
   if [[ $distro = *opensuse\ tumbleweed* ]]; then
-  openSUSETW_ALIAS
-    if [ $HOME_ARG -eq 1 ]; then
-         if ! check_scriptfolder "home" "opensuse-tumbleweed"; then
-        echo "NOT SUPPORT [home]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/Repository"
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/Repository"
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/FirstProcess"
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/Package"
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/opensuse-tumbleweed/config"
-    fi
-    fi
-    fi
-
-    if [ $SERVER_ARG -eq 1 ]; then
-       if ! check_scriptfolder "server" "opensuse-tumbleweed"; then
-        echo "NOT SUPPORT [server]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/Repository"
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/Repository"
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/FirstProcess"
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/Package"
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/opensuse-tumbleweed/config"
-    fi
-    fi
-    fi
-
-    if [ $DISTROBOX_ARG -eq 1 ]; then
-      if ! check_scriptfolder "distrobox" "opensuse-tumbleweed"; then
-        echo "NOT SUPPORT [distrobox]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Repository"
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Repository"
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/FirstProcess"
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/Package"
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/opensuse-tumbleweed/config"
-    fi
-    fi
-    fi
-
-    elif [[ $distro = *fedora* ]]; then
+    DistroFolder="opensuse-tumbleweed"
+    openSUSETW_ALIAS
+    elif [[ $distro == *fedora* && $(rpm -E %fedora) -eq 39 ]]; then
+    DistroFolder="fedora39"
     fedora_ALIAS
-    if [ $HOME_ARG -eq 1 ]; then
-       if ! check_scriptfolder "home" "fedora"; then
-        echo "NOT SUPPORT [home]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/fedora/Repository"
-      exe_script "$ScriptFolder/home/fedora/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/fedora/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/home/fedora/Repository"
-      exe_script "$ScriptFolder/home/fedora/FirstProcess"
-      exe_script "$ScriptFolder/home/fedora/Package"
-      exe_script "$ScriptFolder/home/fedora/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/fedora/config"
-    fi
-    fi
-    fi
-
-    if [ $SERVER_ARG -eq 1 ]; then
-      if ! check_scriptfolder "server" "fedora"; then
-        echo "NOT SUPPORT [server]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/fedora/Repository"
-      exe_script "$ScriptFolder/server/fedora/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/fedora/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/server/fedora/Repository"
-      exe_script "$ScriptFolder/server/fedora/FirstProcess"
-      exe_script "$ScriptFolder/server/fedora/Package"
-      exe_script "$ScriptFolder/server/fedora/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/fedora/config"
-    fi
-    fi
-    fi
-
-    if [ $DISTROBOX_ARG -eq 1 ]; then
-   if ! check_scriptfolder "distrobox" "fedora"; then
-        echo "NOT SUPPORT [distrobox]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/fedora/Repository"
-      exe_script "$ScriptFolder/distrobox/fedora/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/fedora/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/distrobox/fedora/Repository"
-      exe_script "$ScriptFolder/distrobox/fedora/FirstProcess"
-      exe_script "$ScriptFolder/distrobox/fedora/Package"
-      exe_script "$ScriptFolder/distrobox/fedora/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/fedora/config"
-    fi
-    fi
-    fi
-     elif [[ $distro = *debian* ]]; then
+    elif [[ $distro = *debian* ]]; then
+    DistroFolder="debian"
      debian_ALIAS
-        if [ $HOME_ARG -eq 1 ]; then
-       if ! check_scriptfolder "home" "debian"; then
-        echo "NOT SUPPORT [home]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/debian/Repository"
-      exe_script "$ScriptFolder/home/debian/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/debian/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/home/debian/Repository"
-      exe_script "$ScriptFolder/home/debian/FirstProcess"
-      exe_script "$ScriptFolder/home/debian/Package"
-      exe_script "$ScriptFolder/home/debian/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/debian/config"
-    fi
-    fi
-    fi
-
-    if [ $SERVER_ARG -eq 1 ]; then
-      if ! check_scriptfolder "server" "debian"; then
-        echo "NOT SUPPORT [server]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/debian/Repository"
-      exe_script "$ScriptFolder/server/debian/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/debian/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/server/debian/Repository"
-      exe_script "$ScriptFolder/server/debian/FirstProcess"
-      exe_script "$ScriptFolder/server/debian/Package"
-      exe_script "$ScriptFolder/server/debian/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/debian/config"
-    fi
-    fi
-    fi
-
-    if [ $DISTROBOX_ARG -eq 1 ]; then
-   if ! check_scriptfolder "distrobox" "debian"; then
-        echo "NOT SUPPORT [distrobox]"
-    else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/debian/Repository"
-      exe_script "$ScriptFolder/distrobox/debian/Presetup"
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-    fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/debian/config"
-      exit 1;
-    fi
-      exe_script "$ScriptFolder/distrobox/debian/Repository"
-      exe_script "$ScriptFolder/distrobox/debian/FirstProcess"
-      exe_script "$ScriptFolder/distrobox/debian/Package"
-      exe_script "$ScriptFolder/distrobox/debian/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/debian/config"
-    fi
-    fi
-    fi
-
   else
     echo "$red I cannot support the operating system you are currently trying.$white"
+    exit 1
   fi
+    #
+if [ $HOME_ARG -eq 1 ]; then
+       if ! check_scriptfolder "home" "$DistroFolder"; then
+        echo "NOT SUPPORT [home]"
+        exit 1;
+    else
+    if [ $PRESETUP_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/home/$DistroFolder/Repository"
+      exe_script "$ScriptFolder/home/$DistroFolder/Presetup"
+        presetup_message
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/home/$DistroFolder/config"
+      exit 1;
+    fi
+      exe_script "$ScriptFolder/home/$DistroFolder/Repository"
+      exe_script "$ScriptFolder/home/$DistroFolder/FirstProcess"
+      exe_script "$ScriptFolder/home/$DistroFolder/Package"
+      exe_script "$ScriptFolder/home/$DistroFolder/RecentProcess"
+
+      if [ $CONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/home/$DistroFolder/config"
+    fi
+    fi
+    fi
+
+    if [ $SERVER_ARG -eq 1 ]; then
+      if ! check_scriptfolder "server" "$DistroFolder"; then
+        echo "NOT SUPPORT [server]"
+        exit 1;
+    else
+    if [ $PRESETUP_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/server/$DistroFolder/Repository"
+      exe_script "$ScriptFolder/server/$DistroFolder/Presetup"
+      presetup_message
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/server/$DistroFolder/config"
+      exit 1;
+    fi
+      exe_script "$ScriptFolder/server/$DistroFolder/Repository"
+      exe_script "$ScriptFolder/server/$DistroFolder/FirstProcess"
+      exe_script "$ScriptFolder/server/$DistroFolder/Package"
+      exe_script "$ScriptFolder/server/$DistroFolder/RecentProcess"
+
+      if [ $CONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/server/$DistroFolder/config"
+    fi
+    fi
+    fi
+
+    if [ $DISTROBOX_ARG -eq 1 ]; then
+   if ! check_scriptfolder "distrobox" "$DX_OS/$DistroFolder"; then
+        echo "NOT SUPPORT [distrobox]"
+        exit 1;
+    else
+    if [ $PRESETUP_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Repository"
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Presetup"
+      presetup_message
+    fi
+    if [ $ONLYCONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/config"
+      exit 1;
+    fi
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Repository"
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/FirstProcess"
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Package"
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/RecentProcess"
+
+      if [ $CONFIG_ARG -eq 1 ]; then
+      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/config"
+    fi
+    fi
+    fi
+    #
+  unset DistroFolder
 fi
 
 sudofinish

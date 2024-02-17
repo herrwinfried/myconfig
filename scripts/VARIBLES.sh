@@ -9,13 +9,6 @@ distro=$(echo $OS_Name $OS_Version | tr '[:upper:]' '[:lower:]')
 BOARD_VENDOR=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
 NEW_HOSTNAME="herrwinfried"
 
-if [ -x $(command -v xdg-user-dirs-update) ] && [ ! -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs ]; then
-xdg-user-dirs-update
-source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-else
-source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-fi
-
 Username=$USER
 HomePWD=$HOME
 ExternalFolder="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && cd .. && pwd)/files"

@@ -16,6 +16,10 @@ if [ -x "$(command -v flatpak)" ]; then
 
     ln -s $HomePWD/.var/app/com.valvesoftware.Steam/config/MangoHud/MangoHud.conf $HomePWD/.config/MangoHud/MangoHud.conf
     flatpak --user override --filesystem=$HomePWD/.var/app/com.valvesoftware.Steam/config/MangoHud/MangoHud.conf com.valvesoftware.Steam
+    flatpak --user override --filesystem=/mnt com.valvesoftware.Steam
+    flatpak --user override --filesystem=/mnt net.lutris.Lutris
+    flatpak --user override --filesystem=/run/media com.valvesoftware.Steam
+    flatpak --user override --filesystem=/run/media net.lutris.Lutris
 
     flatpak override --user --filesystem=~/.var/me
     mkdir -p ~/.var/me
