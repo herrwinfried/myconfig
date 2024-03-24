@@ -24,6 +24,6 @@ echo "$yellow"sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/
 SUDO sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf
 SUDO grub2-mkconfig -o /boot/grub2/grub.cfg
 
-echo $green"Adding $Username to kvm, libvirt, input groups...$cyan(sudo usermod -aG kvm,libvirt,input $Username)$white"
-SUDO usermod -aG kvm,libvirt,input $Username 
+echo $green"Adding $USERNAME to kvm, libvirt, input groups...$cyan(sudo usermod -aG kvm,libvirt,input $USERNAME)$white"
+SUDO usermod -aG kvm,libvirt,input $USERNAME 
 fi

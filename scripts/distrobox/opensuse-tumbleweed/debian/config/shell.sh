@@ -1,47 +1,19 @@
 #!/bin/bash
 
-### Root
-SUDO mkdir -p /root/.config
-SUDO mkdir -p /root/.config/powershell
-SUDO cp -r $ScriptFolder1/dotfiles/home/.alias* /root/
-SUDO cp -r $ScriptFolder1/dotfiles/home/.config/* /root/.config
+shopt -s dotglob
+cp -r $ScriptFolder1/data/home/* $USERHOME
+SUDO cp -r $ScriptFolder1/data/home/* /root
 
-SUDO ln -sf $HomePWD/.poshthemes /root/.poshthemes
+if [[ -d "$ScriptFolder1/data/root/" ]]; then
+    SUDO cp -r $ScriptFolder1/data/root/* /
+fi
 
-SUDO cp $ScriptFolder1/dotfiles/home/.bashrc /root/.bashrc
-
-SUDO cp $ScriptFolder1/dotfiles/home/.zshrc /root/.zshrc
-
-###USER
-
-mkdir -p $HomePWD/.config
-mkdir -p $HomePWD/.config/powershell
-cp -r $ScriptFolder1/dotfiles/home/.alias* $HomePWD
-cp -r $ScriptFolder1/dotfiles/home/.config/* $HomePWD/.config
-mkdir -p $HomePWD/.poshthemes
-cp -r $ScriptFolder1/dotfiles/default.omp.json $HomePWD/.poshthemes
-
-mkdir -p $HomePWD/source
-
-cp $ScriptFolder1/dotfiles/home/.bashrc $HomePWD/.bashrc
-
-cp $ScriptFolder1/dotfiles/home/.zshrc $HomePWD/.zshrc
+shopt -u dotglob
 
 if [ -f "/bin/zsh" ]; then
-    SUDO usermod -s /bin/zsh $Username
+    SUDO usermod -s /bin/zsh "$USERNAME"
 fi
 
-if [ -f "/bin/fish" ]; then
-
-    if [ ! -x "$(command -v fisher)" ]; then
-
-        fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source ; fisher install jorgebucaran/fisher"
-
-    fi
-
+if [ -f "/bin/fish" ] && [ ! -x "$(command -v fisher)" ]; then
+    fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source ; fisher install jorgebucaran/fisher"
 fi
-
-
-## DISTROBOX
-SUDO rm -rf /root/.config/MangoHud
-SUDO rm -rf $HomePWD/.config/MangoHud

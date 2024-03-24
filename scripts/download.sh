@@ -1,9 +1,10 @@
 #!/bin/bash
 MainLine="linux"
 
-Username=$USER
-HomePWD=$HOME
-ExternalFolder="$HomePWD/myconfig/files"
+$USERNAME=$USER
+$USERHOME=$HOME
+
+ExternalFolder="$USERHOME/myconfig/files"
 
 if [ -d "myconfig" ]; then
     rm -rf myconfig

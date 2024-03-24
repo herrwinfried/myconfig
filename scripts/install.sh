@@ -1,229 +1,189 @@
 #!/bin/bash
 ScriptFolder=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 ScriptFolder1=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && cd .. && pwd)
-. ./VARIBLES.sh 
-rootpassword
-HOME_ARG=0
-SERVER_ARG=0
-# CONTAINER_ARG=0
-DISTROBOX_ARG=0
-CONFIG_ARG=0
-ONLYCONFIG_ARG=0
-PRESETUP_ARG=0
 
+. ./variable.sh 
+CheckLinux
 
-basic_if_warning() {
-  echo "$yellow Do you want to continue with both server and home arguments open?$white"
-  echo "[1] Yes"
-  echo "[2] No and exit"
-  read IFREAD
-  if [ $IFREAD -ne 1 ] && [ $IFREAD -ne 2 ]; then
-    echo "$red You entered an unregistered number...$white"
-    basic_if_warning
-  elif [ $IFREAD -eq 2 ]; then
-    exit 1
-  fi
-}
+if [ ! -f "./lang/en.sh" ]; then
+echo -e $red "language file missing!!!" $white
+else
 
-exe_script() {
-  local script_folder="$1"
-  for forScriptFile in $(ls -1 "$script_folder" | grep "\.sh$"); do
-    echo -e "$magenta $forScriptFile $white\n" && sleep 1
-    chmod +x "$script_folder/$forScriptFile"
-    dos2unix "$script_folder/$forScriptFile"
-    . "$script_folder/$forScriptFile"
-  done
-}
-check_scriptfolder() {
-  local folder="$1"
-  local distro="$2"
-  if [ -d "$ScriptFolder/$folder/$distro" ]; then
-    return 0
-  else
-    return 1
-  fi
-}
+. ./lang/en.sh
 
-function externalPackage {
-    cdExternalFolder
-    files=$(ls -1 *.flatpakref *.rpm *.deb *.run *.bundle *.appimage 2>/dev/null)
+fi
+# Options
+ARG_CLIENT=0
+ARG_SERVER=0
+ARG_DISTROBOX=0
 
-        if [ -n "$files" ]; then
-        for file in $files; do
-            chmod +x "$file"
-            case "$file" in
-                *.flatpakref)
-               if [ -x $(command -v flatpak) ]; then
-                    SUDO $FlatpakPackage $FlatpakPackageInstall "$file"
-                    SUDO $FlatpakPackage $FlatpakPackageUpdate
-                    SUDO $Package $PackageUpdate
-                fi
-                    ;;
-                *.rpm)
-                if [ -x $(command -v zypper) ] || [ -x $(command -v dnf) ] && [ -x $(command -v rpm) ]; then
-                    SUDO $Package $PackageInstall "$file"
-                    SUDO $Package $PackageUpdate
-                fi
-                    ;;
-                *.deb)
-                if [ -x $(command -v apt) ] && [ -x $(command -v dpkg) ]; then
-                    SUDO $Package $PackageInstall "$file"
-                    SUDO $Package $PackageUpdate
-                fi
-                    ;;
-                *.run)
-                    SUDO ./"$file"
-                    ;;
-                *.bundle)
-                    SUDO ./"$file"
-                    ;;
-                *.appimage)
-                    SUDO ./"$file"
-                    ;;
-            esac
-        done
-    fi
-}
+ARG_PRESETUP=0
 
+ARG_ONLYCONFIG=0
+ARG_CONFIG=0
+
+#########
 i=1
 j=$#
-
 while [ $i -le $j ]; do
   n=$(echo $1 | tr '[:upper:]' '[:lower:]')
   case $n in
     "--help" | "-h")
       HELP_FUNC
+      exit 1;
       ;;
-    "--presetup" | "-ps")
-      PRESETUP_ARG=1
-      ;;
-    "--home" | "-u")
-      HOME_ARG=1
+    "--client" | "--user" | "-u")
+      ARG_CLIENT=1
       ;;
     "--server" | "-s")
-      SERVER_ARG=1
+      ARG_SERVER=1
       ;;
-    "--distrobox" | "-d")
-      DISTROBOX_ARG=1
+    "--DISTRObox" | "-d")
+      ARG_DISTROBOX=1
       ;;
-    "--config" | "-c")
-      CONFIG_ARG=1
+    "--presetup" | "-ps")
+      ARG_PRESETUP=1
       ;;
     "--only-config" | "-cc")
-      ONLYCONFIG_ARG=1
+      ARG_ONLYCONFIG=1
+      ;;
+    "--config" | "-c")
+      ARG_CONFIG=1
       ;;
     *)
-      echo "$red Invalid argument-$i: $n $white"
+    red_message $LANG_INVALID_ARGUMENT: $n
       ;;
   esac
   i=$((i + 1))
   shift 1
 done
 
-
-function presetup_message {
-      echo $yellow"I performed the presetup operations. Please restart your computer. The script has been terminated."
-      echo $cyan"When you restart your computer, continue without the presetup parameter and the remaining operations will be completed."$white
-      exit 1;
-}
-if [ $HOME_ARG -eq 0 ] && [ $SERVER_ARG -eq 0 ] && [ $DISTROBOX_ARG -eq 0 ] && [ $ONLYCONFIG_ARG -eq 0 ] && [ $CONFIG_ARG -eq 0 ] && [ $PRESETUP_ARG -eq 0 ]; then
-  echo $yellow"You selected no arguments... I'm finishing the script...$white"
-  exit 1;
-else
-  if [ $HOME_ARG -eq 1 ] && [ $SERVER_ARG -eq 1 ]; then
+basic_if_warning() {
+  echo "$yellow $LANG_BOTH_WARNING_ARG $white"
+  echo "[1] $LANG_BOTH_WARNING_ARG_YES"
+  echo "[2] $LANG_BOTH_WARNING_ARG_NO"
+  read IFREAD
+  if [ $IFREAD -ne 1 ] && [ $IFREAD -ne 2 ]; then
+    echo "$red $LANG_BOTH_WARNING_ARG_OPTION_INVALID $white"
     basic_if_warning
-  fi
-  DistroFolder=""
-  if [[ $distro = *opensuse\ tumbleweed* ]]; then
-    DistroFolder="opensuse-tumbleweed"
-    openSUSETW_ALIAS
-    elif [[ $distro == *fedora* && $(rpm -E %fedora) -eq 39 ]]; then
-    DistroFolder="fedora39"
-    fedora_ALIAS
-    elif [[ $distro = *debian* ]]; then
-    DistroFolder="debian"
-     debian_ALIAS
-  else
-    echo "$red I cannot support the operating system you are currently trying.$white"
+  elif [ $IFREAD -eq 2 ]; then
     exit 1
   fi
-    #
-if [ $HOME_ARG -eq 1 ]; then
-       if ! check_scriptfolder "home" "$DistroFolder"; then
+}
+
+function presetup_message {
+      echo $yellow $LANG_PRESETUP_MESSAGE_1
+      echo $cyan $LANG_PRESETUP_MESSAGE_2 $white
+      exit 1;
+}
+
+if [ $ARG_CLIENT -eq 0 ] && [ $ARG_SERVER -eq 0 ] && [ $ARG_DISTROBOX -eq 0 ] && [ $ARG_PRESETUP -eq 0 ] && [ $ARG_ONLYCONFIG -eq 0 ] && [ $ARG_CONFIG -eq 0 ]; then
+  red_message $LANG_NO_ARGUMENTS
+  exit 1;
+else
+
+rootpassword
+
+    if [ $ARG_CLIENT -eq 1 ]; then
+        if [ $ARG_SERVER -eq 1 ] || [ $ARG_DISTROBOX -eq 1 ]; then
+            basic_if_warning
+        fi
+
+    elif [ $ARG_SERVER -eq 1 ] && [ $ARG_DISTROBOX -eq 1 ]; then
+            basic_if_warning
+    fi
+
+    ### DISTRO LIST #########
+    DistroFolder=""
+  if [[ $DISTRO = *opensuse\ tumbleweed* ]]; then
+    DistroFolder="opensuse-tumbleweed"
+    PackageManager_openSUSE-TW
+
+    External_PM_Brew
+    External_PM_Flatpak
+    External_PM_Snap
+  else
+    echo "$red $LANG_NOT_SUPPORT_DISTRO_LIST $white"
+    exit 1
+  fi
+
+    ####
+  if [ $ARG_CLIENT -eq 1 ]; then
+       if ! CHECK_SHELL_DIRECTORY "home" "$DistroFolder"; then
         echo "NOT SUPPORT [home]"
         exit 1;
     else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/$DistroFolder/Repository"
-      exe_script "$ScriptFolder/home/$DistroFolder/Presetup"
+    if [ $ARG_PRESETUP -eq 1 ]; then
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/Repository"
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/Presetup"
         presetup_message
     fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/$DistroFolder/config"
+    if [ $ARG_ONLYCONFIG -eq 1 ]; then
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/config"
       exit 1;
     fi
-      exe_script "$ScriptFolder/home/$DistroFolder/Repository"
-      exe_script "$ScriptFolder/home/$DistroFolder/FirstProcess"
-      exe_script "$ScriptFolder/home/$DistroFolder/Package"
-      exe_script "$ScriptFolder/home/$DistroFolder/RecentProcess"
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/Repository"
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/FirstProcess"
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/Package"
+      if [ $ARG_CONFIG -eq 1 ]; then
+        EXE_SHELL "$ScriptFolder/home/$DistroFolder/config"
+      fi
+      EXE_SHELL "$ScriptFolder/home/$DistroFolder/RecentProcess"
+    fi
+    fi
 
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/home/$DistroFolder/config"
-    fi
-    fi
-    fi
-
-    if [ $SERVER_ARG -eq 1 ]; then
-      if ! check_scriptfolder "server" "$DistroFolder"; then
+    if [ $ARG_SERVER -eq 1 ]; then
+      if ! CHECK_SHELL_DIRECTORY "server" "$DistroFolder"; then
         echo "NOT SUPPORT [server]"
         exit 1;
     else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/$DistroFolder/Repository"
-      exe_script "$ScriptFolder/server/$DistroFolder/Presetup"
+    if [ $ARG_PRESETUP -eq 1 ]; then
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/Repository"
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/Presetup"
       presetup_message
     fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/$DistroFolder/config"
+    if [ $ARG_ONLYCONFIG -eq 1 ]; then
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/config"
       exit 1;
     fi
-      exe_script "$ScriptFolder/server/$DistroFolder/Repository"
-      exe_script "$ScriptFolder/server/$DistroFolder/FirstProcess"
-      exe_script "$ScriptFolder/server/$DistroFolder/Package"
-      exe_script "$ScriptFolder/server/$DistroFolder/RecentProcess"
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/Repository"
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/FirstProcess"
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/Package"
+      if [ $ARG_CONFIG -eq 1 ]; then
+        EXE_SHELL "$ScriptFolder/server/$DistroFolder/config"
+      fi
+      EXE_SHELL "$ScriptFolder/server/$DistroFolder/RecentProcess"
 
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/server/$DistroFolder/config"
-    fi
     fi
     fi
 
-    if [ $DISTROBOX_ARG -eq 1 ]; then
-   if ! check_scriptfolder "distrobox" "$DX_OS/$DistroFolder"; then
-        echo "NOT SUPPORT [distrobox]"
+    if [ $ARG_DISTROBOX -eq 1 ]; then
+   if ! CHECK_SHELL_DIRECTORY "DISTRObox" "$DX_OS/$DistroFolder"; then
+        echo "NOT SUPPORT [DISTRObox]"
         exit 1;
     else
-    if [ $PRESETUP_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Repository"
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Presetup"
+    if [ $ARG_PRESETUP -eq 1 ]; then
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/Repository"
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/Presetup"
       presetup_message
     fi
-    if [ $ONLYCONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/config"
+    if [ $ARG_ONLYCONFIG -eq 1 ]; then
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/config"
       exit 1;
     fi
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Repository"
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/FirstProcess"
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/Package"
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/RecentProcess"
-
-      if [ $CONFIG_ARG -eq 1 ]; then
-      exe_script "$ScriptFolder/distrobox/$DX_OS/$DistroFolder/config"
-    fi
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/Repository"
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/FirstProcess"
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/Package"
+      if [ $ARG_CONFIG -eq 1 ]; then
+        EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/config"
+      fi
+      EXE_SHELL "$ScriptFolder/DISTRObox/$DX_OS/$DistroFolder/RecentProcess"
+    
     fi
     fi
     #
-  unset DistroFolder
+  unset DistroFolder  
+
 fi
 
-sudofinish
+rootpassword_end

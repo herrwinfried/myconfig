@@ -1,0 +1,88 @@
+#!/bin/bash
+. /etc/os-release
+
+OS_Name=$NAME
+OS_Version=$VERSION
+distro=$(echo $OS_Name $OS_Version | tr '[:upper:]' '[:lower:]')
+
+termcols=$(tput cols)
+bold="$(tput bold)"
+fontnormal="$(tput init)"
+fontreset="$(tput reset)"
+underline="$(tput smul)"
+standout="$(tput smso)"
+normal="$(tput sgr0)"
+black="$(tput setaf 0)"
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+yellow="$(tput setaf 3)"
+blue="$(tput setaf 4)"
+magenta="$(tput setaf 5)"
+cyan="$(tput setaf 6)"
+white="$(tput setaf 7)"
+
+USER_PASSWORD=""
+function rootpassword {
+if [[ $EUID -eq 0 ]]; then
+     echo "$red You must not be Super User/Root. $white"
+   exit 1
+fi
+sudo --reset-timestamp
+read -s -p "$cyan""Password for$red root$white : " USER_PASSWORD
+echo -e "$yellow\nPassword checking... $white"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "$green""Password verified. $white\n"
+    function SUDO {
+        echo "$USER_PASSWORD" | sudo -S "$@"
+    }
+else
+    echo -e "$red""Password could not be verified $white\n"
+    rootpassword
+fi  
+}
+
+function rootpassword_end {
+    unset USER_PASSWORD
+    sudo --reset-timestamp
+}
+
+  if [[ $distro = *opensuse\ tumbleweed* ]]; then
+BOARD_VENDOR=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
+
+if [[ $BOARD_VENDOR == *"asus"* ]]; then
+
+rootpassword
+SUDO $Package $PackageInstall curl tar jq
+
+asustheme=$(curl -s "https://api.github.com/repos/AdisonCavani/distro-grub-themes/releases/latest" | jq -r ".assets[] | select(.name | test(\"asus.tar\")) | .browser_download_url")
+DEFAULT_GRUB_THEME="GRUB_THEME=/boot/grub2/themes/openSUSE/theme.txt"
+if [ -d "/tmp/asus.tar" ]; then
+    SUDO rm -rf /tmp/asus*
+fi
+
+if [ -d "/boot/grub2.d/themes/asus" ]; then
+    echo $yellow"/boot/grub2.d/themes/asus found will be deleted."$white
+    SUDO rm -rf /boot/grub2.d/themes/asus
+    if [ "$current_grub_theme" != "$DEFAULT_GRUB_THEME" ]; then
+    SUDO sed -i "s|^GRUB_THEME=.*|$DEFAULT_GRUB_THEME|" /etc/default/grub
+    echo $green"GRUB_THEME value has been successfully changed"$white
+fi
+fi
+sleep 3
+
+curl -L "$asustheme" -o "/tmp/asus.tar"
+
+SUDO mkdir -p /boot/grub2.d/themes/asus
+SUDO tar -xf "/tmp/asus.tar" -C /boot/grub2.d/themes/asus
+
+new_grub_theme="GRUB_THEME=/boot/grub2.d/themes/asus/theme.txt"
+current_grub_theme=$(grep -E "^GRUB_THEME=" /etc/default/grub)
+
+if [ "$current_grub_theme" != "$new_grub_theme" ]; then
+    SUDO sed -i "s|^GRUB_THEME=.*|$new_grub_theme|" /etc/default/grub
+    SUDO grub2-mkconfig -o /boot/grub2/grub.cfg
+    echo $green"GRUB_THEME value has been successfully changed and Grub has been updated."$white
+fi
+rootpassword_end
+fi
+    fi
