@@ -68,15 +68,21 @@ if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
     oh-my-posh init pwsh --config $OhMyPoshTheme | Invoke-Expression 
 }
 
-function aliasUpdate {
+function Update-OhMyPoshTheme {
+    $themeFile = "~\.poshthemes\default.omp.json"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -OutFile $themeFile
+}
+function Update-Alias {
     if ((Test-Path $ContainerAdmin) -And (Test-Path $ContainerUser)) {
         $aliasFile = "C:/Users/Public/.alias.ps1"
         $aliasFileBash = "C:/Users/Public/.alias"
     } else {
-        $aliasFile = "$HOME/.alias.ps1"
-        $aliasFileBash = "$HOME/.alias"
+        $aliasFile = "~/.alias.ps1"
+        $aliasFileBash = "~/.alias"
     }
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/windows/data/home/.alias.ps1" -OutFile "$aliasFile"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/windows/data/home/.alias" -OutFile "$aliasFileBash"
 }
 
+Set-Alias aliasUpdate Update-Alias
+Set-Alias OhMyPoshThemeUpdate Update-OhMyPoshTheme

@@ -2,18 +2,23 @@
 *.zip*
 *.7z*
 *.rar*
+
+0*.sh*
+0*.zsh*
+0*.fish*
 0*.ps1*
+0*.bat*
 
 *.exe
 *.msi
 *.msixbundle
 
+files
 my_themes
 
 .gitconfig
 .ssh
 *.pub
 *.rsa
-
 
 *.poshthemes\default.omp.json
