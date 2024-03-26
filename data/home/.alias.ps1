@@ -20,15 +20,15 @@ Function Test-CommandExists {
     Finally { $ErrorActionPreference = $oldPreference }
 }
 
-$OhMyPoshTheme = "$HOME\.poshthemes\default.omp.json"
+$OhMyPoshTheme = "~\.poshthemes\default.omp.json"
 
-$env:PATH += ";$HOME\bin;$HOME\development;$HOME\.local\bin"
+$env:PATH += ";~\bin;~\development;~\.local\bin"
 
 if (Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
     Add-Content -Path $PROFILE.CurrentUserAllHosts -Value '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv) | Invoke-Expression'
 }
 
-if ((Test-Path "$HOME/bin/docker") -or (Test-Path "/usr/bin/docker")) {
+if ((Test-Path "~/bin/docker") -or (Test-Path "/usr/bin/docker")) {
     $env:DOCKER_HOST = "unix:///run/user/1000/docker.sock"
 }
 
@@ -39,7 +39,7 @@ if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
 }
 
 function Update-OhMyPoshTheme {
-    $themeFile = "$HOME\.poshthemes\default.omp.json"
+    $themeFile = "~\.poshthemes\default.omp.json"
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -OutFile $themeFile
 }
 
@@ -55,12 +55,12 @@ function englishRun {
 }
 
 function Update-Alias {
-    Remove-Item "$HOME\.alias" -ErrorAction SilentlyContinue
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -OutFile "$HOME\.alias"
-    Remove-Item "$HOME\.alias.ps1" -ErrorAction SilentlyContinue
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -OutFile "$HOME\.alias.ps1"
-    Remove-Item "$HOME\.alias.fish" -ErrorAction SilentlyContinue
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -OutFile "$HOME\.alias.fish"
+    Remove-Item "~\.alias" -ErrorAction SilentlyContinue
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -OutFile "~\.alias"
+    Remove-Item "~\.alias.ps1" -ErrorAction SilentlyContinue
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -OutFile "~\.alias.ps1"
+    Remove-Item "~\.alias.fish" -ErrorAction SilentlyContinue
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -OutFile "~\.alias.fish"
 }
 
 function Check-WSL {
