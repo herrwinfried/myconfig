@@ -1,28 +1,23 @@
+#!/bin/bash
 if [ "$(uname -s)" != "Linux" ]; then
-echo "$(tput setaf 1)For Linux only, are you sure you added the correct alias file?$(tput setaf 7)"
-exit 1
+    echo "$(tput setaf 1)For Linux only, are you sure you added the correct alias file?$(tput setaf 7)"
+    exit 1
 fi
 if [ ! -n "$ZSH_VERSION" ] && [ ! -n "$BASH_VERSION" ]; then
-echo "$(tput setaf 1)This file is for bash and ZSH. Are you sure you're using Bash or ZSH?$(tput setaf 7)"
-exit 1
+    echo "$(tput setaf 1)This file is for bash and ZSH. Are you sure you're using Bash or ZSH?$(tput setaf 7)"
+    exit 1
 fi
 if [ -z "$LC_ALL" ] && [ -z "$LANG" ]; then
-LANG=C.utf8
-LC_ALL=$LANG
+    LANG=C.utf8
+    LC_ALL=$LANG
 fi
 
 OhMyPoshTheme=~/.poshthemes/default.omp.json
 
-if [ -d "$HOME/bin" ]; then
-    PATH+=":$HOME/bin"
-fi
+PATH+=":$HOME/bin:$HOME/development:$HOME/.local/bin"
 
-if [ -d "$HOME/development" ]; then
-    PATH+=":$HOME/development"
-fi
-
-if [ -d "$HOME/.local/bin" ]; then
-    PATH+=":$HOME/.local/bin"
+if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 if [ -f "$HOME/bin/docker" ] || [ -f "/usr/bin/docker" ]; then
@@ -30,52 +25,23 @@ if [ -f "$HOME/bin/docker" ] || [ -f "/usr/bin/docker" ]; then
 fi
 
 if [ -n "$BASH_VERSION" ]; then
-NowShell="bash"
-# Set custom BASH directory
-BASH_CUSTOM=~/.bash
-
-# Define plugin directories
-plugin_dirs=(
-  "$BASH_CUSTOM/plugins"
-  "/usr/local/share"
-  "/usr/share"
-)
-
-# Define plugin names
-plugin_names=(
-)
-
-# CNF
-test -s /etc/bash_command_not_found && . /etc/bash_command_not_found
+    NowShell="bash"
+    BASH_CUSTOM=~/.bash
+    plugin_dirs=( "$BASH_CUSTOM/plugins" "/usr/local/share" "/usr/share" )
+    plugin_names=()
+    test -s /etc/bash_command_not_found && . /etc/bash_command_not_found
 fi
 
 if [ -n "$ZSH_VERSION" ]; then
-NowShell="zsh"
-# Set custom ZSH directory
-ZSH_CUSTOM=~/.zsh
-
-# Define plugin directories
-plugin_dirs=(
-  "$ZSH_CUSTOM/plugins"
-  "/usr/local/share"
-  "/usr/share"
-)
-
-# Define plugin names
-plugin_names=(
-  "zsh-autocomplete"
-  "zsh-autosuggestions"
-  "zsh-syntax-highlighting"
-  "zsh-completions"
-)
-
-# CNF
-test -s /etc/zsh_command_not_found && . /etc/zsh_command_not_found
-
+    NowShell="zsh"
+    ZSH_CUSTOM=~/.zsh
+    plugin_dirs=( "$ZSH_CUSTOM/plugins" "/usr/local/share" "/usr/share" )
+    plugin_names=( "zsh-autocomplete" "zsh-autosuggestions" "zsh-syntax-highlighting" "zsh-completions" )
+    test -s /etc/zsh_command_not_found && . /etc/zsh_command_not_found
 fi
 
 function Base_Font {
-    termcols=$(tput cols)
+    termcols="$(tput cols)"
     bold="$(tput bold)"
     fontnormal="$(tput init)"
     fontreset="$(tput reset)"
@@ -90,6 +56,87 @@ function Base_Font {
     magenta="$(tput setaf 5)"
     cyan="$(tput setaf 6)"
     white="$(tput setaf 7)"
+}
+
+Plugin_Install() {
+  if [[ ! -z "${plugin_dirs[*]}" && ! -z "${plugin_names[*]}" ]]; then
+    is_plugin() {
+      local base_dir=$1
+      local name=$2
+      if [ -n "$BASH_VERSION" ]; then
+        test -f "$base_dir/$name/$name.plugin.bash" || test -f "$base_dir/$name/$name.plugin.sh"
+      else
+        test -f "$base_dir/$name/$name.plugin.zsh"
+      fi
+    }
+
+    for PluginName in "${plugin_names[@]}"; do
+      local -A Plugins=()
+      Plugins[$PluginName]=0
+
+      for PluginFolder in "${plugin_dirs[@]}"; do
+        if [[ ${Plugins[$PluginName]} -eq 0 ]]; then
+          if is_plugin "$PluginFolder" "$PluginName"; then
+            Plugins[$PluginName]=1
+            if [ -n "$BASH_VERSION" ]; then
+              source "$PluginFolder/$PluginName/$PluginName.plugin.bash" || source "$PluginFolder/$PluginName/$PluginName.plugin.sh"
+            else
+              source "$PluginFolder/$PluginName/$PluginName.plugin.zsh"
+            fi
+          fi
+        fi
+      done
+
+      if [[ ${Plugins[$PluginName]} -eq 0 ]]; then
+        echo "$(tput setaf 4)[$NowShell] $(tput setaf 3)Plugin Not Found: $(tput setaf 1)'$PluginName'$(tput setaf 7)"
+        echo ""
+      fi
+
+    done
+
+    unset Plugins
+    unset PluginName
+    unset PluginFolder
+  fi
+}
+
+function prepend_sudo() {
+  if [ -n "$BASH_VERSION" ]; then
+    [[ $READLINE_LINE == "sudo "* ]] && READLINE_LINE=${READLINE_LINE#sudo } || READLINE_LINE="sudo $READLINE_LINE"
+  else
+    [[ $LBUFFER == "sudo "* ]] && LBUFFER=${LBUFFER#sudo } || LBUFFER="sudo $LBUFFER"
+  fi
+}
+
+if [ -n "$BASH_VERSION" ]; then
+  bind -x '"\es": prepend_sudo'
+else
+  zle -N prepend_sudo
+  bindkey '^[s' prepend_sudo
+fi
+
+if [ -x "$(command -v oh-my-posh)" ] && [ -f $OhMyPoshTheme ]; then
+    if [[ "$TERM" != "linux" ]]; then
+        eval "$(oh-my-posh init $NowShell --config $OhMyPoshTheme)"
+    fi
+
+    function OhMyPoshThemeUpdate {
+        themeFile="$HOME/.poshthemes/default.omp.json"
+        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -O $themeFile
+    }
+fi
+
+function englishRun {
+    if [ $# -eq 0 ]; then
+        echo "Usage: $0 <command>"
+        exit 1
+    else
+        LC_ALL=C.utf8 LANG=$LC_ALL "$@"
+    fi
+}
+
+function aliasUpdate {
+  rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -O ~/.alias.fish
 }
 
 function checkwsl() {
@@ -115,128 +162,5 @@ function wsl_c {
 }
 
 fi
-
-if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-    function brewInstall {
-        brew install $1 </dev/null
-    }
-
-    function brewInstallCask {
-        brew install --cask $1 </dev/null
-    }
-fi
-
-# Function to check if a plugin exists and install it
-Plugin_Install() {
-  if [[ ! -z "${plugin_dirs[*]}" && ! -z "${plugin_names[*]}" ]]; then
-
-    # Function to check if a plugin exists
-    is_plugin() {
-      local base_dir=$1
-      local name=$2
-      if [ -n "$BASH_VERSION" ]; then
-      test -f "$base_dir/$name/$name.plugin.bash" || test -f "$base_dir/$name/$name.plugin.sh"
-      else
-      test -f "$base_dir/$name/$name.plugin.zsh"
-      fi
-    }
-
-    for PluginName in "${plugin_names[@]}"; do
-      local -A Plugins=()
-      Plugins[$PluginName]=0
-
-      for PluginFolder in "${plugin_dirs[@]}"; do
-        if [[ ${Plugins[$PluginName]} -eq 0 ]]; then
-          if is_plugin "$PluginFolder" "$PluginName"; then
-            Plugins[$PluginName]=1
-            if [ -n "$BASH_VERSION" ]; then
-            source "$PluginFolder/$PluginName/$PluginName.plugin.bash" || source "$PluginFolder/$PluginName/$PluginName.plugin.sh"
-            else
-            source "$PluginFolder/$PluginName/$PluginName.plugin.zsh"
-            fi
-          fi
-        fi
-      done
-
-      if [[ ${Plugins[$PluginName]} -eq 0 ]]; then
-        echo "$(tput setaf 4)[$NowShell] $(tput setaf 3)Plugin Not Found: $(tput setaf 1)'$PluginName'$(tput setaf 7)"
-        echo ""
-      fi
-
-    done
-
-    unset Plugins
-    unset PluginName
-    unset PluginFolder
-
-  fi
-}
-# Function to prepend "sudo" to the command
-function prepend_sudo() {
-if [ -n "$BASH_VERSION" ]; then
-  if [[ $READLINE_LINE == "sudo "* ]]; then
-    READLINE_LINE=${READLINE_LINE#sudo }
-  else
-    READLINE_LINE="sudo $READLINE_LINE"
-  fi
-else
-  if [[ $LBUFFER == "sudo "* ]]; then
-    LBUFFER=${LBUFFER#sudo }
-  else
-    LBUFFER="sudo $LBUFFER"
-  fi
-fi
-}
-
-if [ -n "$BASH_VERSION" ]; then
-bind -x '"\es": prepend_sudo'
-else
-zle -N prepend_sudo
-bindkey '^[s' prepend_sudo
-fi
-
-Plugin_Install
-
-function rootMode {
-  if [ $# -eq 0 ]; then
-    echo "Usage: $0 <command>"
-    exit 1
-else
-        XDG_DE=$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
-        if [[ $XDG_DE = "kde" ]]; then
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true "$@"
-        else
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY "$@"
-        fi
-    fi
-}
-
-function englishRun {
-  if [ $# -eq 0 ]; then
-    echo "Usage: $0 <command>"
-    exit 1
-else
-        LC_ALL=C.utf8 LANG=$LC_ALL "$@"
-    fi
-}
-
-function aliasUpdate {
-    rm -r ~/.alias && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias" -O ~/.alias && rm -r ~/.alias.ps1 && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.ps1" -O ~/.alias.ps1 && rm -r ~/.alias.fish && wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.fish" -O ~/.alias.fish
-}
-
-if [ -x "$(command -v oh-my-posh)" ] && [ -f $OhMyPoshTheme ]; then
-
-    if [[ "$TERM" != "linux" ]]; then
-            eval "$(oh-my-posh init $NowShell --config $OhMyPoshTheme)"
-        fi
-
-function OhMyPoshThemeUpdate {
-$themeFile = "$HOME/.poshthemes/default.omp.json"
-wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/default.omp.json" -O $themeFile
-}
-fi
-
 
 unset NowShell

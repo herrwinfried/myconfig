@@ -1,95 +1,51 @@
 if test (uname -s) != "Linux"
-    echo (tput setaf 1)"For Linux only, are you sure you added the correct alias file?"(tput setaf 7)
+    echo (set_color red)"For Linux only, are you sure you added the correct alias file?"(set_color normal)
     exit 1
 end
 
-set -U fish_greeting
-if test -z "$LC_ALL" -a -z "$LANG"
-    set LANG C.utf8
+if test -z $LC_ALL; and test -z $LANG
+    set -x LANG C.utf8
     set -x LC_ALL $LANG
 end
 
 set OhMyPoshTheme ~/.poshthemes/default.omp.json
 
-if test -d $HOME/bin
-    set -x PATH $PATH $HOME/bin
+set -x PATH $PATH $HOME/bin $HOME/development $HOME/.local/bin
+
+if test -f "/home/linuxbrew/.linuxbrew/bin/brew"
+    eval "/home/linuxbrew/.linuxbrew/bin/brew shellenv"
 end
 
-if test -d $HOME/development
-    set -x PATH $PATH $HOME/development
-end
-
-if test -d $HOME/.local/bin
-    set -x PATH $PATH $HOME/.local/bin
-end
-
-if test -f "$HOME/bin/docker" -o -f "/usr/bin/docker"
+if test -f $HOME/bin/docker; or test -f /usr/bin/docker
     set -x DOCKER_HOST unix:///run/user/1000/docker.sock
 end
 
-
-if test -f /usr/bin/cnf-rs -a -f /usr/local/bin/fish_command_not_found-rs
-    source /usr/local/bin/fish_command_not_found-rs
-
-else if test -f /usr/bin/command-not-found -a -f /usr/local/bin/fish_command_not_found
-    source /usr/local/bin/fish_command_not_found
+function Base_Font
+    set termcols (tput cols)
+    set bold (tput bold)
+    set fontnormal (tput init)
+    set fontreset (tput reset)
+    set underline (tput smul)
+    set standout (tput smso)
+    set normal (tput sgr0)
+    set black (tput setaf 0)
+    set red (tput setaf 1)
+    set green (tput setaf 2)
+    set yellow (tput setaf 3)
+    set blue (tput setaf 4)
+    set magenta (tput setaf 5)
+    set cyan (tput setaf 6)
+    set white (tput setaf 7)
 end
 
-
-
-function checkwsl
-    set -l unameout (uname -r | tr '[:upper:]' '[:lower:]')
-    if string match -q -r "microsoft" $unameout; and \
-        string match -q -r "wsl" $unameout; and \
-        test -f /proc/sys/fs/binfmt_misc/WSLInterop; and \
-        test -n "$WSL_DISTRO_NAME"; and \
-        string match -q -r "0xffffffff" (cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d: )
-        return 0 > /dev/null
-    else
-        return 1
-    end
-end
-
-if test -d "/windir/c" -o -d "/mnt/c"; and checkwsl
-    function wsl_c
-        if test -d "/windir/c"
-            cd /windir/c
-        elif test -d "/mnt/c"
-            cd /mnt/c
-        end
-    end
-end
-
-
-if test -f /home/linuxbrew/.linuxbrew/bin/brew
-    /home/linuxbrew/.linuxbrew/bin/brew shellenv | source
-
-    function brewInstall
-        brew install $argv < /dev/null
+if test -x oh-my-posh; and test -f $OhMyPoshTheme;
+    if test "$TERM" != "linux"
+        oh-my-posh init fish | source
     end
 
-    function brewInstallCask
-        brew install --cask $argv < /dev/null
-    end
-end
-
-if test "$TERM" != "linux"
-    if test -x (command -v oh-my-posh) && test -f $OhMyPoshTheme;
-     oh-my-posh init fish --config $OhMyPoshTheme | source
-    end
-end
-
-function rootMode
-    if count $argv -eq 0
-        echo "Usage: $argv[0] <command>"
-        exit 1
-    else
-        set XDG_DE (echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')
-        if test $XDG_DE = "kde"
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY KDE_SESSION_VERSION=5 KDE_FULL_SESSION=true $argv
-        else
-            sudo pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $argv
-        end
+    function OhMyPoshThemeUpdate
+        set themeFile $HOME/.poshthemes/default.omp.json
+        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -O $themeFile
     end
 end
 
@@ -98,24 +54,36 @@ function englishRun
         echo "Usage: $argv[0] <command>"
         exit 1
     else
-        set -x LC_ALL C.utf8 LANG $LC_ALL
-        eval "$argv"
+        set -x LC_ALL C.utf8
+        set -x LANG $LC_ALL
+        $argv
     end
 end
 
-
 function aliasUpdate
     rm -r ~/.alias
-    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias -O ~/.alias
+    wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias" -O ~/.alias
     rm -r ~/.alias.ps1
-    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.ps1 -O ~/.alias.ps1
+    wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -O ~/.alias.ps1
     rm -r ~/.alias.fish
-    wget https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/home/.alias.fish -O ~/.alias.fish
+    wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.fish" -O ~/.alias.fish
 end
 
-if test -x (command -v oh-my-posh); and test -f "$OhMyPoshTheme"
-    function OhMyPoshThemeUpdate
-        set themeFile "$HOME/.poshthemes/default.omp.json"
-        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/default.omp.json" -O "$themeFile"
+function checkwsl
+    set unameout (uname -r | tr '[:upper:]' '[:lower:]')
+    if test "$unameout" = "*microsoft*" -o "$unameout" = "*wsl*" -o -f /proc/sys/fs/binfmt_misc/WSLInterop -o $WSL_DISTRO_NAME -o (echo (cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:)) = "0xffffffff" -a $WSL_DISTRO_NAME
+        return 0
+    else
+        return 1
+    end
+end
+
+if test -d "/windir/c"; or test -d "/mnt/c"; and checkwsl
+    function wsl_c
+        if test -d "/windir/c"
+            cd /windir/c
+        elif test -d "/mnt/c"
+            cd /mnt/c
+        end
     end
 end

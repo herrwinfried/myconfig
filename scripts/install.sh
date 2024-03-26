@@ -38,7 +38,7 @@ while [ $i -le $j ]; do
     "--server" | "-s")
       ARG_SERVER=1
       ;;
-    "--DISTRObox" | "-d")
+    "--distrobox" | "-d")
       ARG_DISTROBOX=1
       ;;
     "--presetup" | "-ps")
@@ -77,7 +77,7 @@ function presetup_message {
       exit 1;
 }
 
-if [ $ARG_CLIENT -eq 0 ] && [ $ARG_SERVER -eq 0 ] && [ $ARG_DISTROBOX -eq 0 ] && [ $ARG_PRESETUP -eq 0 ] && [ $ARG_ONLYCONFIG -eq 0 ] && [ $ARG_CONFIG -eq 0 ]; then
+if [ $ARG_CLIENT -eq 0 ] && [ $ARG_SERVER -eq 0 ] && [ $ARG_DISTROBOX -eq 0 ]; then
   red_message $LANG_NO_ARGUMENTS
   exit 1;
 else

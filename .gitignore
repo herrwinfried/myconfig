@@ -2,7 +2,11 @@
 *.zip*
 *.7z*
 *.rar*
+
 0*.sh*
+0*.zsh*
+0*.fish*
+0*.ps1*
 
 *.rpm
 *.deb
@@ -10,6 +14,7 @@
 *.appimage
 *.bundle
 
+files
 my_themes
 
 .gitconfig
