@@ -13,7 +13,7 @@ set OhMyPoshTheme ~/.poshthemes/default.omp.json
 set -x PATH $PATH $HOME/bin $HOME/development $HOME/.local/bin
 
 if test -f "/home/linuxbrew/.linuxbrew/bin/brew"
-    eval "/home/linuxbrew/.linuxbrew/bin/brew shellenv"
+     /home/linuxbrew/.linuxbrew/bin/brew shellenv | source
 end
 
 if test -f $HOME/bin/docker; or test -f /usr/bin/docker
