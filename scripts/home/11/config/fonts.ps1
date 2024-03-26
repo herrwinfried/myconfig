@@ -5,20 +5,32 @@ function IsAdministrator {
 }
 
 if (IsAdministrator) {
+    Set-Location $PSScriptRoot\..\..\..\
+    $TempFolder=$(Get-Location)
+    . "$TempFolder\variable.ps1"
 
-Set-Location $PSScriptRoot\..\..\..\
-$TempFolder=$(Get-Location)
-    . "$TempFolder\VARIBLES.ps1"
+    $fontUrls = @(
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
+            FileName = "MesloLGS NF Bold Italic.ttf"
+        },
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
+            FileName = "MesloLGS NF Bold.ttf"
+        },
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
+            FileName = "MesloLGS NF Italic.ttf"
+        },
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
+            FileName = "MesloLGS NF Regular.ttf"
+        }
+    )
 
-Set-Location $PSScriptRoot
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf" -Family "MesloLGS NF Bold Italic.ttf"
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf" -Family "MesloLGS NF Bold.ttf"
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf" -Family "MesloLGS NF Italic.ttf"
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf" -Family "MesloLGS NF Regular.ttf"
+    foreach ($fontInfo in $fontUrls) {
+        New-Font-Online -Url $fontInfo.Url -Family $fontInfo.FileName
+    }
 } else {
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs
 }

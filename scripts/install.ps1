@@ -1,66 +1,42 @@
 param(
-    [Alias("h")]
+    [Alias("h", "?")]
     [switch]$Help,
-    [Alias("u", "home")]
-    [switch]$User,
-    [Alias("ps")]
-    [switch]$Presetup,
+    [Alias("u", "user")]
+    [switch]$Client,
     [Alias("s")]
     [switch]$Server,
     [Alias("vm")]
     [switch]$VirtualMachine,
-    [Alias("c")]
-    [switch]$Config,
+    [Alias("ps")]
+    [switch]$Presetup,
     [Alias("cc")]
-    [switch]$OnlyConfig
+    [switch]$OnlyConfig,
+    [Alias("c")]
+    [switch]$Config
 )
-$Host.UI.RawUI.WindowTitle = "HerrWinfried - MyConfig Installer"
+
 $ScriptFolder = $PSScriptRoot
-. $ScriptFolder/VARIBLES.ps1
+$ScriptFolder1 = "$PSScriptRoot\..\"
+$Host.UI.RawUI.WindowTitle = "HerrWinfried - MyConfig Install"
 
-if ($Help) {
-    exit 1;
-} 
-if (($Config) -and ($OnlyConfig)) {
-$Config = $false
-} 
-
-if (($User -eq $false) -and ($Presetup -eq $false) -and ($Server -eq $false) -and ($VirtualMachine -eq $false) -and ($Config -eq $false) -and ($OnlyConfig -eq $false)) {
-    Write-Host -ForegroundColor Yellow "You selected no arguments... Exiting the script..."
+if (-not (Test-Path -Path "$ScriptFolder/lang/en.ps1")) {
+    Write-Host -ForegroundColor Red "language file missing!!!"
     exit 1
-} elseif ((($User -eq $false) -and ($Server -eq $false) -and ($VirtualMachine -eq $false)) -and (($Config) -or ($Presetup) -or ($OnlyConfig))) {
-    Write-Warning "missing parameter. I guess you didn't choose the main parameters. (example: -user, -server, -vm)"
-    exit 1;
+} else {
+    . $ScriptFolder/lang/en.ps1
 }
 
-function exe_script {
-    param(
-        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$script_folder
-    )
-    Get-ChildItem $script_folder -Filter *.ps1 | ForEach-Object {
-        Write-Host -ForegroundColor Cyan $_.FullName
-        . $_.FullName
-    }
-}
+. $ScriptFolder/variable.ps1
 
-function check_scriptfolder {
-    param(
-        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$folder,
-        [Parameter(Mandatory)][ValidateNotNullOrEmpty()][string]$os
-    )
-        if (Test-Path -Path "$ScriptFolder/$folder/$os") {
-            return $true
-        } else {
-            return $false
-        }
-}
+CheckWindows
+
 function basic_if_warning {
-    Write-Host "Do you want to continue with both server and home arguments open?"
-    Write-Host "[1] Yes"
-    Write-Host "[2] No and exit"
+    Write-Warning $LANG_BOTH_WARNING_ARG
+    Write-Host "[1] $LANG_BOTH_WARNING_ARG_YES "
+    Write-Host "[2] $LANG_BOTH_WARNING_ARG_NO "
     $IFREAD = Read-Host
     if ($IFREAD -ne 1 -and $IFREAD -ne 2) {
-        Write-Host "You entered an unregistered number..."
+        red_message $LANG_BOTH_WARNING_ARG_OPTION_INVALID
         basic_if_warning
     }
     elseif ($IFREAD -eq 2) {
@@ -68,82 +44,96 @@ function basic_if_warning {
     }
 }
 
-if (($User) -and ($Server)) {
-    basic_if_warning
+function presetup_message {
+    Write-Host -ForegroundColor Yellow $LANG_PRESETUP_MESSAGE_1
+    Write-Host -ForegroundColor Cyan $LANG_PRESETUP_MESSAGE_2
+    Exit 1;
+}
+
+if (($Client -eq 0) -and ($Server -eq 0) -and ($VirtualMachine -eq 0)) {
+    red_message $LANG_NO_ARGUMENTS
+    Exit 1;
+} else {
+
+    if ($Client -eq 1) {
+        if (($Server -eq 1) -or ($VirtualMachine -eq 1)) {
+            basic_if_warning
+        }
+    } elseif (($Server -eq 1) -and ($VirtualMachine -eq 1)) {
+        basic_if_warning
+    }
+
 }
 
 if ($OSNAME -ilike "microsoft windows 11*") {
-$OSFolder="11"
-    if ($User) {
-        if (-Not (check_scriptfolder "home" "11")) {
-            Write-Host -ForegroundColor Red "NOT SUPPORT [home]"
-            exit 1;
-        }
-
-        if ($Presetup) {
-            exe_script "$ScriptFolder/home/$OSFolder/Presetup"
-            exit 1
-        }
-        if ($OnlyConfig) {
-            exe_script "$ScriptFolder/home/$OSFolder/Config"
-            exit 1
-        }
-        exe_script "$ScriptFolder/home/$OSFolder/FirstProcess"
-        exe_script "$ScriptFolder/home/$OSFolder/FirstPackage"
-        exe_script "$ScriptFolder/home/$OSFolder/Package"
-        exe_script "$ScriptFolder/home/$OSFolder/RecentProcess"
-        if ($Config) {
-        exe_script "$ScriptFolder/home/$OSFolder/Config"
-        }
-
-    }
-    if ($VirtualMachine) {
-        if (-Not (check_scriptfolder "vm" "11")) {
-            Write-Host -ForegroundColor Red "NOT SUPPORT [vm]"
-            exit 1;
-        }
-
-        if ($Presetup) {
-            exe_script "$ScriptFolder/vm/$OSFolder/Presetup"
-            exit 1
-        }
-        if ($OnlyConfig) {
-            exe_script "$ScriptFolder/vm/$OSFolder/Config"
-            exit 1
-        }
-        exe_script "$ScriptFolder/vm/$OSFolder/FirstProcess"
-        exe_script "$ScriptFolder/vm/$OSFolder/FirstPackage"
-        exe_script "$ScriptFolder/vm/$OSFolder/Package"
-        exe_script "$ScriptFolder/vm/$OSFolder/RecentProcess"
-        if ($Config) {
-        exe_script "$ScriptFolder/vm/$OSFolder/Config"
-        }
-
-    }
-    if ($server) {
-        if (-Not (check_scriptfolder "server" "11")) {
-            Write-Host -ForegroundColor Red "NOT SUPPORT [server]"
-            exit 1;
-        }
-
-        if ($Presetup) {
-            exe_script "$ScriptFolder/server/$OSFolder/Presetup"
-            exit 1
-        }
-        if ($OnlyConfig) {
-            exe_script "$ScriptFolder/server/$OSFolder/Config"
-            exit 1
-        }
-        exe_script "$ScriptFolder/server/$OSFolder/FirstProcess"
-        exe_script "$ScriptFolder/server/$OSFolder/FirstPackage"
-        exe_script "$ScriptFolder/server/$OSFolder/Package"
-        exe_script "$ScriptFolder/server/$OSFolder/RecentProcess"
-        if ($Config) {
-        exe_script "$ScriptFolder/server/$OSFolder/Config"
-        }
-
-    }
-
+    $VersionFolder="11"
 } else {
-Write-Host -ForegroundColor Red "I cannot support the operating system you are currently trying."
+    red_message $LANG_NOT_SUPPORT_VERSION_LIST
+    Exit 1;
+}
+
+if ($Client) {
+    if (-not (CHECK_SHELL_DIRECTORY "home" $VersionFolder)) {
+        Write-Host "NOT SUPPORT [home]"
+        exit 1
+    } else {
+        if ($Presetup) {
+            EXE_SHELL "$ScriptFolder/home/$VersionFolder/Presetup"
+            presetup_message
+        }
+        if ($OnlyConfig) {
+            EXE_SHELL "$ScriptFolder/home/$VersionFolder/config"
+            exit 1
+        }
+        EXE_SHELL "$ScriptFolder/home/$VersionFolder/FirstProcess"
+        EXE_SHELL "$ScriptFolder/home/$VersionFolder/Package"
+        if ($Config) {
+            EXE_SHELL "$ScriptFolder/home/$VersionFolder/config"
+        }
+        EXE_SHELL "$ScriptFolder/home/$VersionFolder/RecentProcess"
+    }
+}
+
+if ($Server) {
+    if (-not (CHECK_SHELL_DIRECTORY "server" $VersionFolder)) {
+        Write-Host "NOT SUPPORT [server]"
+        exit 1
+    } else {
+        if ($Presetup) {
+            EXE_SHELL "$ScriptFolder/server/$VersionFolder/Presetup"
+            presetup_message
+        }
+        if ($OnlyConfig) {
+            EXE_SHELL "$ScriptFolder/server/$VersionFolder/config"
+            exit 1
+        }
+        EXE_SHELL "$ScriptFolder/server/$VersionFolder/FirstProcess"
+        EXE_SHELL "$ScriptFolder/server/$VersionFolder/Package"
+        if ($Config) {
+            EXE_SHELL "$ScriptFolder/server/$VersionFolder/config"
+        }
+        EXE_SHELL "$ScriptFolder/server/$VersionFolder/RecentProcess"
+    }
+}
+
+if ($VirtualMachine) {
+    if (-not (CHECK_SHELL_DIRECTORY "vm" $VersionFolder)) {
+        Write-Host "NOT SUPPORT [VirtualMachine]"
+        exit 1
+    } else {
+        if ($Presetup) {
+            EXE_SHELL "$ScriptFolder/vm/$VersionFolder/Presetup"
+            presetup_message
+        }
+        if ($OnlyConfig) {
+            EXE_SHELL "$ScriptFolder/vm/$VersionFolder/config"
+            exit 1
+        }
+        EXE_SHELL "$ScriptFolder/vm/$VersionFolder/FirstProcess"
+        EXE_SHELL "$ScriptFolder/vm/$VersionFolder/Package"
+        if ($Config) {
+            EXE_SHELL "$ScriptFolder/vm/$VersionFolder/config"
+        }
+        EXE_SHELL "$ScriptFolder/vm/$VersionFolder/RecentProcess"
+    }
 }

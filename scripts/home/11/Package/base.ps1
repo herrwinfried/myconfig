@@ -1,51 +1,52 @@
-WingetInstall -Id Brave.Brave
-WingetInstall -Id 7zip.7zip
-WingetInstall -Id 9WZDNCRFHWL # HP Smart
-WingetInstall -Id 9PP9GZM2GN26 # Intel Unison
+$apps = @(
+    "Brave.Brave",
+    "7zip.7zip",
+    "9WZDNCRFHWL", # HP Smart
+    "9PP9GZM2GN26", # Intel Unison
+    "9P9TQF7MRM4R", # Windows Subsystem for Linux (WSL)
+    "9MSSK2ZXXN11", # OpenSUSE Tumbleweed for WSL
+    "9MSVKQC78PK6", # Debian for WSL
+    "9NPCP8DRCHSN", # Fedora for WSL (Community Version / Not Official)
+    "9NKSQGP7F2NH", # Whatsapp
+    "9N97ZCKPD60Q", # Unigram
+    "Telegram.TelegramDesktop",
+    "Discord.Discord",
+    "Discord.Discord.PTB",
+    "Discord.Discord.Canary",
+    "Discord.Discord.Development",
+    "Element.Element",
+    "RevoUninstaller.RevoUninstaller",
+    "Microsoft.PowerToys",
+    "Flameshot.Flameshot",
+    "KDE.KDEConnect",
+    "KDE.Okular",
+    "Stremio.Stremio",
+    "XPDM1ZW6815MQM", # VLC
+    "9N9WCLWDQS5J", # Bluetooth Audio Receiver
+    "BlueStack.BlueStacks",
+    "OpenVPNTechnologies.OpenVPNConnect",
+    "Twilio.Authy",
+    "AnyDeskSoftwareGmbH.AnyDesk",
+    "TeamViewer.TeamViewer",
+    "Valve.Steam",
+    "HeroicGamesLauncher.HeroicGamesLauncher",
+    "EpicGames.EpicGamesLauncher",
+    "ElectronicArts.EADesktop",
+    "Ubisoft.Connect",
+    "OBSProject.OBSStudio",
+    "TheDocumentFoundation.LibreOffice",
+    "Yandex.Disk",
+    "Google.GoogleDrive",
+    "Oracle.VirtualBox",
+    "VMware.WorkstationPro"
+)
 
-WingetInstall -Id 9P9TQF7MRM4R # WSL
-WingetInstall -Id 9MSSK2ZXXN11 # OpenSUSE Tumbleweed
-WingetInstall -Id 9MSVKQC78PK6 # Debian
-WingetInstall -Id 9NPCP8DRCHSN # UNOFFICIAL Fedora
+$apps_interactive  = @()
 
-WingetInstall -Id 9NKSQGP7F2NH # WhatsApp
+foreach ($app in $apps_interactive) {
+    WingetInstall -Interactive 1 -Id $app
+}
 
-WingetInstall -Id 9N97ZCKPD60Q # Unigram
-WingetInstall -Id Telegram.TelegramDesktop
-
-WingetInstall -Id Discord.Discord 
-WingetInstall -Id Discord.Discord.PTB
-
-WingetInstall -Id Element.Element
-
-WingetInstall -Id RevoUninstaller.RevoUninstaller
-WingetInstall -Id Microsoft.PowerToys
-WingetInstall -Id Flameshot.Flameshot
-WingetInstall -Id KDE.KDEConnect
-
-WingetInstall -Id Stremio.Stremio
-WingetInstall -Id XPDM1ZW6815MQM # VLC
-
-WingetInstall -Id 9N9KDPHV91JT # f.lux
-WingetInstall -Id 9N9WCLWDQS5J # Bluetooth Audio Receiver
-
-# WingetInstall -Id BlueStack.BlueStacks
-
-WingetInstall -Id BinanceTech.Binance
-WingetInstall -Id OpenVPNTechnologies.OpenVPNConnect
-WingetInstall -Id Twilio.Authy
-
-WingetInstall -Id AnyDeskSoftwareGmbH.AnyDesk
-WingetInstall -Id TeamViewer.TeamViewer
-
-WingetInstall -Id Valve.Steam
-WingetInstall -Id HeroicGamesLauncher.HeroicGamesLauncher
-WingetInstall -Id EpicGames.EpicGamesLauncher
-WingetInstall -Id ElectronicArts.EADesktop
-WingetInstall -Id Ubisoft.Connect
-
-WingetInstall -Id OBSProject.OBSStudio
-
-WingetInstall -Id Google.Drive
-
-WingetInstall -Id TheDocumentFoundation.LibreOffice.LTS
+foreach ($app in $apps) {
+    WingetInstall -Id $app
+}

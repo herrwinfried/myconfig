@@ -5,14 +5,13 @@ function IsAdministrator {
 }
 
 if (IsAdministrator) {
-Set-Location $PSScriptRoot\..\..\..\
-$TempFolder=$(Get-Location)
-   . "$TempFolder\VARIBLES.ps1"
-Set-Location $PSScriptRoot
-$CURRENT_HOSTNAME = ($env:computername).ToLower()
-if ($CURRENT_HOSTNAME -ne $NEW_HOSTNAME) {
-    Rename-Computer -NewName "$NEW_HOSTNAME"
-}
+    Set-Location $PSScriptRoot\..\..\..\
+    $TempFolder=$(Get-Location)
+    . "$TempFolder\variable.ps1"
+    $CURRENT_HOSTNAME = ($env:computername).ToLower()
+    if ($CURRENT_HOSTNAME -ne $NEW_HOSTNAME) {
+        Rename-Computer -NewName "$NEW_HOSTNAME"
+    }
 } else {
     Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
 }

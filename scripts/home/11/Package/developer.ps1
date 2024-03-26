@@ -1,25 +1,24 @@
-WingetInstall -Interactive 1 -Id Git.Git
-WingetInstall -Id GitHub.GitLFS
-WingetInstall -Id GnuPG.Gpg4win
-WingetInstall -Id GnuPG.GnuPG
-WingetInstall -Id Github.cli
-WingetInstall -Id Glab.Glab
+$apps = @(
+    "GitHub.GitLFS",
+    "GnuPG.Gpg4win",
+    "GnuPG.GnuPG",
+    "Microsoft.VisualStudioCode",
+    "Microsoft.AzureDataStudio",
+    "Microsoft.VisualStudio.2022.Community",
+    "KDE.Kate",
+    "Docker.DockerDesktop",
+    "RedHat.Podman",
+    "RedHat.Podman-Desktop"
+)
 
-#WingetInstall -Id GitHub.GitHubDesktop
+$apps_interactive  = @(
+    "Git.Git"
+)
 
-WingetInstall -Id Microsoft.VisualStudioCode
-#WingetInstall -Id Microsoft.AzureDataStudio
-WingetInstall -Id JetBrains.Toolbox
-WingetInstall -Id Microsoft.VisualStudio.2022.Community
+foreach ($app in $apps_interactive) {
+    WingetInstall -Interactive 1 -Id $app
+}
 
-#WingetInstall -Id Microsoft.SQLServerManagementStudio
-
-WingetInstall -Id 9NWMW7BB59HW # Kate
-WingetInstall -Id 9NK1GDVPX09V # Termius
-
-WingetInstall -Id Docker.DockerDesktop
-#WingetInstall -Id RedHat.Podman 
-#WingetInstall -Id RedHat.Podman-Desktop
-
-#WingetInstall -Id Oracle.VirtualBox
-WingetInstall -Id VMware.WorkstationPro
+foreach ($app in $apps) {
+    WingetInstall -Id $app
+}

@@ -1,34 +1,23 @@
-$OldPWD = Get-Location
-Set-Location $PSScriptRoot\..\..\..\..\dotfiles
-$DotfilesFolder=$(Get-Location)
+function IsAdministrator {
+    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
 
-Remove-File "$env:USERPROFILE\.alias.ps1"
+if (IsAdministrator) {
+    Set-Location $PSScriptRoot\..\..\..\
+    $TempFolder=$(Get-Location)
+    . "$TempFolder\variable.ps1"
 
-Copy-Item -Path "$DotfilesFolder\home\.alias.ps1" -Destination "$env:USERPROFILE\.alias.ps1" -Recurse -Force
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -Value "$env:USERPROFILE\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Force
+} else {
+    Create-Folder "$ScriptFolder1\data\home\.poshthemes\"
+    Remove-File "$env:USERPROFILE\.poshthemes\default.omp.json"
+    Download-File -url "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -desc "$ScriptFolder1\data\home\.poshthemes\default.omp.json"
 
-Create-Folder $env:USERPROFILE\Documents\WindowsPowerShell
-Create-Folder $env:USERPROFILE\Documents\PowerShell
+    Copy-Item -Recurse -Force -Path "$ScriptFolder1\data\home\*" -Destination "$env:USERPROFILE"
 
-Remove-File "$env:USERPROFILE\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
-Remove-File "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
-
-Copy-Item -Path "$DotfilesFolder\home\Microsoft.PowerShell_profile.ps1" -Destination "$env:USERPROFILE\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Recurse -Force
-Copy-Item -Path "$DotfilesFolder\home\Microsoft.PowerShell_profile.ps1" -Destination "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -Recurse -Force
-
-Remove-File $env:USERPROFILE\.wslconfig
-
-Copy-Item -Path "$DotfilesFolder\.wslconfig" -Destination "$env:USERPROFILE\.wslconfig" -Recurse -Force
-
-Remove-File "$env:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-
-Copy-Item -Path "$DotfilesFolder\terminal.json" -Destination "$env:USERPROFILE\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" -Recurse -Force
-
-Remove-File "$env:USERPROFILE\.poshthemes"
-
-Create-Folder "$env:USERPROFILE\.poshthemes"
-
-Download-File -url "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/dotfiles/default.omp.json" -desc "$env:USERPROFILE\.poshthemes\default.omp.json"
-
-Start-Process PowerShell -verb runas "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned"
-
-Set-Location $OldPWD
+    Create-Folder $env:USERPROFILE\Documents\WindowsPowerShell
+    Create-Folder $env:USERPROFILE\Documents\PowerShell
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs
+}

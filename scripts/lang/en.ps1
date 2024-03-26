@@ -1,0 +1,10 @@
+$LANG_NOTWINDOWS="Operating System is Not Windows."
+
+$LANG_GIT_COMMAND_NOT_FOUND="git command not found please install it."
+$LANG_NO_ARGUMENTS="No arguments. You must select an argument..."
+$LANG_BOTH_WARNING_ARG="Server and/or Client(Home/User) and/or virtualmachine arguments are selected at the same time, are you sure you want to continue?"
+$LANG_BOTH_WARNING_ARG_YES="Yes"
+$LANG_BOTH_WARNING_ARG_NO="No"
+$LANG_BOTH_WARNING_ARG_OPTION_INVALID="You entered an invalid number, please try again..."
+$LANG_PRESETUP_MESSAGE_1="I performed the pre-setup procedures. Please restart your computer. Script terminated."
+$LANG_PRESETUP_MESSAGE_2="When you restart your computer, continue without the presetup parameter, the remaining processes will be completed."

@@ -5,32 +5,60 @@ function IsAdministrator {
 }
 
 if (IsAdministrator) {
+    Set-Location $PSScriptRoot\..\..\..\
+    $TempFolder=$(Get-Location)
+    . "$TempFolder\variable.ps1"
 
-Set-Location $PSScriptRoot\..\..\..\
-$TempFolder=$(Get-Location)
-    . "$TempFolder\VARIBLES.ps1"
-Set-Location $PSScriptRoot
-    
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Value 1
+    $registryKeys = @(
+         # Show Hide Files and Directories `[ ]` - 1 ENABLE / 0 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+            Name = "Hidden"
+            Value = 1
+        },
+        # Show CheckBox `[ ]` - 1 ENABLE / 0 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+            Name = "AutoCheckSelect"
+            Value = 1
+        },
+        # Show File Extention - 0 ENABLE / 1 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+            Name = "HideFileExt"
+            Value = 0
+        },
+        # Show recently used files - 1 ENABLE / 0 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer"
+            Name = "ShowRecent"
+            Value = 0
+        },
+        # Start Menu Show recently used files - 1 ENABLE / 0 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+            Name = "Start_TrackDocs"
+            Value = 0
+        },
+        # Show frequently used folders - 1 ENABLE / 0 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer"
+            Name = "ShowFrequent"
+            Value = 0
+        },
+        # Show files from office.com - 1 ENABLE / 0 DISABLE
+        @{
+            Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer"
+            Name = "ShowCloudFilesInQuickAccess"
+            Value = 0
+        }
+    )
 
-# Show CheckBox `[ ]` 1 -> enable
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "AutoCheckSelect" -Value 1
+    foreach ($key in $registryKeys) {
+        Set-ItemProperty -Path $key.Path -Name $key.Name -Value $key.Value
+    }
 
-# Show File Extention 0 -> disable
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value 0
-
-# Show recently used files 0 -> disable
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Value 0
-#   Start Menu
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackDocs" -Value 0
-
-# Show frequently used folders 0 -> disable
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Value 0
-
-# Show files from office.com 0 -> disable
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Value 0
-
-#Stop-Process -Name "explorer" -Force
+    #Stop-Process -Name "explorer" -Force
 } else {
     Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
 }
