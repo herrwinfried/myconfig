@@ -169,7 +169,7 @@ Type=Application
 Categories=Network;InstantMessaging;
 Path=/opt/$ExecCom\" | tee /usr/share/applications/discord-$Version.desktop"
 
-if [ ! -z $Version ]; then
+if [ -z $Version ]; then
 curl -L "https://discord.com/api/download?platform=linux&format=tar.gz" -o /tmp/discord.tar.gz
 else
 curl -L "https://discord.com/api/download/$Version?platform=linux&format=tar.gz" -o /tmp/discord$Version.tar.gz
