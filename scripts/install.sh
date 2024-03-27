@@ -102,6 +102,20 @@ rootpassword
     External_PM_Brew
     External_PM_Flatpak
     External_PM_Snap
+  elif [[ $DISTRO = *fedora* ]]; then
+    DistroFolder="fedora"
+    PackageManager_fedora
+
+    External_PM_Brew
+    External_PM_Flatpak
+    External_PM_Snap
+  elif [[ $DISTRO = *debian* ]]; then
+    DistroFolder="debian"
+    PackageManager_debian
+
+    External_PM_Brew
+    External_PM_Flatpak
+    External_PM_Snap
   else
     echo "$red $LANG_NOT_SUPPORT_DISTRO_LIST $white"
     exit 1

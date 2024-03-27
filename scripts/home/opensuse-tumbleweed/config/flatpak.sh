@@ -15,9 +15,9 @@ if [ -x "$(command -v flatpak)" ]; then
     flatpak_user_override .var/app/com.valvesoftware.Steam/config/MangoHud
     flatpak_user_override .var/app/com.valvesoftware.Steam/config
 
-    flatpak override --env GTK_THEME=Adwaita-dark
+    SUDO flatpak override --env GTK_THEME=Adwaita-dark
 
-    ln -s $USERHOME/.var/app/com.valvesoftware.Steam/config/MangoHud/MangoHud.conf $USERHOME/.config/MangoHud/MangoHud.conf
+    ln -sf $USERHOME/.var/app/com.valvesoftware.Steam/config/MangoHud/MangoHud.conf $USERHOME/.config/MangoHud/MangoHud.conf
 
     flatpak_user_override .var/app/com.valvesoftware.Steam/config/MangoHud/MangoHud.conf com.valvesoftware.Steam
     flatpak_user_override /mnt com.valvesoftware.Steam

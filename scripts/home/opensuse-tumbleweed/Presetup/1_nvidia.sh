@@ -7,7 +7,7 @@ if ! checkwsl; then
         nvidia-video-G06-32bit nvidia-gl-G06-32bit nvidia-compute-G06-32bit;
     fi
     SUDO groupadd wheel
-    SUDO usermod -aG wheel $Username
+    SUDO usermod -aG wheel $USERNAME
 
 fi
 

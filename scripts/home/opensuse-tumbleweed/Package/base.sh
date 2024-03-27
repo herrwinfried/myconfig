@@ -1,6 +1,6 @@
 #!/bin/bash
 
-Package_a="hwinfo screenfetch neofetch htop git git-lfs curl wget"
+Package_a="hwinfo screenfetch neofetch htop curl wget"
 Package_a+=" zsh bash-completion fish lsb-release opi e2fsprogs nano"
 Package_a+=" lzip unrar unzip java-21-openjdk"
 Package_a+=" rsync wl-clipboard"
@@ -10,8 +10,8 @@ Package_a_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-da
 Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
 Package_b+=" libreoffice libreoffice-l10n-tr poppler-tools"
 
-Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0 mangohud mangohud-32bit goverlay"
-Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
+Package_c="pinta gamemoded libgamemode0 libgamemodeauto0 mangohud mangohud-32bit goverlay"
+Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal"
 Package_c_Flatpak+=" com.stremio.Stremio com.github.wwmm.easyeffects org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
 
 if checkwsl; then
@@ -20,7 +20,7 @@ fi
 
 if ! checkwsl; then   
     Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
-    Package_b+=" xwaylandvideobridge discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
+    Package_b+=" xwaylandvideobridge AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
     Package_c+=" steam protontricks"
     Package_d_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl" 
     Package_d_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2"
