@@ -21,7 +21,7 @@ fi
 if ! checkwsl; then   
     Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
     Package_b+=" xwaylandvideobridge AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
-    Package_c+=" steam protontricks"
+    Package_c+=" steam protontricks qbittorrent"
     Package_d_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl" 
     Package_d_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2"
 
