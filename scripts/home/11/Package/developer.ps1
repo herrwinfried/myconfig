@@ -7,6 +7,7 @@ $apps = @(
     "Microsoft.VisualStudio.2022.Community",
     "KDE.Kate",
     "Python.Python.3.12",
+    "OpenJS.NodeJS",
     "Docker.DockerDesktop",
     "RedHat.Podman",
     "RedHat.Podman-Desktop"
