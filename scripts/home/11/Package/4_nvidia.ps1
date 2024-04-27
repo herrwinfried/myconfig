@@ -1,0 +1,1 @@
+Install-WingetPackage -PackageID Nvidia.GeForceExperience

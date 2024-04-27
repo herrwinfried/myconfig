@@ -1,4 +1,5 @@
 @echo off
-Title "HerrWinfried - MyConfig Installer"
+Title "MyConfig - CMD"
+    cd ../../scripts
     start powershell.exe -ExecutionPolicy Bypass -File .\install.ps1 -vm -c
 exit

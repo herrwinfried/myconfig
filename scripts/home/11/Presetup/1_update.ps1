@@ -3,7 +3,6 @@ function IsAdministrator {
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
-
 if (IsAdministrator) {
     # FIXME: :/ Hey, if you know a more logical way, I'm open to suggestions.
     Set-Location $PSScriptRoot\..\..\..\
@@ -13,17 +12,14 @@ if (IsAdministrator) {
     Set-Location $PSScriptRoot
     ##############################################################
 
-    New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -Value "$env:USERPROFILE\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" -Force
-
+    Install-PackageProvider2 -ProviderName NuGet
+    Install-Module2 -ModuleName PSWindowsUpdate
+    Import-Module PSWindowsUpdate
+    Get-WindowsUpdate -AcceptAll -Download
+    Get-WindowsUpdate -AcceptAll -Install
 } else {
-    New-Directory "$GetDataDir\home\.poshthemes\"
-    Remove-Item2 "$env:USERPROFILE\.poshthemes\default.omp.json"
-    Invoke-Download -url "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -desc "$GetDataDir\home\.poshthemes\default.omp.json"
-
-    Copy-Item -Recurse -Force -Path "$GetDataDir\home\*" -Destination "$env:USERPROFILE"
-
-    New-Directory $env:USERPROFILE\Documents\WindowsPowerShell
-    New-Directory $env:USERPROFILE\Documents\PowerShell
+    Start-Process PowerShell -verb runas "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned"
+    winget upgrade --all --accept-package-agreements --accept-source-agreements
     if (Test-CommandExists pwsh) {
         Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
     } else {

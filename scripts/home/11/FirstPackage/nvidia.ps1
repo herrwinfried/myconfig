@@ -1,1 +1,0 @@
-WingetInstall -Id Nvidia.GeForceExperience

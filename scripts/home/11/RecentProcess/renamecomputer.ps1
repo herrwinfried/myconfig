@@ -5,14 +5,21 @@ function IsAdministrator {
 }
 
 if (IsAdministrator) {
-Set-Location $PSScriptRoot\..\..\..\
-$TempFolder=$(Get-Location)
-   . "$TempFolder\VARIBLES.ps1"
-Set-Location $PSScriptRoot
-$CURRENT_HOSTNAME = ($env:computername).ToLower()
-if ($CURRENT_HOSTNAME -ne $NEW_HOSTNAME) {
-    Rename-Computer -NewName "$NEW_HOSTNAME"
-}
+    # FIXME: :/ Hey, if you know a more logical way, I'm open to suggestions.
+    Set-Location $PSScriptRoot\..\..\..\
+    $TempFolder=$(Get-Location)
+    . "$TempFolder\config.ps1"
+    Import-Module "$TempFolder\function.psm1"
+    Set-Location $PSScriptRoot
+    ##############################################################
+    $getHostname = ($env:computername).ToLower()
+    if ($getHostname -ne $config.HostName) {
+        Rename-Computer -NewName "$($config.HostName)"
+    }
 } else {
-    Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    if (Test-CommandExists pwsh) {
+        Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    } else {
+        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    }
 }

@@ -5,20 +5,41 @@ function IsAdministrator {
 }
 
 if (IsAdministrator) {
+    # FIXME: :/ Hey, if you know a more logical way, I'm open to suggestions.
+    Set-Location $PSScriptRoot\..\..\..\
+    $TempFolder=$(Get-Location)
+    . "$TempFolder\config.ps1"
+    Import-Module "$TempFolder\function.psm1"
+    Set-Location $PSScriptRoot
+    ##############################################################
 
-Set-Location $PSScriptRoot\..\..\..\
-$TempFolder=$(Get-Location)
-    . "$TempFolder\VARIBLES.ps1"
+    $fontUrls = @(
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
+            FileName = "MesloLGS NF Bold Italic.ttf"
+        },
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
+            FileName = "MesloLGS NF Bold.ttf"
+        },
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
+            FileName = "MesloLGS NF Italic.ttf"
+        },
+        @{
+            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
+            FileName = "MesloLGS NF Regular.ttf"
+        }
+    )
 
-Set-Location $PSScriptRoot
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf" -Family "MesloLGS NF Bold Italic.ttf"
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf" -Family "MesloLGS NF Bold.ttf"
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf" -Family "MesloLGS NF Italic.ttf"
-
-New-Font-Online -url "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf" -Family "MesloLGS NF Regular.ttf"
+    foreach ($fontInfo in $fontUrls) {
+        Invoke-Download -url $fontInfo.Url -desc "$env:TEMP\$fontInfo.FileName"
+        New-Font -Source "$env:TEMP\$fontInfo.FileName" -Family $fontInfo.FileName
+    }
 } else {
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    if (Test-CommandExists pwsh) {
+        Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    } else {
+        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    }
 }

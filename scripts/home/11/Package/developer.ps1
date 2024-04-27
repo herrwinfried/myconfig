@@ -1,25 +1,66 @@
-WingetInstall -Interactive 1 -Id Git.Git
-WingetInstall -Id GitHub.GitLFS
-WingetInstall -Id GnuPG.Gpg4win
-WingetInstall -Id GnuPG.GnuPG
-WingetInstall -Id Github.cli
-WingetInstall -Id Glab.Glab
+$apps = @(
+    @{
+        Id = "Git.Git"
+        Interactive = $True
+    },
+    @{
+        Id = "GitHub.GitLFS"
+        Interactive = $False
+    },
+    @{
+        Id = "GnuPG.Gpg4win"
+        Interactive = $False
+    },
+    @{
+        Id = "GnuPG.GnuPG"
+        Interactive = $False
+    },
+    @{
+        Id = "Microsoft.VisualStudioCode"
+        Interactive = $False
+    },
+    @{
+        Id = "Microsoft.AzureDataStudio"
+        Interactive = $False
+    },
+    @{
+        Id = "Microsoft.VisualStudio.2022.Community"
+        Interactive = $False
+    },
+    @{
+        Id = "KDE.Kate"
+        Interactive = $False
+    },
+    @{
+        Id = "Python.Python.3.12"
+        Interactive = $False
+    },
+    @{
+        Id = "OpenJS.NodeJS"
+        Interactive = $False
+    },
+    @{
+        Id = "ApacheFriends.Xampp.8.2"
+        Interactive = $False
+    },
+    @{
+        Id = "Docker.DockerDesktop"
+        Interactive = $False
+    },
+    @{
+        Id = "RedHat.Podman"
+        Interactive = $False
+    },
+    @{
+        Id = "RedHat.Podman-Desktop"
+        Interactive = $False
+    }
+)
 
-#WingetInstall -Id GitHub.GitHubDesktop
-
-WingetInstall -Id Microsoft.VisualStudioCode
-#WingetInstall -Id Microsoft.AzureDataStudio
-WingetInstall -Id JetBrains.Toolbox
-WingetInstall -Id Microsoft.VisualStudio.2022.Community
-
-#WingetInstall -Id Microsoft.SQLServerManagementStudio
-
-WingetInstall -Id 9NWMW7BB59HW # Kate
-WingetInstall -Id 9NK1GDVPX09V # Termius
-
-WingetInstall -Id Docker.DockerDesktop
-#WingetInstall -Id RedHat.Podman 
-#WingetInstall -Id RedHat.Podman-Desktop
-
-#WingetInstall -Id Oracle.VirtualBox
-WingetInstall -Id VMware.WorkstationPro
+foreach ($app in $apps) {
+    if ($app.Interactive) {
+        Install-WingetPackage -Interactive 1 -PackageID $app.Id
+    } else {
+        Install-WingetPackage -PackageID $app.Id
+    }
+}

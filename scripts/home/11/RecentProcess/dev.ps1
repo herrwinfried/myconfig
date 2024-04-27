@@ -5,16 +5,38 @@ function IsAdministrator {
 }
 
 if (IsAdministrator) {
-# Developer Mode
-Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1
 
-# Taskbar enable "End Task"
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings" -Name "TaskbarEndTask" -Value 1
+    $registryKeys = @(
+        # Developer Mode - 1 ENABLE / 0 DISABLE
+       @{
+           Path = "HKLM:\Software\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+           Name = "AllowDevelopmentWithoutDevLicense"
+           Value = 1
+       },
+       # Taskbar enable "End Task" - 1 ENABLE / 0 DISABLE
+       @{
+           Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings"
+           Name = "TaskbarEndTask"
+           Value = 1
+       },
+       # Run as different user - 0 ENABLE / 1 DISABLE
+       @{
+           Path = "HKCU:\Software\Policies\Microsoft\Windows\Explorer"
+           Name = "ShowRunAsDifferentUserInStart"
+           Value = 1
+       }
+   )
 
-# Run as different user
-Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Windows\Explorer" -Name "ShowRunAsDifferentUserInStart" -Value 1
+   foreach ($key in $registryKeys) {
+       Set-ItemProperty -Path $key.Path -Name $key.Name -Value $key.Value
+   }
+
 #Stop-Process -Name "explorer" -Force
 
 } else {
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    if (Test-CommandExists pwsh) {
+        Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    } else {
+        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs   
+    }
 }
