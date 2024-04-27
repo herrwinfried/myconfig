@@ -4,7 +4,7 @@ SUDO $Package $PackageInstall dnf libdnf-repo-config-zypp python3-dnf-plugin-ver
 SUDO dnf makecache -y && SUDO zypper --gpg-auto-import-keys refresh
 
 if [ "$(cat /etc/dnf/dnf.conf | grep protect_running_kernel)" ]; then
-    echo $red"protect_running_kernel is available. The value will be not written.$white"
+    echo -e "${Red}$(Language dnfprotect_running_kernel)${NoColor}"
 else
     SUDO su -c "echo "protect_running_kernel=False" | tee -a /etc/dnf/dnf.conf"
 fi

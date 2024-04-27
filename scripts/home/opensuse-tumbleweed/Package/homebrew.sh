@@ -1,27 +1,26 @@
 #!/bin/bash
-SUDO $Package $PackageInstall gcc
-OldPw=$(pwd)
+    SUDO $Package $PackageInstall gcc
+    old_pw=$(pwd)
 
-SUDO mkdir -p /home/linuxbrew/.linuxbrew
-SUDO chown -R $Username /home/linuxbrew/.linuxbrew
-NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    SUDO mkdir -p /home/linuxbrew/.linuxbrew
+    SUDO chown -R $USERNAME /home/linuxbrew/.linuxbrew
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-cd $OldPw
-unset OldPw
+    cd $old_pw
+    unset old_pw
 
-if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
-function brewInstall {
-    /home/linuxbrew/.linuxbrew/bin/brew install $1 </dev/null
+    if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+brew_install() {
+    if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+        /home/linuxbrew/.linuxbrew/bin/brew install $1 </dev/null
+    fi
+}
+brew_install_cask() {
+    if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+        /home/linuxbrew/.linuxbrew/bin/brew install --cask $1 </dev/null
+    fi
 }
 
-function brewInstallCask {
-    /home/linuxbrew/.linuxbrew/bin/brew install --cask $1 </dev/null
-}
-
-
-if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    brewInstall oh-my-posh
-fi
+brew_install oh-my-posh

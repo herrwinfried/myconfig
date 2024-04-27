@@ -1,6 +1,5 @@
 #!/bin/bash
-
-if ! checkwsl; then
+if ! CheckWsl; then
 
 VT_D="intel_iommu=on"
 IOMMU="iommu=pt"
@@ -10,20 +9,20 @@ CURRENT_SETTINGS=$(grep -oP 'GRUB_CMDLINE_LINUX_DEFAULT="[^"]*"' $GRUB_FILE | cu
     if [[ "$CURRENT_SETTINGS" != *"$VT_D"* ]] && [[ "$CURRENT_SETTINGS" != *"$IOMMU"* ]]; then
         NEW_SETTINGS="\"$CURRENT_SETTINGS $VT_D $IOMMU\""
        sudo sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 $VT_D $IOMMU\"/" $GRUB_FILE && \
-        echo $green"$VT_D and $IOMMU parameters have been added to the grub2 configuration file.$white"
+        echo -e "${Green}${VT_D} and ${IOMMU} parameters have been added to the grub2 configuration file.${NoColor}"
     else
-        echo $yellow"$VT_D and $IOMMU parameters are already included in the grub2 configuration file.$white"
+        echo -e "${Yellow}${VT_D} and ${IOMMU} parameters are already included in the grub2 configuration file.${NoColor}"
     fi
 else
-    echo $red"Grub2 configuration file not found. Please check your operating system.$white"
+    echo -e "${Red}Grub2 configuration file not found. Please check your operating system.${NoColor}"
 fi
-
-echo "$yellow"sed -i "s/#/user = \"qemu\"/user = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf $white
+if rpm -q libvirt ; then
+echo -e "${Yellow}sed -i "s/#/user = \"qemu\"/user = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf${NoColor}"
 SUDO sed -i "s/#user = \"qemu\"/user = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf
-echo "$yellow"sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf $white
+echo -e "${Yellow}sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf${NoColor}"
 SUDO sed -i "s/#group = \"qemu\"/group = \"$(id -gn)\"/g" /etc/libvirt/qemu.conf
 SUDO grub2-mkconfig -o /boot/grub2/grub.cfg
-
-echo $green"Adding $Username to kvm, libvirt, input groups...$cyan(sudo usermod -aG kvm,libvirt,input $Username)$white"
-SUDO usermod -aG kvm,libvirt,input $Username 
+echo -e "${Green}sudo usermod -aG kvm,libvirt,input ${USERNAME} ${NoColor}"
+SUDO usermod -aG kvm,libvirt,input $USERNAME 
+fi
 fi

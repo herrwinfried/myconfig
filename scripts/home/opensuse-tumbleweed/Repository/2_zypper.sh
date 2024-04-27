@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function repo_nvidia_zypp {
-    SUDO $Package $PackageInstall openSUSE-repos-NVIDIA openSUSE-repos-Tumbleweed-NVIDIA
+    SUDO $Package $PackageInstall openSUSE-repos-NVIDIA
     #OLD...
         #SUDO zypper --gpg-auto-import-keys --no-gpg-checks addrepo -n "NVIDIA" --refresh https://download.nvidia.com/opensuse/tumbleweed NVIDIA   
 }
@@ -73,7 +73,7 @@ function repo_vscode_zypp {
 
 function repo_vscodium_zypp {
     SUDO rpm --import https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
-    echo -e "[gitlab.com_paulcarroty_vscodium_repo]\nname=gitlab.com_paulcarroty_vscodium_repo\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h" | SUDO tee -a /etc/zypp/repos.d/vscodium.repo
+    SUDO sh -c 'echo -e "[gitlab.com_paulcarroty_vscodium_repo]\nname=gitlab.com_paulcarroty_vscodium_repo\nbaseurl=https://download.vscodium.com/rpms/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg\nmetadata_expire=1h" > /etc/zypp/repos.d/vscodium.repo'
 }
 
 function repo_sublimetexteditor_zypp {
@@ -86,6 +86,12 @@ function repo_megasync_zypp {
     SUDO zypper --gpg-auto-import-keys --no-gpg-checks addrepo -n "MEGAsync" "https://mega.nz/linux/repo/openSUSE_Tumbleweed/" MEGAsync
 }
 
+function repo_yandexdisk_zypp {
+    SUDO rpm --import http://repo.yandex.ru/yandex-disk/YANDEX-DISK-KEY.GPG
+    SUDO sh -c 'echo -e "[yandex]\nname=Yandex\nfailovermethod=priority\nbaseurl=http://repo.yandex.ru/yandex-disk/rpm/stable/\$basearch/\nenabled=1\nmetadata_expire=1d\ngpgcheck=1\ngpgkey=http://repo.yandex.ru/yandex-disk/YANDEX-DISK-KEY.GPG" > /etc/zypp/repos.d/yandex.repo'
+}
+
+SUDO zypper --gpg-auto-import-keys --no-gpg-checks refresh
 
 repo_nvidia_zypp
 repo_asuscommunity_dnf_zypp
@@ -106,7 +112,8 @@ repo_microsoft_zypp
 
 repo_unofficial_githubdesktop_zypp
 repo_vscode_zypp
-#repo_vscodium_zypp
+repo_vscodium_zypp
 repo_sublimetexteditor_zypp
 
 repo_megasync_zypp
+repo_yandexdisk_zypp

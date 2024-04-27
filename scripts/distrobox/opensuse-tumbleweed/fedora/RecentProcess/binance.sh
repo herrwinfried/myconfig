@@ -1,6 +1,6 @@
 #!/bin/bash
 
-download_dir="$HomePWD/Downloads"
+download_dir="$USERHOME/Downloads"
 if [ ! -d "$download_dir" ]; then
     mkdir -p "$download_dir"
 fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! checkwsl; then
+if ! CheckWsl; then
 
     #    Disk manager, Clock App, colord, Audio Recorder, Photo Browser
     packageKDE="partitionmanager kclock colord-kde krecorder koko"
@@ -11,19 +11,14 @@ if ! checkwsl; then
     #   Search App, GPG GUI, Camera, Google Drive, discover flatpak support
     packageKDE+=" kfind kleopatra kamoso kio-gdrive discover-backend-flatpak"
 
-    #  Photo Browser, Matrix Client, RDP/VNC Remote Viewer, VNC Desktop Sharing, Color Picker
-    packageKDE+=" gwenview neochat krdc krfb kcolorchooser"
+    #  Photo Browser, Matrix Client, Color Picker, Sound Mixer
+    packageKDE+=" gwenview neochat kcolorchooser kmix"
 
     #   Paint(Like WinXP), Music Player, Dolphin extra plugin, nextcloud images for dolphin
     packageKDE+=" kolourpaint elisa dolphin-plugins nextcloud-desktop-dolphin"
 
     # Video edit , KDE Games
     packageKDE+=" kdenlive patterns-kde-kde_games"
-    #   KDevelop App, KDevelop Additional Plugin Support, KDevelop PHP Plugin, KDevelop Python Plugin
-            #packageKDE+=" kdevelop5 kdevelop5-pg-qt kdevelop5-plugin-php kdevelop5-plugin-python3"
-
-    #   Icon Editor, HeX Editor
-            #packageKDE+=" okteta ikona"
 
     SUDO $Package $PackageInstall $packageKDE
 fi

@@ -1,0 +1,144 @@
+#!/bin/bash
+
+if [ "$(uname -s)" != "Linux" ]; then
+    echo "$(tput setaf 1)This bash file is designed to be used on linux. Please check your operating system.$(tput setaf 7)"
+    exit 1
+fi
+
+if [ -z "$ZSH_VERSION" ] && [ -z "$BASH_VERSION" ]; then
+    echo "$(tput setaf 1)This file is for bash and ZSH. Are you sure you're using Bash or ZSH?$(tput setaf 7)"
+    exit 1
+fi
+
+if [ -z "$LC_ALL" ] && [ -z "$LANG" ]; then
+    LANG=C.utf8
+    LC_ALL=$LANG
+fi
+
+OhMyPoshTheme=~/.poshthemes/default.omp.json
+
+if rpm -q "docker" >/dev/null 2>&1; then
+    export DOCKER_HOST=unix:///run/user/1000/docker.sock
+fi
+
+
+function CheckWsl() {
+    local unameout
+    unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
+    if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] ||
+        [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] ||
+        [ -n "$WSL_DISTRO_NAME" ] ||
+        [ "$(grep -m1 microcode /proc/cpuinfo | cut -f2 -d:)" = "0xffffffff" ] && [ "$WSL_DISTRO_NAME" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+if [ -d "/windir/c" ] || [ -d "/mnt/c" ] && CheckWsl ; then
+function wsl_c {
+  if [ -d "/windir/c" ] ; then
+    cd /windir/c || exit
+  elif [ -d "/mnt/c" ] ; then
+    cd /mnt/c || exit
+  fi
+}
+fi
+
+function update-alias() {
+    test -f "$HOME/.alias.ps1" && rm -f "$HOME/.alias.ps1"
+    wget -O "$HOME/.alias.ps1" "https://raw.githubusercontent.com/herrwinfried/myconfig/windows/data/home/.alias.ps1"
+    
+    test -f "$HOME/.alias" && rm -f "$HOME/.alias"
+    wget -O "$HOME/.alias" "https://raw.githubusercontent.com/herrwinfried/myconfig/windows/data/home/.alias"
+    }
+
+NowShell=""
+
+function prepend_sudo() {
+  if [ -n "$BASH_VERSION" ]; then
+    [[ $READLINE_LINE == "sudo "* ]] && READLINE_LINE=${READLINE_LINE#sudo } || READLINE_LINE="sudo $READLINE_LINE"
+  else
+    [[ $LBUFFER == "sudo "* ]] && LBUFFER=${LBUFFER#sudo } || LBUFFER="sudo $LBUFFER"
+  fi
+}
+
+if [ -n "$BASH_VERSION" ]; then
+    NowShell="bash"
+    SHELL_PLUGIN_DIRS=( "$HOME/.$NowShell/plugins" "/usr/local/share" "/usr/share" )
+    SHELL_PLUGIN_NAMES=()
+    # shellcheck disable=SC1090
+    test -s "/etc/${NowShell}_command_not_found" && . "/etc/${NowShell}_command_not_found"
+    bind -x '"\es": prepend_sudo'
+
+elif [ -n "$ZSH_VERSION" ]; then
+    NowShell="zsh"
+    SHELL_PLUGIN_DIRS=( "$HOME/.$NowShell/plugins" "/usr/local/share" "/usr/share" )
+    SHELL_PLUGIN_NAMES=( "zsh-autocomplete" "zsh-autosuggestions" "zsh-syntax-highlighting" "zsh-completions" )
+    # shellcheck disable=SC1090
+    test -s "/etc/${NowShell}_command_not_found" && . "/etc/${NowShell}_command_not_found"
+    zle -N prepend_sudo
+    bindkey '^[s' prepend_sudo
+fi
+
+function PluginInstall() {
+    if [[ -n "${SHELL_PLUGIN_DIRS[*]}" && -n "${SHELL_PLUGIN_NAMES[*]}" ]]; then
+    is_plugin() {
+      local base_dir=$1
+      local name=$2
+      if [ -n "$BASH_VERSION" ]; then
+        test -f "$base_dir/$name/$name.plugin.bash" || test -f "$base_dir/$name/$name.plugin.sh"
+      else
+        test -f "$base_dir/$name/$name.plugin.zsh"
+      fi
+    }
+
+        for PluginName in "${SHELL_PLUGIN_NAMES[@]}"; do
+      local -A Plugins=()
+      Plugins[$PluginName]=0
+
+      for PluginFolder in "${SHELL_PLUGIN_DIRS[@]}"; do
+        if [[ ${Plugins[$PluginName]} -eq 0 ]]; then
+          if is_plugin "$PluginFolder" "$PluginName"; then
+            Plugins[$PluginName]=1
+            if [ -n "$BASH_VERSION" ]; then
+            # shellcheck disable=SC1090
+              source "$PluginFolder/$PluginName/$PluginName.plugin.bash" || source "$PluginFolder/$PluginName/$PluginName.plugin.sh"
+            else
+              # shellcheck disable=SC1090
+              source "$PluginFolder/$PluginName/$PluginName.plugin.zsh"
+            fi
+          fi
+        fi
+      done
+
+      if [[ ${Plugins[$PluginName]} -eq 0 ]]; then
+        echo "$(tput setaf 4)[$NowShell] $(tput setaf 3)Plugin Not Found: $(tput setaf 1)'$PluginName'$(tput setaf 7)"
+        echo ""
+      fi
+
+    done
+
+    unset Plugins
+    unset PluginName
+    unset PluginFolder
+
+    fi
+}
+
+PluginInstall
+if [[ -x "$(command -v oh-my-posh)" ]] && [[ -f "$OhMyPoshTheme" ]]; then
+    if [[ "$TERM" != "linux" ]]; then
+        eval "$(oh-my-posh init $NowShell --config $OhMyPoshTheme)"
+    fi
+    function update-ohmyposhtheme() {
+        # shellcheck disable=SC2154
+        test -f "$OhMyPoshTheme" && rm -f "$OhMyPoshTheme"
+        wget "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.poshthemes/default.omp.json" -O "$HOME/.poshthemes/default.omp.json"
+    }
+fi
+unset NowShell

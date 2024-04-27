@@ -1,44 +1,55 @@
 #!/bin/bash
 
-Package_a="hwinfo screenfetch neofetch htop git git-lfs curl wget"
-Package_a+=" zsh bash-completion fish lsb-release opi e2fsprogs nano"
-Package_a+=" lzip unrar unzip java-21-openjdk cnf-rs cnf-rs-bash cnf-rs-zsh cnf-rs-locale"
-Package_a+=" rsync python311-pip wl-clipboard"
-
-Package_a_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.5 org.kde.PlatformTheme.QGnomePlatform//6.5"
-
-Package_b="brave-browser microsoft-edge-stable fetchmsttfonts powerline-fonts"
-Package_b+=" libreoffice libreoffice-l10n-tr poppler-tools"
-
-Package_c="pinta minetest gamemoded libgamemode0 libgamemodeauto0 mangohud mangohud-32bit goverlay"
-Package_c_Flatpak="flathub org.onlyoffice.desktopeditors com.obsproject.Studio com.github.tchx84.Flatseal com.authy.Authy"
-Package_c_Flatpak+=" com.stremio.Stremio com.github.wwmm.easyeffects org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
-
-if checkwsl; then
-Package_b+=" libreoffice-gnome libreoffice-gtk3"
+Base="hwinfo screenfetch neofetch htop curl wget zsh fish opi nano"
+Base+=" lsb-release e2fsprogs java-22-openjdk rsync"
+Base+=" bash-completion wl-clipboard jq"
+Base+=" fetchmsttfonts powerline-fonts google-noto-sans*"
+Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.6 org.kde.PlatformTheme.QGnomePlatform//6.6"
+Base_Flatpak+=" com.github.tchx84.Flatseal"
+if ! CheckWsl; then
+    Base+=" memtest86+ xwaylandvideobridge AdobeICCProfiles"
+    Remote="anydesk teamviewer-suse"
 fi
 
-if ! checkwsl; then   
-    Package_a_Flatpak+=" org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
-    Package_b+=" xwaylandvideobridge discord flameshot AdobeICCProfiles anydesk teamviewer-suse noisetorch memtest86+"
-    Package_c+=" steam protontricks"
-    Package_d_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl" 
-    Package_d_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2"
+
+Browser_Office="brave-browser microsoft-edge-stable libreoffice libreoffice-l10n-tr poppler-tools"
+Browser_Office_Flatpak="flathub org.onlyoffice.desktopeditors"
+if CheckWsl; then
+    Browser_Office+=" libreoffice-gnome libreoffice-gtk3"
+fi
+
+if ! CheckWsl; then
+    Virtualization="libguestfs libguestfs-appliance qemu libvirt patterns-server-kvm_server patterns-server-kvm_tools virtualbox"
+    Printer="patterns-server-printing skanlite cups cups-client cups-filters cups-airprint system-config-printer hplip"
+    Tool_Game="mangohud mangohud-32bit goverlay gamemode steam protontricks qbittorrent"
+    Tool_Game_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
+    Tool_Game_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2 org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
+
+    Social_Flatpak="flathub org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
+
+    Other="pinta yandex-disk onedrive"
+    Other_Flatpak="flathub com.obsproject.Studio com.github.wwmm.easyeffects com.stremio.Stremio"
 
 fi
-SUDO $Package $PackageInstall $Package_a
 
-SUDO $FlatpakPackage $FlatpakPackageInstall $Package_a_Flatpak
+BasePackageInstall "$Base"
+BasePackageFlatpakInstall "$Base_Flatpak"
 
+BasePackageInstall "$Remote"
+BasePackageFlatpakInstall "$Remote_Flatpak"
 
-SUDO $Package $PackageInstall $Package_b
-#NOT WSL
-if ! checkwsl; then
-    
-    SUDO $Package $PackageInstall $Package_c
-    
-    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_c_Flatpak
-    
-    SUDO $FlatpakPackage $FlatpakPackageInstall $Package_d_Flatpak
-fi
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+BasePackageInstall "$Browser_Office"
+BasePackageFlatpakInstall "$Browser_Office_Flatpak"
+
+BasePackageInstall "$Social"
+BasePackageFlatpakInstall "$Social_Flatpak"
+
+BasePackageInstall "$Tool_Game"
+BasePackageFlatpakInstall "$Tool_Game_Flatpak"
+
+BasePackageInstall "$Other"
+BasePackageFlatpakInstall "$Other_Flatpak"
+
+BasePackageInstall "$Printer"
+
+BasePackageInstall "$Virtualization"

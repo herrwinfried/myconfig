@@ -1,12 +1,12 @@
 #!/bin/bash
 
-Package_a="hwinfo screenfetch neofetch htop git git-lfs curl wget"
-Package_a+=" bash zsh bash-completion fish lsb-release e2fsprogs nano"
-Package_a+=" lzip unrar-free unzip default-jre openssh-server xdg-user-dirs"
+Base="hwinfo screenfetch neofetch htop git git-lfs curl wget"
+Base+=" bash zsh bash-completion fish lsb-release e2fsprogs nano"
+Base+=" lzip unrar-free unzip default-jre openssh-server xdg-user-dirs"
 
-Package_b="breeze"
+BaseTheme="breeze"
 
-SUDO $Package $PackageInstall $Package_a
+BasePackageInstall "$Base"
 SUDO $Package $PackageInstall -f
+BasePackageInstall "$BaseTheme"
 
-SUDO $Package $PackageInstall $Package_b

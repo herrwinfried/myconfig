@@ -1,11 +1,11 @@
 #!/bin/bash
 
-Package_a="hwinfo screenfetch neofetch htop git git-lfs curl wget"
-Package_a+=" bash zsh bash-completion fish redhat-lsb-core e2fsprogs nano"
-Package_a+=" lzip unrar unzip java-latest-openjdk openssh-server cracklib-dicts xdg-user-dirs"
+Base="hwinfo screenfetch neofetch htop git git-lfs curl wget"
+Base+=" bash zsh bash-completion fish redhat-lsb-core e2fsprogs nano"
+Base+=" lzip unrar unzip java-latest-openjdk openssh-server cracklib-dicts xdg-user-dirs"
 
-Package_b="plasma-breeze"
+BaseTheme="plasma-breeze"
 
-SUDO $Package $PackageInstall $Package_a
+BasePackageInstall "$Base"
+BasePackageInstall "$BaseTheme"
 
-SUDO $Package $PackageInstall $Package_b

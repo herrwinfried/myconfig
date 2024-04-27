@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! checkwsl; then
+if ! CheckWsl; then
     if [[ $BOARD_VENDOR == *"asus"* ]]; then
         SUDO $Package $PackageRemove suse-prime tlp
         SUDO $Package al suse-prime

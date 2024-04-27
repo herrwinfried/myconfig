@@ -1,0 +1,149 @@
+#!/bin/bash
+GetScriptDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+GetScriptName=$(basename "${BASH_SOURCE[0]}")
+
+Black='\033[0;30m'
+DarkBlue='\033[0;34m'
+DarkGreen='\033[0;32m'
+DarkCyan='\033[0;36m'
+DarkRed='\033[0;31m'
+DarkMagenta='\033[0;35m'
+DarkYellow='\033[0;33m'
+Gray='\033[0;37m'
+DarkGray='\033[1;30m'
+Blue='\033[1;34m'
+Green='\033[1;32m'
+Cyan='\033[1;36m'
+Red='\033[1;31m'
+Magenta='\033[1;35m'
+Yellow='\033[1;33m'
+White='\033[1;37m'
+NoColor='\033[0m' # No Color
+
+USER_PASSWORD=""
+function rootpassword {
+if [[ $EUID -eq 0 ]]; then
+     echo -e "${Red}You must not be Super User/Root.${NoColor}"
+   exit 1
+fi
+sudo --reset-timestamp
+# shellcheck disable=SC2162
+echo -n -e "${Cyan}Password for ${Red}root:${NoColor} "
+# shellcheck disable=SC2162
+read -s USER_PASSWORD
+echo -e "\n${Yellow}Password checking...${NoColor}"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "${Green}Password verified.${NoColor}\n"
+    function SUDO {
+        # shellcheck disable=SC2317
+        echo "$USER_PASSWORD" | sudo -S "$@"
+    }
+else
+    echo -e "${Red}Password could not be verified ${NoColor}\n"
+    rootpassword
+fi  
+}
+function rootpassword_end {
+    unset USER_PASSWORD
+    sudo --reset-timestamp
+}
+. /etc/os-release
+
+DISTRO=$(echo $NAME $VERSION | tr '[:upper:]' '[:lower:]')
+
+function PackageManager_openSUSE-TW {
+    SUSE_TYPE=0
+    if [[ $1 -eq 1 ]] || [[ $1 -eq 0 ]]; then
+        SUSE_TYPE=$1
+    else
+        SUSE_TYPE=0
+    fi
+    
+    if [[ $SUSE_TYPE -eq 1 ]]; then
+        if ! checkcommand dnf ; then
+            SUSE_TYPE=0
+        fi
+    fi
+
+    if [[ $SUSE_TYPE -eq 0 ]]; then
+        PackagePrep="zypper"
+        Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
+        PackageUpdate="dup -y -l"
+        PackageRefresh="refresh"
+
+        PackageRemove="rm -u -y"
+        PackageInstall="in -y -l"
+
+    elif [[ $SUSE_TYPE -eq 1 ]]; then
+
+        PackagePrep="dnf"
+        Package="$PackagePrep --nogpgcheck"
+        PackageUpdate="dup -y"
+        PackageRefresh="makecache"
+
+        PackageRemove="remove -y"
+        PackageInstall="install -y"
+    fi
+}
+
+function PackageManager_fedora {
+    PackagePrep="dnf"
+    Package="$PackagePrep --nogpgcheck"
+    PackageUpdate="dup -y"
+    PackageRefresh="makecache"
+
+    PackageRemove="remove -y"
+    PackageInstall="install -y"
+}
+
+
+function Install {
+
+curl -s --head http://www.google.com | grep "200 OK" > /dev/null
+if [ $? -ne 0 ]; then
+    echo -e "${Red}You do not have an Internet Connection.${NoColor}"
+    exit 1
+fi
+if [[ -x $(command -v pwsh) ]]; then
+    PWSH_REGEX="(\d+\.\d+\.\d+)"
+    # shellcheck disable=SC2046
+    # shellcheck disable=SC2005
+    PWSH_VERSION=v$(echo $(pwsh --version) | grep -oP "$PWSH_REGEX")
+    CURRENT_PWSH=$(curl -s "https://api.github.com/repos/PowerShell/PowerShell/releases/latest" | jq -r ".tag_name")
+fi
+
+if [ -z "$PWSH_VERSION" ]; then
+    Download
+elif [[ $PWSH_VERSION != "$CURRENT_PWSH" ]]; then
+    Download
+elif [[ $PWSH_VERSION == "$CURRENT_PWSH" ]]; then
+    echo -e "${Yellow}Powershell looks up to date. That's why it won't download. ${NoColor}"
+fi
+}
+
+function Download {
+    if [[ $DISTRO = *opensuse\ tumbleweed* ]]; then
+        # shellcheck disable=SC2086
+        PackageManager_openSUSE-TW
+        SUDO $Package $PackageInstall curl tar libicu libopenssl1_0_0 jq
+    elif [[ $DISTRO = *fedora\ linux* ]]; then
+        # shellcheck disable=SC2086
+        PackageManager_fedora
+        SUDO $Package $PackageInstall curl tar libicu openssl-libs jq
+    else
+        echo -e "${Yellow}Make sure the following packages are installed: curl tar libicu libopenssl jq${NoColor}"
+    fi
+    PWSH_URL=$(curl -s "https://api.github.com/repos/PowerShell/PowerShell/releases/latest" | jq -r ".assets[] | select(.name | test(\"linux-x64.tar.gz\")) | .browser_download_url")
+    test -d "/tmp/powershell.tar.gz" && SUDO rm -rf "/tmp/powershell*"
+    test -d "/opt/microsoft/powershell" && SUDO rm -rf "/opt/microsoft/powershell"
+    test -f /usr/bin/pwsh && SUDO rm -f "/usr/bin/pwsh"
+    sleep 3; curl -L "$PWSH_URL" -o /tmp/powershell.tar.gz 
+    SUDO mkdir -p /opt/microsoft/powershell
+    SUDO tar -xzf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/
+    SUDO ln -s /opt/microsoft/powershell/pwsh /usr/bin/pwsh
+    SUDO chmod +x /usr/bin/pwsh
+}
+
+rootpassword
+Install
+rootpassword_end

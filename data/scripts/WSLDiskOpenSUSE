@@ -1,0 +1,10 @@
+#!/bin/bash
+
+sudo zypper in -y libguestfs libguestfs-appliance
+
+MountDirectory=/run/media/$USER/WSLopensuse
+WindowsUser=$USER
+WindowsDiskPath=/run/media/$USER/OS
+
+echo sudo guestmount --add "$WindowsDiskPath/Users/$WindowsUser/AppData/Local/Packages/46932SUSE.openSUSETumbleweed_022rs5jcyhyac/LocalState/ext4.vhdx" --inspector --rw "$MountDirectory"
+sudo guestmount --add "$WindowsDiskPath/Users/$WindowsUser/AppData/Local/Packages/46932SUSE.openSUSETumbleweed_022rs5jcyhyac/LocalState/ext4.vhdx" --inspector --rw "$MountDirectory"

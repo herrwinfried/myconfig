@@ -1,1 +1,0 @@
-"`n# this one is for my ohmyposh theme. If you don't want docker special marks to appear,`n# you need to delete the value directly. It will work as long as a value is kept in it.`n`$env:Docker_enabled = '1'`n`$env:Distrobox_enabled = '1'`n`$env:QT_QPA_PLATFORMTHEME = 'qt5ct'`n" | Out-File -FilePath $PSHOME/profile.ps1 -Append -Encoding UTF8

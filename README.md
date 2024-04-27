@@ -1,30 +1,32 @@
-# ⚠️ WARN / DİKKAT
+<div align="center">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Antu_bash.svg/2048px-Antu_bash.svg.png" alt="Bash Script Logo" width="200" height="200">
+</div>
 
-There are configurations that I made according to myself. Please try it yourself according to your own consciousness.
+<p>This is a script I made to run after installing the branch system for the first time. For GNU/Linux only. </p>
 
-Kendime göre yaptığım konfigürasyonlar var. Lütfen kendi bilincinize göre kendiniz deneyiniz.
 
-## OpenSUSE Tumbleweed
+<h1>Package Requirements</h1>
+
+| Package Name | OpenSUSE Tumleweed | Fedora | Debian |
+|--------------|--------------------|--------|--------|
+| git          | git                | git    | git    |
+| xdg-user-dirs| xdg-user-dirs      | xdg-user-dirs | xdg-user-dirs |
+| dos2unix     | dos2unix           | dos2unix | dos2unix |
+| wget         | wget               | wget   | wget   |
+| curl         | curl               | curl   | curl   |
+| gettext         | gettext-tools               | gettext   | gettext   |
+
+
+<h1>Download</h1>
 
 ```bash
-sudo sh -c 'zypper in -y wget curl git xdg-user-dirs' && git clone https://github.com/herrwinfried/myconfig.git -b linux && mkdir -p myconfig/files && xdg-user-dirs-update && chmod +x myconfig/scripts/*.sh
+sh -c "cd ~ ; git clone https://github.com/herrwinfried/myconfig/ -b linux && cd ~/myconfig/scripts"
 ```
-## fedora
+
+<h1>Install</h1>
 
 ```bash
-sudo sh -c 'dnf install -y wget curl git xdg-user-dirs' && git clone https://github.com/herrwinfried/myconfig.git -b linux && mkdir -p myconfig/files && xdg-user-dirs-update && chmod +x myconfig/scripts/*.sh
+./install.sh -u -c
 ```
 
-## debian
-
-```bash
-sudo sh -c 'apt install -y wget curl git xdg-user-dirs' && git clone https://github.com/herrwinfried/myconfig.git -b linux && mkdir -p myconfig/files && xdg-user-dirs-update && chmod +x myconfig/scripts/*.sh
-```
-### The file extension that the `files` folder supports *
-- .run
-- .appimage
-- .bundles
-- .rpm
-- .flatpakref
-
-\* Only OpenSUSE Tumbleweed
+<small>for details "-h" Use the argument.</small>

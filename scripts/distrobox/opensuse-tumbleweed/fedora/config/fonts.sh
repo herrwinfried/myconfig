@@ -1,35 +1,17 @@
 #!/bin/bash
 
-if [[ -f "/usr/share/fonts/truetype/MesloLGS NF Bold Italic.ttf" ]]; then
-    SUDO rm -rf /usr/share/fonts/truetype/MesloLGS NF Bold Italic.ttf
-fi
+FONT_DIR="/usr/share/fonts/truetype"
+FONT_NAMES=("MesloLGS NF Bold Italic" "MesloLGS NF Bold" "MesloLGS NF Italic" "MesloLGS NF Regular")
 
-if [[ -f "/usr/share/fonts/truetype/MesloLGS NF Bold.ttf" ]]; then
-    SUDO rm -rf /usr/share/fonts/truetype/MesloLGS NF Bold.ttf
-fi
+for font_name in "${FONT_NAMES[@]}"; do
+    font_file="${FONT_DIR}/${font_name}.ttf"
+    if [[ -f "$font_file" ]]; then
+        SUDO rm -rf "$font_file"
+    fi
 
-if [[ -f "/usr/share/fonts/truetype/MesloLGS NF Italic.ttf" ]]; then
-    SUDO rm -rf /usr/share/fonts/truetype/MesloLGS NF Italic.ttf
-fi
-
-if [[ -f "/usr/share/fonts/truetype/MesloLGS NF Regular.ttf" ]]; then
-    SUDO rm -rf /usr/share/fonts/truetype/MesloLGS NF Regular.ttf
-fi
-##### WGET
-if [[ ! -f "/usr/share/fonts/truetype/MesloLGS NF Bold Italic.ttf" ]]; then
-    SUDO wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf -P /usr/share/fonts/truetype
-fi
-
-if [[ ! -f "/usr/share/fonts/truetype/MesloLGS NF Bold.ttf" ]]; then
-    SUDO wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf -P /usr/share/fonts/truetype
-fi
-
-if [[ ! -f "/usr/share/fonts/truetype/MesloLGS NF Italic.ttf" ]]; then
-    SUDO wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf -P /usr/share/fonts/truetype
-fi
-
-if [[ ! -f "/usr/share/fonts/truetype/MesloLGS NF Regular.ttf" ]]; then
-    SUDO wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf -P /usr/share/fonts/truetype
-fi
+    if [[ ! -f "$font_file" ]]; then
+        SUDO wget "https://github.com/romkatv/powerlevel10k-media/raw/master/${font_name// /%20}.ttf" -P "$FONT_DIR"
+    fi
+done
 
 fc-cache
