@@ -28,6 +28,18 @@ $apps = @(
         Interactive = $False
     },
     @{
+        Id = "Microsoft.VisualStudio.2022.Community"
+        Interactive = $False
+    },
+    @{
+        Id = "Microsoft.DotNet.SDK.8"
+        Interactive = $False
+    },
+    @{
+        Id = "Microsoft.DotNet.Runtime.8"
+        Interactive = $False
+    },
+    @{
         Id = "KDE.Kate"
         Interactive = $False
     },
