@@ -1,7 +1,7 @@
 #!/bin/bash
 
 Base="hwinfo screenfetch neofetch htop curl wget zsh fish opi nano"
-Base+=" lsb-release e2fsprogs java-22-openjdk rsync"
+Base+=" lsb-release e2fsprogs java-21-openjdk rsync"
 Base+=" bash-completion wl-clipboard jq"
 Base+=" fetchmsttfonts powerline-fonts google-noto-sans*"
 Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.6 org.kde.PlatformTheme.QGnomePlatform//6.6"
@@ -24,6 +24,7 @@ if ! CheckWsl; then
     Tool_Game="mangohud mangohud-32bit goverlay gamemode steam protontricks qbittorrent"
     Tool_Game_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
     Tool_Game_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2 org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
+    Tool_Game_Flatpak+=" org.freedesktop.Sdk.Extension.openjdk21//23.08 org.prismlauncher.PrismLauncher"
 
     Social_Flatpak="flathub org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
 

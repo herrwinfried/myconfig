@@ -1,0 +1,65 @@
+#!/bin/bash
+GetScriptDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+GetScriptName=$(basename "${BASH_SOURCE[0]}")
+
+Black='\033[0;30m'
+DarkBlue='\033[0;34m'
+DarkGreen='\033[0;32m'
+DarkCyan='\033[0;36m'
+DarkRed='\033[0;31m'
+DarkMagenta='\033[0;35m'
+DarkYellow='\033[0;33m'
+Gray='\033[0;37m'
+DarkGray='\033[1;30m'
+Blue='\033[1;34m'
+Green='\033[1;32m'
+Cyan='\033[1;36m'
+Red='\033[1;31m'
+Magenta='\033[1;35m'
+Yellow='\033[1;33m'
+White='\033[1;37m'
+NoColor='\033[0m' # No Color
+
+USER_PASSWORD=""
+function rootpassword {
+if [[ $EUID -eq 0 ]]; then
+     echo -e "${Red}You must not be Super User/Root.${NoColor}"
+   exit 1
+fi
+sudo --reset-timestamp
+# shellcheck disable=SC2162
+echo -n -e "${Cyan}Password for ${Red}root:${NoColor} "
+# shellcheck disable=SC2162
+read -s USER_PASSWORD
+echo -e "\n${Yellow}Password checking...${NoColor}"
+if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
+    echo -e "${Green}Password verified.${NoColor}\n"
+    function SUDO {
+        # shellcheck disable=SC2317
+        echo "$USER_PASSWORD" | sudo -S "$@"
+    }
+else
+    echo -e "${Red}Password could not be verified ${NoColor}\n"
+    rootpassword
+fi  
+}
+function rootpassword_end {
+    unset USER_PASSWORD
+    sudo --reset-timestamp
+}
+
+URL="https://launcher.mojang.com/download/Minecraft.tar.gz"
+TMP_FILE="/tmp/Minecraft.tar.gz"
+TARGET_DIR="/opt/Minecraft"
+TARGET_FILE="minecraft-launcher/minecraft-launcher"
+FILE_NAME="minecraft-launcher"
+
+test -f $TMP_FILE && SUDO rm -f $TMP_FILE
+wget -O $TMP_FILE $URL
+test -d $TARGET_DIR && SUDO rm -rf $TARGET_DIR
+SUDO mkdir -p $TARGET_DIR
+SUDO tar -xzf $TMP_FILE --strip-components=1 -C $TARGET_DIR $TARGET_FILE
+
+SUDO ln -sf $TARGET_DIR/$FILE_NAME /usr/bin/$FILE_NAME
+
+sudo --reset-timestamp

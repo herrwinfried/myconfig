@@ -36,6 +36,8 @@ if [ -x "$(command -v flatpak)" ]; then
     flatpak_user_override /.var/me
     mkdir -p ~/.var/me
 
+    flatpak override --device=dri org.prismlauncher.PrismLauncher
+    
     etc_os_release=$(md5sum /etc/os-release)
     my_os_release=$(md5sum "$USERHOME/.var/me/os-release")
 
