@@ -52,10 +52,6 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "ApacheFriends.Xampp.8.2"
-        Interactive = $False
-    },
-    @{
         Id = "Docker.DockerDesktop"
         Interactive = $False
     },

@@ -148,6 +148,14 @@ $apps = @(
         Interactive = $False
     },
     @{
+        Id = "PrismLauncher.PrismLauncher"
+        Interactive = $False
+    },
+    @{
+        Id = "Microsoft.OpenJDK.21"
+        Interactive = $False
+    },
+    @{
         Id = "OBSProject.OBSStudio"
         Interactive = $False
     },
