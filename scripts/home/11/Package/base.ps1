@@ -12,19 +12,19 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "9WZDNCRFHWL" # HP Smart
+        Id = "AdrienAllard.FileConverter"
         Interactive = $False
     },
     @{
-        Id = "9PP9GZM2GN26" # Intel Unison
+        Id = "Fastfetch-cli.Fastfetch"
         Interactive = $False
     },
     @{
-        Id = "Microsoft.PowerToys"
+        Id = "Microsoft.OpenJDK.21"
         Interactive = $False
     },
     @{
-        Id = "Flameshot.Flameshot"
+        Id = "OpenVPNTechnologies.OpenVPNConnect"
         Interactive = $False
     },
     @{
@@ -36,19 +36,51 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "9MSVKQC78PK6" # Debian for WSL
+        Id = "9WZDNCRFHWLH" # HP Smart
         Interactive = $False
     },
     @{
-        Id = "9NPCP8DRCHSN" # Fedora for WSL (Community Version / Not Official)
+        Id = "AnyDeskSoftwareGmbH.AnyDesk"
+        Interactive = $False
+    },
+    @{
+        Id = "TeamViewer.TeamViewer"
+        Interactive = $False
+    },
+    @{
+        Id = "9PP9GZM2GN26" # Intel Unison
+        Interactive = $False
+    },
+    @{
+        Id = "KDE.KDEConnect"
+        Interactive = $False
+    },
+    @{
+        Id = "9N9WCLWDQS5J" # Bluetooth Audio Receiver
+        Interactive = $False
+    },
+    @{
+        Id = "9NBLGGH516XP" # EarTrumpet
+        Interactive = $False
+    },
+    @{
+        Id = "XPDM1ZW6815MQM" # VLC
+        Interactive = $False
+    },
+    @{
+        Id = "Stremio.Stremio"
+        Interactive = $False
+    },
+    @{
+        Id = "KDE.Okular"
+        Interactive = $False
+    },
+    @{
+        Id = "RevoUninstaller.RevoUninstaller"
         Interactive = $False
     },
     @{
         Id = "9NKSQGP7F2NH" # Whatsapp
-        Interactive = $False
-    },
-    @{
-        Id = "9N97ZCKPD60Q" # Unigram
         Interactive = $False
     },
     @{
@@ -64,67 +96,23 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "Discord.Discord.Canary"
+        Id = "TheDocumentFoundation.LibreOffice"
         Interactive = $False
     },
     @{
-        Id = "Discord.Discord.Development"
+        Id = "Yandex.Disk"
         Interactive = $False
     },
     @{
-        Id = "Element.Element"
+        Id = "Google.GoogleDrive"
         Interactive = $False
     },
     @{
-        Id = "RevoUninstaller.RevoUninstaller"
+        Id = "Microsoft.PowerToys"
         Interactive = $False
     },
     @{
-        Id = "KDE.KDEConnect"
-        Interactive = $False
-    },
-    @{
-        Id = "KDE.Okular"
-        Interactive = $False
-    },
-    @{
-        Id = "Stremio.Stremio"
-        Interactive = $False
-    },
-    @{
-        Id = "XPDM1ZW6815MQM" # VLC
-        Interactive = $False
-    },
-    @{
-        Id = "9N9WCLWDQS5J" # Bluetooth Audio Receiver
-        Interactive = $False
-    },
-    @{
-        Id = "9NBLGGH516XP" # EarTrumpet
-        Interactive = $False
-    },
-    @{
-        Id = "9N5JJZW4QZBR" # Xtreme Download Manager - XDM
-        Interactive = $False
-    },
-    @{
-        Id = "BlueStack.BlueStacks"
-        Interactive = $False
-    },
-    @{
-        Id = "OpenVPNTechnologies.OpenVPNConnect"
-        Interactive = $False
-    },
-    @{
-        Id = "AnyDeskSoftwareGmbH.AnyDesk"
-        Interactive = $False
-    },
-    @{
-        Id = "TeamViewer.TeamViewer"
-        Interactive = $False
-    },
-    @{
-        Id = "RustDesk.RustDesk"
+        Id = "Flameshot.Flameshot"
         Interactive = $False
     },
     @{
@@ -152,23 +140,7 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "Microsoft.OpenJDK.21"
-        Interactive = $False
-    },
-    @{
         Id = "OBSProject.OBSStudio"
-        Interactive = $False
-    },
-    @{
-        Id = "TheDocumentFoundation.LibreOffice"
-        Interactive = $False
-    },
-    @{
-        Id = "Yandex.Disk"
-        Interactive = $False
-    },
-    @{
-        Id = "Google.GoogleDrive"
         Interactive = $False
     },
     @{
@@ -177,10 +149,6 @@ $apps = @(
     },
     @{
         Id = "VMware.WorkstationPro"
-        Interactive = $False
-    },
-    @{
-        Id = "qBittorrent.qBittorrent"
         Interactive = $False
     }
 )

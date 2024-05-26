@@ -77,19 +77,6 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "backgroundImage": "C:\\Users\\winfried\\Pictures\\opensuse.png",
-                "backgroundImageOpacity": 0.15,
-                "font": 
-                {
-                    "face": "MesloLGS NF"
-                },
-                "guid": "{bc2da056-dd06-5879-b969-1dfcefc8d2c7}",
-                "hidden": false,
-                "name": "openSUSE-Tumbleweed",
-                "padding": "13",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
                 "backgroundImage": "C:\\Users\\winfried\\Pictures\\batch.jpg",
                 "backgroundImageOpacity": 0.05,
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
@@ -107,18 +94,6 @@
                 "hidden": false,
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{aa8efdb5-3cbe-50b2-a332-9203dc1ee217}",
-                "hidden": false,
-                "name": "Fedora",
-                "source": "Windows.Terminal.Wsl"
-            },
-            {
-                "guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
-                "hidden": false,
-                "name": "Debian",
-                "source": "Windows.Terminal.Wsl"
             },
             {
                 "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",

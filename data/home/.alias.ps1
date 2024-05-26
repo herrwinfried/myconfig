@@ -43,6 +43,12 @@ if (Test-CommandExists winget) {
     }
 }
 
+if (Test-Path "$Env:ProgramFiles\Docker\Docker\DockerCli.exe") {
+    function Switch-DockerDeamon() {
+        & $Env:ProgramFiles\Docker\Docker\DockerCli.exe -SwitchDaemon
+    }
+}
+
 if (Test-CommandExists docker) {
     function Get-DockerMode() {
         $dockerCommand = docker info 2>$null | Select-String OSType

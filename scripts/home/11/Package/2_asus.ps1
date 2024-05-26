@@ -1,4 +1,4 @@
-if ($config.BOARD_VENDOR -ilike "*asus*") {
+if ($ConfigData.GetBoardVendor -ilike "*asus*") {
     $apps = @(
     @{
         Id = "9N7R5S6B0ZZH" # MyAsus

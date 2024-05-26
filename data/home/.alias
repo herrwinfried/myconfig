@@ -16,6 +16,12 @@ if [ -d "$HOME/Documents/GitBash/scripts" ]; then
     export PATH="$PATH:$HOME/Documents/GitBash/scripts"
 fi
 
+if [ -f "$PROGRAMFILES/Docker/Docker/DockerCli.exe" ]; then
+    function Switch-DockerDeamon {
+        "$PROGRAMFILES/Docker/Docker/DockerCli.exe" -SwitchDaemon
+    }
+fi
+
 if command -v docker &>/dev/null; then
     function Get-DockerMode() {
         dockerCommand=$(docker info 2>/dev/null | grep "OSType")

@@ -78,7 +78,7 @@ if (($Client -eq 0) -and ($Server -eq 0) -and ($VirtualMachine -eq 0)) {
 
 }
 
-if ($config.GetOSName -ilike "microsoft windows 11*") {
+if ($ConfigData.GetOSName -ilike "microsoft windows 11*") {
     $OSDirectoryPath="11"
 } else {
     Write-Host-Red "$($Language.NotSupportOS)"

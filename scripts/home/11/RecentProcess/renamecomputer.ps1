@@ -13,8 +13,8 @@ if (IsAdministrator) {
     Set-Location $PSScriptRoot
     ##############################################################
     $getHostname = ($env:computername).ToLower()
-    if ($getHostname -ne $config.HostName) {
-        Rename-Computer -NewName "$($config.HostName)"
+    if ($getHostname -ne $ConfigData.HostName) {
+        Rename-Computer -NewName "$($ConfigData.HostName)"
     }
 } else {
     if (Test-CommandExists pwsh) {

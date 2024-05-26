@@ -3,9 +3,7 @@ function IsAdministrator {
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
-
-if (IsAdministrator) { 
-
+if (IsAdministrator) {
     # FIXME: :/ Hey, if you know a more logical way, I'm open to suggestions.
     Set-Location $PSScriptRoot\..\..\..\
     $TempFolder=$(Get-Location)
@@ -14,25 +12,14 @@ if (IsAdministrator) {
     Set-Location $PSScriptRoot
     ##############################################################
 
-    $features = @(
-        "Microsoft-Hyper-V-All",
-        "VirtualMachinePlatform",
-        "HypervisorPlatform",
-        "Containers",
-        "Containers-HNS",
-        "Containers-SDN",
-        "Containers-DisposableClientVM"
-        "LegacyComponents",
-        "DirectPlay",
-        "Printing-XPSServices-Features",
-        "Printing-PrintToPDFServices-Features"
-    )
-    foreach ($feature in $features) {
-        dism.exe /online /enable-feature /featurename:$feature /all /norestart
-    }  
-    # Fix Hypervisor platform
-    bcdedit /set hypervisorlaunchtype auto
+    Install-PackageProvider2 -ProviderName NuGet
+    Install-Module2 -ModuleName PSWindowsUpdate
+    Import-Module PSWindowsUpdate
+    Get-WindowsUpdate -AcceptAll -Download
+    Get-WindowsUpdate -AcceptAll -Install
 } else {
+    Start-Process PowerShell -verb runas "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned"
+    winget upgrade --all --accept-package-agreements --accept-source-agreements
     if (Test-CommandExists pwsh) {
         Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait  
     } else {

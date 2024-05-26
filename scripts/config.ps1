@@ -1,11 +1,11 @@
-$config = New-Object PSObject
+$ConfigData = [PSCustomObject]@{}
 
 function New-ScriptConfig {
     param (
         [string]$Name,
         $Value
     )
-$config | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
+$ConfigData | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
 }
 
 New-ScriptConfig -Name 'Hostname' -Value 'HR-WINFRIED'
