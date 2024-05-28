@@ -34,7 +34,7 @@ if (IsAdministrator) {
 
     foreach ($fontInfo in $fontUrls) {
         Invoke-Download -url $fontInfo.Url -desc "$env:TEMP\$fontInfo.FileName"
-        New-Font -Source "$env:TEMP\$fontInfo.FileName" -Family $fontInfo.FileName
+        New-Font -Source "$env:TEMP\$fontInfo.FileName" -Family $fontInfo.FileName -System
     }
 } else {
     if (Test-CommandExists pwsh) {
