@@ -63,8 +63,6 @@ function Discord_Installer {
 }
         Discord_Installer stable
         Discord_Installer ptb
-        Discord_Installer canary
-        Discord_Installer development
 
         /opt/DiscordPTB/DiscordPTB &
         sleep 150

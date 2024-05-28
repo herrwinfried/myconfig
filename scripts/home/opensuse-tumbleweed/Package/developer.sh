@@ -15,8 +15,8 @@ fi
 
 
 if ! CheckWsl; then
-    DevEditor="code filezilla qt6-tools qt6-creator okteta ikona"
-    DevEditor+=" qt6-tools-assistant qt6-tools-designer qt6-tools-linguist qt6-tools-qdbus qt6-translations"
+    DevEditor="code filezilla $(echo qt6-{tools,creator}) okteta ikona"
+    DevEditor+=" $(echo qt6-tools-{assistant,designer,linguist,qdbus}) qt6-translations"
 fi
 
 BasePackageInstall "$DevContainer"

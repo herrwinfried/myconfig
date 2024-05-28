@@ -1,9 +1,9 @@
 #!/bin/bash
 
-Base="hwinfo screenfetch neofetch htop curl wget zsh fish opi nano"
-Base+=" lsb-release e2fsprogs java-21-openjdk rsync"
+Base="hwinfo fastfetch htop curl wget zsh fish opi nano"
+Base+=" lsb-release java-21-openjdk rsync"
 Base+=" bash-completion wl-clipboard jq"
-Base+=" fetchmsttfonts powerline-fonts google-noto-sans*"
+Base+=" fetchmsttfonts powerline-fonts google*fonts"
 Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.6 org.kde.PlatformTheme.QGnomePlatform//6.6"
 Base_Flatpak+=" com.github.tchx84.Flatseal"
 if ! CheckWsl; then
@@ -11,17 +11,14 @@ if ! CheckWsl; then
     Remote="anydesk teamviewer-suse"
 fi
 
-
-Browser_Office="brave-browser microsoft-edge-stable libreoffice libreoffice-l10n-tr poppler-tools"
-Browser_Office_Flatpak="flathub org.onlyoffice.desktopeditors"
-if CheckWsl; then
-    Browser_Office+=" libreoffice-gnome libreoffice-gtk3"
-fi
+Browser_Office="brave-browser microsoft-edge-stable poppler-tools"
 
 if ! CheckWsl; then
-    Virtualization="libguestfs libguestfs-appliance qemu libvirt patterns-server-kvm_server patterns-server-kvm_tools virtualbox"
-    Printer="patterns-server-printing skanlite cups cups-client cups-filters cups-airprint system-config-printer hplip"
-    Tool_Game="mangohud mangohud-32bit goverlay gamemode steam protontricks qbittorrent"
+    Browser_Office+=" $(echo libreoffice-{base,writer,calc,impress,math,l10n-tr})"
+    Browser_Office_Flatpak="flathub org.onlyoffice.desktopeditors"
+    Virtualization="$(echo libguestfs{,-appliance}) qemu libvirt $(echo patterns-server-{kvm_server,kvm_tools}) virtualbox"
+    Printer="patterns-server-printing skanlite $(echo cups{,-client,-filters,-airprint}) system-config-printer hplip"
+    Tool_Game="$(echo mangohud{,-32bit}) goverlay gamemode steam protontricks"
     Tool_Game_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
     Tool_Game_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2 org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
     Tool_Game_Flatpak+=" org.freedesktop.Sdk.Extension.openjdk21//23.08 org.prismlauncher.PrismLauncher"
