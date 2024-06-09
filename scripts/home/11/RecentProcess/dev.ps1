@@ -6,6 +6,10 @@ function IsAdministrator {
 
 if (IsAdministrator) {
 
+    if ($ConfigData.GetBuildNumber -ge 26045) {
+        sudo config --enable forceNewWindow
+    }
+
     $registryKeys = @(
         # Developer Mode - 1 ENABLE / 0 DISABLE
        @{

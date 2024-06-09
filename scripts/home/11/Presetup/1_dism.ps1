@@ -28,7 +28,7 @@ if (IsAdministrator) {
         "Printing-PrintToPDFServices-Features"
     )
     foreach ($feature in $features) {
-        dism.exe /online /enable-feature /featurename:$feature /all /norestart
+        Enable-WindowsOptionalFeature -Online -FeatureName $feature -All -NoRestart
     }  
     # Fix Hypervisor platform
     bcdedit /set hypervisorlaunchtype auto
