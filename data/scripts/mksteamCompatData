@@ -66,7 +66,7 @@ for directory in "${search_directories[@]}"; do
             if [ ! -d "$HOME/Games/SteamData" ]; then
                     mkdir -p "$HOME/Games/SteamData"
             fi
-                ln -sf "$parent_dir/steamapps/compatdata" "$HOME/Games/SteamData"
+                ln -sf "$HOME/Games/SteamData" "$parent_dir/steamapps/compatdata"
                 echo -e "${DarkBlue}${parent_dir}/steamapps/compatdata ${Cyan}Symbolic Link Created!${NoColor}"
 
         else

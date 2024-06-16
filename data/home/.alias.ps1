@@ -20,7 +20,13 @@ Function Test-CommandExists {
   Finally { $ErrorActionPreference = $oldPreference }
 }
 
-$OhMyPoshTheme=~/.poshthemes/default.omp.json
+$OhMyPoshTheme="$env:HOME/.poshthemes/default.omp.json"
+
+if (Test-CommandExists zypper) {
+function Get-ZyppHistory  {
+  Invoke-Expression  'cut -d "|" -f 1-4 -s --output-delimiter " | " /var/log/zypp/history | grep -v " radd "'
+}
+}
 
 if ((rpm -q "docker") -ilike '*docker*') {
   $env:DOCKER_HOST = "unix:///run/user/1000/docker.sock"

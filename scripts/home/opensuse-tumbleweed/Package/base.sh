@@ -3,7 +3,7 @@
 Base="hwinfo fastfetch htop curl wget zsh fish opi nano"
 Base+=" lsb-release java-21-openjdk rsync"
 Base+=" bash-completion wl-clipboard jq"
-Base+=" fetchmsttfonts powerline-fonts google*fonts"
+Base+=" fetchmsttfonts $(echo google-noto-{sans,serif,coloremoji}\*fonts)"
 Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.6 org.kde.PlatformTheme.QGnomePlatform//6.6"
 Base_Flatpak+=" com.github.tchx84.Flatseal"
 if ! CheckWsl; then

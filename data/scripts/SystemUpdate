@@ -105,7 +105,7 @@ function Homebrew_SysUpdate {
         PackageUpdate="upgrade"
         PackageRefresh="update"
 
-        SUDO su -c "$Package $PackageRefresh && $Package $PackageUpdate"
+        sh -c "$Package $PackageRefresh && $Package $PackageUpdate"
     fi
 }
 
