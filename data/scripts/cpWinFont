@@ -48,18 +48,19 @@ function rootpassword_end {
     sudo --reset-timestamp
 }
 
-URL="https://launcher.mojang.com/download/Minecraft.tar.gz"
-TMP_FILE="/tmp/Minecraft.tar.gz"
-TARGET_DIR="/opt/Minecraft"
-TARGET_FILE="minecraft-launcher/minecraft-launcher"
-FILE_NAME="minecraft-launcher"
+WindowsDiskPath="/run/media/$USER/OS"
+WINDOWS_FONT_DIR="$WindowsDiskPath/Windows/Fonts/"
+FONT_DIR="/usr/local/share/fonts/truetype"
 
-test -f $TMP_FILE && SUDO rm -f $TMP_FILE
-wget -O $TMP_FILE $URL
-test -d $TARGET_DIR && SUDO rm -rf $TARGET_DIR
-SUDO mkdir -p $TARGET_DIR
-SUDO tar -xzf $TMP_FILE --strip-components=1 -C $TARGET_DIR $TARGET_FILE
+rootpassword
+SUDO mkdir -p "$FONT_DIR/WindowsFonts"
+if [ -d "$WINDOWS_FONT_DIR" ]; then
+SUDO find "$WINDOWS_FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "$FONT_DIR/WindowsFonts" \;
+SUDO fc-cache -f -v
+fc-cache -f -v
+else
+echo -e "${Red}The directory was not found, so the operation was not completed.  (${WINDOWS_FONT_DIR}) ${NoColor}"
+exit
+fi 
 
-SUDO ln -sf $TARGET_DIR/$FILE_NAME /usr/bin/$FILE_NAME
 
-sudo --reset-timestamp

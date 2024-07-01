@@ -36,7 +36,7 @@ if [ -x "$(command -v flatpak)" ]; then
     flatpak_user_override /.var/me
     mkdir -p ~/.var/me
 
-    flatpak override --device=dri org.prismlauncher.PrismLauncher
+    SUDO flatpak override --device=dri org.prismlauncher.PrismLauncher
     
     # Discord Rich Presence
     for i in {0..9}; do flatpak_user_override xdg-run/discord-ipc-$i; done

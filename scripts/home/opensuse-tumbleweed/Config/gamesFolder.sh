@@ -5,6 +5,7 @@ if ! checkwsl; then
 mkdir -p $USERHOME/Games
 CreateDesktopEntry $USERHOME/Games folder-database
 
+mkdir -p $USERHOME/Games/Bottles
 mkdir -p $USERHOME/Games/Heroic
 mkdir -p $USERHOME/Games/SteamData
 mkdir -p $USERHOME/Games/Lutris

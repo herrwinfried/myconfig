@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#!/bin/bash
+GetScriptDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+GetScriptName=$(basename "${BASH_SOURCE[0]}")
+
+Black='\033[0;30m'
+DarkBlue='\033[0;34m'
+DarkGreen='\033[0;32m'
+DarkCyan='\033[0;36m'
+DarkRed='\033[0;31m'
+DarkMagenta='\033[0;35m'
+DarkYellow='\033[0;33m'
+Gray='\033[0;37m'
+DarkGray='\033[1;30m'
+Blue='\033[1;34m'
+Green='\033[1;32m'
+Cyan='\033[1;36m'
+Red='\033[1;31m'
+Magenta='\033[1;35m'
+Yellow='\033[1;33m'
+White='\033[1;37m'
+NoColor='\033[0m' # No Color
+
+
+search_directories=("$HOME/Games/Lutris" "$HOME/Games/Heroic" "$HOME/Games/Bottles" "$HOME/Games/SteamData" "$HOME/WineData" "$HOME/ProtonData")
+source_fonts="/usr/local/share/fonts/truetype/WindowsFonts"
+
+for dir in "${search_directories[@]}"; do
+  find "$dir" -type f -name "system.ini" | while read -r system_ini; do
+    parent_dir=$(dirname "$system_ini")
+    if [[ "$parent_dir" =~ ^.*/pfx/drive_c/windows$ ]]; then
+      echo -e "${Green}${parent_dir} Directory Found!${NoColor}"
+      if [ -d "$parent_dir/Fonts" ]; then
+        mv -f "$parent_dir/Fonts" "$parent_dir/Fonts.wine"
+      fi
+      mkdir -p "$parent_dir/Fonts"
+      cp -rf "$source_fonts/"* "$parent_dir/Fonts/"
+      echo -e "${DarkBlue}Font Copied: ${Cyan}${parent_dir}/Fonts${NoColor}"
+    fi
+  done
+done
