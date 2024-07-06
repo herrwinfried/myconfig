@@ -40,6 +40,10 @@ $apps = @(
         Interactive = $False
     },
     @{
+        Id = "9N5JJZW4QZBR" # Xtreme Download Manager - XDM
+        Interactive = $False
+    },
+    @{
         Id = "AnyDeskSoftwareGmbH.AnyDesk"
         Interactive = $False
     },
@@ -145,10 +149,6 @@ $apps = @(
     },
     @{
         Id = "Oracle.VirtualBox"
-        Interactive = $False
-    },
-    @{
-        Id = "VMware.WorkstationPro"
         Interactive = $False
     }
 )
