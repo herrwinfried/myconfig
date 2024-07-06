@@ -17,13 +17,16 @@ for font_name in "${MESLO_FONT_NAMES[@]}"; do
     fi
 done
 
+if ! checkwsl; then
+
 SUDO mkdir -p "$FONT_DIR/WindowsFonts"
 if [ -d "$WINDOWS_FONT_DIR" ]; then
 SUDO find "$WINDOWS_FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "$FONT_DIR/WindowsFonts" \;
 else
 echo -e "${Red}The directory was not found, so the operation was not completed.  (${WINDOWS_FONT_DIR}) ${NoColor}"
-exit
 fi 
 
 fc-cache -f -v
 SUDO fc-cache -f -v
+
+fi

@@ -3,18 +3,18 @@
 Base="hwinfo fastfetch htop curl wget zsh fish opi nano"
 Base+=" lsb-release java-21-openjdk rsync"
 Base+=" bash-completion wl-clipboard jq"
-Base+=" fetchmsttfonts $(echo google-noto-{sans,serif,coloremoji}\*fonts)"
 Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.6 org.kde.PlatformTheme.QGnomePlatform//6.6"
 Base_Flatpak+=" com.github.tchx84.Flatseal"
 if ! CheckWsl; then
+    Base+=" fetchmsttfonts $(echo google-noto-{sans,serif,coloremoji}\*fonts)"
     Base+=" memtest86+ xwaylandvideobridge AdobeICCProfiles"
     Remote="anydesk teamviewer-suse"
 fi
 
-Browser_Office="brave-browser microsoft-edge-stable poppler-tools"
+Browser_Office="poppler-tools"
 
 if ! CheckWsl; then
-    Browser_Office+=" $(echo libreoffice-{base,writer,calc,impress,math,l10n-tr})"
+    Browser_Office+=" brave-browser microsoft-edge-stable $(echo libreoffice-{base,writer,calc,impress,math,l10n-tr})"
     Browser_Office_Flatpak="flathub org.onlyoffice.desktopeditors"
     Virtualization="$(echo libguestfs{,-appliance}) qemu libvirt $(echo patterns-server-{kvm_server,kvm_tools}) virtualbox"
     Printer="patterns-server-printing skanlite $(echo cups{,-client,-filters,-airprint}) system-config-printer hplip"

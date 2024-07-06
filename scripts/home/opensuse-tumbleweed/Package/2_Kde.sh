@@ -17,8 +17,8 @@ if ! CheckWsl; then
     #   Paint(Like WinXP), Music Player, Dolphin extra plugin, nextcloud images for dolphin
     packageKDE+=" kolourpaint elisa dolphin-plugins nextcloud-desktop-dolphin"
 
-    # Video edit , KDE Games
-    packageKDE+=" kdenlive patterns-kde-kde_games"
+    # Video edit , KDE Games , Kde System Settings for RDP, Screen Sharing for VNC
+    packageKDE+=" kdenlive patterns-kde-kde_games krdp6 krfb"
 
     SUDO $Package $PackageInstall $packageKDE
 fi

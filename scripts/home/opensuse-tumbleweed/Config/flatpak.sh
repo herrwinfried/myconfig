@@ -38,8 +38,10 @@ if [ -x "$(command -v flatpak)" ]; then
 
     SUDO flatpak override --device=dri org.prismlauncher.PrismLauncher
     
-    # Discord Rich Presence
-    for i in {0..9}; do flatpak_user_override xdg-run/discord-ipc-$i; done
+    if ! checkwsl; then
+        # Discord Rich Presence
+        for i in {0..9}; do flatpak_user_override xdg-run/discord-ipc-$i; done
+    fi
 
     etc_os_release=$(md5sum /etc/os-release)
     my_os_release=$(md5sum "$USERHOME/.var/me/os-release")
