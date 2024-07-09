@@ -11,12 +11,10 @@ if [ -f "$USERHOME/.config/MangoHud/MangoHud.conf" ]; then
 fi
 ##################################################################################################################
 shopt -s dotglob
-cp -rf $GetDataDir/home/* $USERHOME
-SUDO cp -rf $GetDataDir/home/* /root
 
-if [[ -d "$GetDataDir/root/" ]]; then
-    SUDO cp -rf $GetDataDir/root/* /
-fi
+rsync -a --info=progress2 --force -L $GetDataDir/home/ $USERHOME/
+
+SUDO rsync -a --info=progress2 --force -L $GetDataDir/root/ /root/
 
 shopt -u dotglob
 ##################################################################################################################

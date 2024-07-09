@@ -2,13 +2,10 @@
 
 function repo_nvidia_zypp {
     SUDO $Package $PackageInstall openSUSE-repos-Tumbleweed-NVIDIA
-    #OLD...
-        #SUDO zypper --gpg-auto-import-keys addrepo -n "NVIDIA" -f https://download.nvidia.com/opensuse/tumbleweed NVIDIA   
 }
 
 function repo_packman_zypp {
     SUDO zypper --gpg-auto-import-keys ar -n "Packman Essentials" -cfp 90 "https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/Essentials/" packman-essentials
-    SUDO zypper --gpg-auto-import-keys refresh
     SUDO zypper --gpg-auto-import-keys dup -y -l --from packman-essentials --allow-vendor-change
 }
 
@@ -45,11 +42,6 @@ function repo_anydesk_zypp {
 function repo_teamviewer_zypp {
 SUDO rpm --import https://linux.teamviewer.com/pubkey/currentkey.asc
 SUDO zypper --gpg-auto-import-keys addrepo --gpgcheck -n "TeamViewer - \$basearch" "https://linux.teamviewer.com/yum/stable/main/binary-\$basearch/" teamviewer
-}
-
-function repo_mangodb_zypp {
-    SUDO rpm --import https://www.mongodb.org/static/pgp/server-7.0.asc
-    SUDO zypper --gpg-auto-import-keys addrepo -d -n "Mongodb" --gpgcheck "https://repo.mongodb.org/zypper/suse/15/mongodb-org/7.0/x86_64/" mongodb
 }
 
 function repo_microsoft_zypp {
@@ -104,8 +96,6 @@ repo_edge_zypp
 
 repo_anydesk_zypp
 repo_teamviewer_zypp
-
-repo_mangodb_zypp
 
 repo_microsoft_zypp
 

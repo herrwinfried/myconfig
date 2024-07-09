@@ -8,7 +8,9 @@ Base_Flatpak+=" com.github.tchx84.Flatseal"
 if ! CheckWsl; then
     Base+=" fetchmsttfonts $(echo google-noto-{sans,serif,coloremoji}\*fonts)"
     Base+=" memtest86+ xwaylandvideobridge AdobeICCProfiles"
+    
     Remote="anydesk teamviewer-suse"
+    Remote_Flatpak="flathub org.remmina.Remmina"
 fi
 
 Browser_Office="poppler-tools"

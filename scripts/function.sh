@@ -78,6 +78,18 @@ function CheckLinux {
     fi
 }
 
+function CheckWsl {
+    unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
+    if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] ||
+        [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] ||
+        [ "$WSL_DISTRO_NAME" ] ||
+        [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" = "0xffffffff" ] && [ "$WSL_DISTRO_NAME" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function RequireCommand {
     local i=0
     # shellcheck disable=SC2046
@@ -108,17 +120,6 @@ function RequireCommand {
     fi
 }
 
-function CheckWsl {
-    unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
-    if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] ||
-        [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] ||
-        [ "$WSL_DISTRO_NAME" ] ||
-        [ "$(echo $(cat /proc/cpuinfo | grep -m1 microcode | cut -f2 -d:))" = "0xffffffff" ] && [ "$WSL_DISTRO_NAME" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
 
 if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
     xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs

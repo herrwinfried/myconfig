@@ -38,7 +38,7 @@ if [ -x "$(command -v flatpak)" ]; then
 
     SUDO flatpak override --device=dri org.prismlauncher.PrismLauncher
     
-    if ! checkwsl; then
+    if ! CheckWsl; then
         # Discord Rich Presence
         for i in {0..9}; do flatpak_user_override xdg-run/discord-ipc-$i; done
     fi

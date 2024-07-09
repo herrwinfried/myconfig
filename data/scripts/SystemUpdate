@@ -15,6 +15,8 @@ zypper=true
 brew=true
 flatpak=true
 snap=true
+
+AllYes=false
 # ---------------------
 
 Black='\033[0;30m'
@@ -189,10 +191,12 @@ function auto_package {
         if type -P apt > /dev/null; then
             apt=true
         fi
-        elif type -P dnf > /dev/null; then
+        if type -P dnf > /dev/null; then
             dnf=true
-        elif type -P zypper > /dev/null; then
+        fi
+        if type -P zypper > /dev/null; then
             zypper=true
+        fi
     fi
 }
 
@@ -236,18 +240,18 @@ function package_install {
     if [[ $dnf == "true" ]]; then
         if CheckCommand dnf; then
             if [[ $DISTRO == *tumbleweed* ]]; then
-                Fedora_SysUpdate yes $1
+                Fedora_SysUpdate $AllYes $1
             else
-                Fedora_SysUpdate no $1
+                Fedora_SysUpdate $AllYes $1
             fi
         fi
     fi
     if [[ $zypper == "true" ]]; then
         if CheckCommand zypper; then
             if [[ $DISTRO == *tumbleweed* ]]; then
-                Opensuse_SysUpdate yes $1
+                Opensuse_SysUpdate $AllYes $1
             else
-                Opensuse_SysUpdate no $1
+                Opensuse_SysUpdate $AllYes $1
             fi
         fi
     fi 
@@ -277,7 +281,7 @@ function HelpFunction {
 
 
 if [ $# -ne 0 ]; then
-    Yes=false
+    AllYes=false
 
     i=1
     j=$#
@@ -304,7 +308,7 @@ if [ $# -ne 0 ]; then
         elif [[ $n == "brew" ]]; then
             brew=true
         elif [[ $n == "yes" ]]; then
-            Yes=true
+            AllYes=true
 
         else
         echo -e "${Red}invalid argument $n ${NoColor}"
@@ -320,5 +324,5 @@ rootpassword
 if [[ $zypper != "true" && $dnf != "true"  && $apt != "true" ]] && [[ $brew != "true" && $flatpak != "true"  && $snap != "true" ]]; then
 auto_package
 fi
-package_install $Yes
+package_install $AllYes
 rootpassword_end

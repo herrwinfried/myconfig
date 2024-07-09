@@ -3,8 +3,9 @@
 if CheckWsl; then
 
     if [[ -d "$GetDataDir/rootWSL/" ]]; then
-        SUDO cp -rf $GetDataDir/rootWSL/* /
+    SUDO rsync -a --info=progress2 --force -L$GetDataDir/rootWSL/ /
     fi
+
 
     function WSL_THEME() {
         mkdir -p my_themes
