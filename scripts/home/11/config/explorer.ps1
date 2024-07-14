@@ -57,8 +57,11 @@ if (IsAdministrator) {
             Value = 0
         }
     )
-
+    
     foreach ($key in $registryKeys) {
+        if (-not (Test-Path $key.Path)) {
+            New-Item -Path $key.Path -Force | Out-Null
+        }
         Set-ItemProperty -Path $key.Path -Name $key.Name -Value $key.Value
     }
 

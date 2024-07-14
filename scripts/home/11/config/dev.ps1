@@ -32,8 +32,11 @@ if (IsAdministrator) {
    )
 
    foreach ($key in $registryKeys) {
-       Set-ItemProperty -Path $key.Path -Name $key.Name -Value $key.Value
-   }
+    if (-not (Test-Path $key.Path)) {
+        New-Item -Path $key.Path -Force | Out-Null
+    }
+    Set-ItemProperty -Path $key.Path -Name $key.Name -Value $key.Value
+}
 
 #Stop-Process -Name "explorer" -Force
 

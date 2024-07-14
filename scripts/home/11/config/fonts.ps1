@@ -13,33 +13,15 @@ if (IsAdministrator) {
     Set-Location $PSScriptRoot
     ##############################################################
 
-    $fontUrls = @(
-        @{
-            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
-            FileName = "MesloLGS NF Bold Italic.ttf"
-        },
-        @{
-            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
-            FileName = "MesloLGS NF Bold.ttf"
-        },
-        @{
-            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
-            FileName = "MesloLGS NF Italic.ttf"
-        },
-        @{
-            Url = "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
-            FileName = "MesloLGS NF Regular.ttf"
-        }
-    )
-
-    foreach ($fontInfo in $fontUrls) {
-        Invoke-Download -url $fontInfo.Url -desc "$env:TEMP\$fontInfo.FileName"
-        New-Font -Source "$env:TEMP\$fontInfo.FileName" -Family $fontInfo.FileName -System
+    if (Test-Path "C:\ProgramData\chocolatey\bin\choco.exe") {
+        & "C:\ProgramData\chocolatey\bin\choco.exe" install -y nerd-fonts-meslo
     }
+
+    #Stop-Process -Name "explorer" -Force
 } else {
     if (Test-CommandExists pwsh) {
         Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait   
     } else {
-        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait   
+        Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait  
     }
 }
