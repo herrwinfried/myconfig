@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! CheckWsl && [ "$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]''[:lower:]')" == "kde" ]; then
+if ! CheckWsl && [ "$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')" = "kde" ]; then
 
     #    Disk manager, Clock App, colord, Audio Recorder, Photo Browser
     packageKDE="partitionmanager kclock colord-kde krecorder koko"
