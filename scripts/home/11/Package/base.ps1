@@ -4,7 +4,7 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "Mozilla.Firefox"
+        Id = "Mozilla.Firefox.DeveloperEdition"
         Interactive = $False
     },
     @{
