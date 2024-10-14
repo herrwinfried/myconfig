@@ -20,12 +20,12 @@ if ! CheckWsl; then
     Browser_Office_Flatpak="flathub org.onlyoffice.desktopeditors"
     Virtualization="$(echo libguestfs{,-appliance}) qemu libvirt $(echo patterns-server-{kvm_server,kvm_tools}) virtualbox"
     Printer="patterns-server-printing skanlite $(echo cups{,-client,-filters,-airprint}) system-config-printer hplip"
-    Tool_Game="$(echo mangohud{,-32bit}) goverlay gamemode steam protontricks"
+    Tool_Game="$(echo mangohud{,-32bit}) goverlay gamemode steam"
     Tool_Game_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
-    Tool_Game_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2 org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
+    Tool_Game_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2 com.github.Matoking.protontricks org.freedesktop.Platform.VulkanLayer.MangoHud//23.08"
     Tool_Game_Flatpak+=" org.freedesktop.Sdk.Extension.openjdk21//23.08 org.prismlauncher.PrismLauncher"
 
-    Social_Flatpak="flathub org.telegram.desktop io.github.mimbrero.WhatsAppDesktop"
+    Social_Flatpak="flathub org.telegram.desktop com.ktechpit.whatsie com.skype.Client com.teamspeak.TeamSpeak3"
 
     Other="pinta yandex-disk onedrive"
     Other_Flatpak="flathub com.obsproject.Studio com.github.wwmm.easyeffects com.stremio.Stremio"

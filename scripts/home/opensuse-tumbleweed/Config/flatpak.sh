@@ -33,6 +33,10 @@ if [ -x "$(command -v flatpak)" ]; then
     flatpak_user_override /run/media com.usebottles.bottles
     flatpak_user_override ~/Games com.usebottles.bottles
 
+    flatpak_user_override /mnt com.github.Matoking.protontricks
+    flatpak_user_override /run/media com.github.Matoking.protontricks
+    flatpak_user_override ~/Games com.github.Matoking.protontricks
+
     flatpak_user_override /.var/me
     mkdir -p ~/.var/me
 

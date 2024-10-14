@@ -1,7 +1,8 @@
 #!/bin/bash
 
+DevContainer="docker docker-compose podman "
 if ! CheckWsl; then
-    DevContainer="docker docker-compose podman distrobox"
+    DevContainer+=" distrobox"
     DevContainer_Flatpak="flathub io.podman_desktop.PodmanDesktop"
     /usr/bin/dockerd-rootless-setuptool.sh install
 fi
