@@ -42,6 +42,38 @@ if command -v docker &>/dev/null; then
     }
 fi
 
+function Create-TruckersMP-lns() {
+atsModsPath="$HOME/.local/share/TruckersMP/installation/data/ats/mods"
+atsTargetPath="$HOME/Documents/American Truck Simulator/mod"
+
+ets2ModsPath="$HOME/.local/share/TruckersMP/installation/data/ets2/mods"
+ets2TargetPath="$HOME/Documents/Euro Truck Simulator 2/mod"
+
+sharedModsPath="$HOME/.local/share/TruckersMP/installation/data/shared/mods"
+
+mkdir -p "$atsTargetPath"
+
+for modFile in "$atsModsPath"/*.mp; do
+    linkPath="$atsTargetPath/$(basename "${modFile%.*}").scs"
+    ln -sf "$modFile" "$linkPath"
+done
+
+mkdir -p "$ets2TargetPath"
+
+for modFile in "$ets2ModsPath"/*.mp; do
+    linkPath="$ets2TargetPath/$(basename "${modFile%.*}").scs"
+    ln -sf "$modFile" "$linkPath"
+done
+
+for modFile in "$sharedModsPath"/*.mp; do
+    atsDestinationPath="$atsTargetPath/$(basename "${modFile%.*}").scs"
+    ln -sf "$modFile" "$atsDestinationPath"
+    
+    ets2DestinationPath="$ets2TargetPath/$(basename "${modFile%.*}").scs"
+    ln -sf "$modFile" "$ets2DestinationPath"
+done
+}
+
 if [ -f "$OhMyPoshTheme" ] && command -v oh-my-posh &>/dev/null; then
     oh-my-posh init bash --config $OhMyPoshTheme | eval
 fi

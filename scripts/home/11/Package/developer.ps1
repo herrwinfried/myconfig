@@ -28,6 +28,10 @@ $apps = @(
         Interactive = $False
     },
     @{
+        Id = "JetBrains.Toolbox"
+        Interactive = $False
+    },
+    @{
         Id = "Microsoft.DotNet.SDK.8"
         Interactive = $False
     },

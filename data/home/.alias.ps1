@@ -69,6 +69,38 @@ if (Test-CommandExists docker) {
     }
 }
 
+function Create-truckersmp-symboliclink {
+    $atsModsPath = "$env:APPDATA\TruckersMP\installation\data\ats\mods"
+    $atsTargetPath = "$env:USERPROFILE\Documents\American Truck Simulator\mod"
+    
+    $ets2ModsPath = "$env:APPDATA\TruckersMP\installation\data\ets2\mods"
+    $ets2TargetPath = "$env:USERPROFILE\Documents\Euro Truck Simulator 2\mod"
+    
+    $sharedModsPath = "$env:APPDATA\TruckersMP\installation\data\shared\mods"
+    
+    New-Item -ItemType Directory -Force -Path $atsTargetPath
+    
+    Get-ChildItem -Path $atsModsPath -Filter *.mp | ForEach-Object {
+        $linkPath = Join-Path $atsTargetPath "$($_.BaseName).scs"
+        New-Item -ItemType SymbolicLink -Path $linkPath -Target $_.FullName
+    }
+    
+    New-Item -ItemType Directory -Force -Path $ets2TargetPath
+    
+    Get-ChildItem -Path $ets2ModsPath -Filter *.mp | ForEach-Object {
+        $linkPath = Join-Path $ets2TargetPath "$($_.BaseName).scs"
+        New-Item -ItemType SymbolicLink -Path $linkPath -Target $_.FullName
+    }
+    
+    
+    Get-ChildItem -Path $sharedModsPath -Filter *.mp | ForEach-Object {
+        $atsDestinationPath = Join-Path $atsTargetPath "$($_.BaseName).scs"
+        New-Item -ItemType SymbolicLink -Path $atsDestinationPath -Target $_.FullName
+        $ets2DestinationPath = Join-Path $ets2TargetPath "$($_.BaseName).scs"
+        New-Item -ItemType SymbolicLink -Path $ets2DestinationPath -Target $_.FullName
+    }   
+}
+
 if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
     oh-my-posh init pwsh --config $OhMyPoshTheme | Invoke-Expression 
 

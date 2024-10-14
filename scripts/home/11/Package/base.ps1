@@ -28,6 +28,10 @@ $apps = @(
         Interactive = $False
     },
     @{
+        Id = "WireGuard.WireGuard"
+        Interactive = $False
+    },
+    @{
         Id = "9P9TQF7MRM4R" # Windows Subsystem for Linux (WSL)
         Interactive = $False
     },
@@ -89,6 +93,14 @@ $apps = @(
     },
     @{
         Id = "Telegram.TelegramDesktop"
+        Interactive = $False
+    },
+    @{
+        Id = "TeamSpeakSystems.TeamSpeakClient"
+        Interactive = $False
+    },
+    @{
+        Id = "9WZDNCRFJ364" #Skype // Microsoft.Skype
         Interactive = $False
     },
     @{
