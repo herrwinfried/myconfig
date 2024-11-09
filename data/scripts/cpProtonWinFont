@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
 GetScriptDir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 GetScriptName=$(basename "${BASH_SOURCE[0]}")
 
@@ -31,10 +30,10 @@ for dir in "${search_directories[@]}"; do
     parent_dir=$(dirname "$system_ini")
     if [[ "$parent_dir" =~ ^.*/pfx/drive_c/windows$ ]]; then
       echo -e "${Green}${parent_dir} Directory Found!${NoColor}"
-      if [ -d "$parent_dir/Fonts" ]; then
+      if [ -d "$parent_dir/Fonts" ] && find "$parent_dir/Fonts" -type l | grep -q .; then
         mv -f "$parent_dir/Fonts" "$parent_dir/Fonts.wine"
       fi
-      mkdir -p "$parent_dir/Fonts"
+      mkdir -p "$parent_dir/Fonts" && rm -rf "$parent_dir/Fonts/"*
       cp -rf "$source_fonts/"* "$parent_dir/Fonts/"
       echo -e "${DarkBlue}Font Copied: ${Cyan}${parent_dir}/Fonts${NoColor}"
     fi

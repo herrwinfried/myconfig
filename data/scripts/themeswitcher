@@ -1,0 +1,17 @@
+#!/bin/bash
+
+current_time=$(date +'%H:%M')
+if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
+    xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+else
+    source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
+
+if [[ "$current_time" > "08:10" && "$current_time" < "16:40" ]]; then
+    /usr/bin/lookandfeeltool -a org.kde.breeze.desktop
+    /usr/bin/plasma-apply-wallpaperimage $XDG_PICTURES_DIR/breeze.png
+else
+    /usr/bin/lookandfeeltool -a org.kde.breezedark.desktop
+    /usr/bin/plasma-apply-wallpaperimage $XDG_PICTURES_DIR/breeze-dark.png
+fi
+

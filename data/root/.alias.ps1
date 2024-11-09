@@ -1,1 +1,0 @@
-../home/.alias.ps1

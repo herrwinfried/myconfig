@@ -23,8 +23,9 @@ Function Test-CommandExists {
 $OhMyPoshTheme="$env:HOME/.poshthemes/default.omp.json"
 
 if (Test-CommandExists zypper) {
-function Get-ZyppHistory  {
-  Invoke-Expression  'cut -d "|" -f 1-4 -s --output-delimiter " | " /var/log/zypp/history | grep -v " radd "'
+  function Get-ZyppHistory {
+    $command = 'cut -d "|" -f 1-4 -s --output-delimiter " | " /var/log/zypp/history | grep -v " radd "'
+    Start-Process sudo -ArgumentList "bash", "-c", $command -Wait
 }
 }
 

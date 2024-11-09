@@ -62,7 +62,7 @@ for directory in "${search_directories[@]}"; do
         for file in $found_files; do
             parent_dir=$(dirname "$file")
         echo -e "${Green}${parent_dir} Directory Found!${NoColor}"
-        if [ -d "$parent_dir/steamapps" ]; then
+if [ -d "$parent_dir/steamapps" ] && { [ ! -L "$parent_dir/steamapps/compatdata" ] || [ "$(readlink "$parent_dir/steamapps/compatdata")" != "$HOME/Games/SteamData" ]; }; then
             if [ ! -d "$HOME/Games/SteamData" ]; then
                     mkdir -p "$HOME/Games/SteamData"
             fi

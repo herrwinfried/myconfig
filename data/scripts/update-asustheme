@@ -50,7 +50,7 @@ function rootpassword_end {
 }
 
 function InternetCheck {
- curl -s --head http://www.google.com | grep "200 OK" > /dev/null
+ curl -s --head https://github.com | grep "200 OK" > /dev/null
     if [ $? -ne 0 ]; then
         echo -e "${Red}You do not have an Internet Connection.${NoColor}"
         exit 1
@@ -73,6 +73,7 @@ exit 1
 fi
 
 InternetCheck
+rootpassword
 
 asustheme=$(curl -s "https://api.github.com/repos/AdisonCavani/distro-grub-themes/releases/latest" | jq -r ".assets[] | select(.name | test(\"asus.tar\")) | .browser_download_url")
 DEFAULT_GRUB_THEME="GRUB_THEME=/boot/grub2/themes/openSUSE/theme.txt"
@@ -105,3 +106,5 @@ if [ "$current_grub_theme" != "$new_grub_theme" ]; then
 fi
 
 fi
+
+rootpassword_end

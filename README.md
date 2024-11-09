@@ -20,7 +20,7 @@
 <h1>Download</h1>
 
 ```bash
-cd ~ ; git clone https://github.com/herrwinfried/myconfig/ -b linux && cd ~/myconfig/scripts
+cd ~ ; git clone https://github.com/herrwinfried/myconfig/ -b linux && cd ~/myconfig/setup
 ```
 
 <h1>Install</h1>

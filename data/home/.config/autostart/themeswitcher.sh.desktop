@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=/home/winfried/.config/autostart/autothemeswitcher.sh
+Icon=application-x-shellscript
+Name=autothemeswitcher.sh
+Type=Application
+X-KDE-AutostartScript=true

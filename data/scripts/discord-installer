@@ -49,7 +49,7 @@ function rootpassword_end {
 }
 
 function InternetCheck {
- curl -s --head http://www.google.com | grep "200 OK" > /dev/null
+ curl -s --head https://discord.com | grep "200 OK" > /dev/null
     if [ $? -ne 0 ]; then
         echo -e "${Red}You do not have an Internet Connection.${NoColor}"
         exit 1

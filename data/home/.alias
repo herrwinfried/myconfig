@@ -17,12 +17,6 @@ fi
 
 OhMyPoshTheme=~/.poshthemes/default.omp.json
 
-if [ -x "$(command -v zypper)" ]; then
-function zypp-history {
-sudo cut -d "|" -f 1-4 -s --output-delimiter " | " /var/log/zypp/history | grep -v " radd "
-}
-fi
-
 if rpm -q "docker" >/dev/null 2>&1; then
     export DOCKER_HOST=unix:///run/user/1000/docker.sock
 fi
@@ -89,6 +83,12 @@ elif [ -n "$ZSH_VERSION" ]; then
     test -s "/etc/${NowShell}_command_not_found" && . "/etc/${NowShell}_command_not_found"
     zle -N prepend_sudo
     bindkey '^[s' prepend_sudo
+fi
+
+if [ -x "$(command -v zypper)" ]; then
+function zypp-history {
+sudo $NowShell -c 'cut -d "|" -f 1-4 -s --output-delimiter " | " /var/log/zypp/history | grep -v " radd "'
+}
 fi
 
 function PluginInstall() {

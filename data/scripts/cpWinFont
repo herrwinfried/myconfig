@@ -55,6 +55,7 @@ FONT_DIR="/usr/local/share/fonts/truetype"
 rootpassword
 SUDO mkdir -p "$FONT_DIR/WindowsFonts"
 if [ -d "$WINDOWS_FONT_DIR" ]; then
+SUDO rm -rf "$WINDOWS_FONT_DIR/"*
 SUDO find "$WINDOWS_FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "$FONT_DIR/WindowsFonts" \;
 SUDO fc-cache -f -v
 fc-cache -f -v
