@@ -17,6 +17,9 @@ if (IsAdministrator) {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
+    if (Test-Path "C:\ProgramData\chocolatey\bin\choco.exe") {
+        & "C:\ProgramData\chocolatey\bin\choco.exe" install -y winbtrfs
+    }
 } else {
     if (Test-CommandExists pwsh) {
         Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait

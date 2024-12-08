@@ -40,7 +40,7 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "Python.Python.3.12"
+        Id = "Python.Python.3.13"
         Interactive = $False
     },
     @{
@@ -49,6 +49,14 @@ $apps = @(
     },
     @{
         Id = "Docker.DockerDesktop"
+        Interactive = $False
+    }
+    @{
+        Id = "RedHat.Podman"
+        Interactive = $False
+    }
+    @{
+        Id = "RedHat.Podman-Desktop"
         Interactive = $False
     }
 )

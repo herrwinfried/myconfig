@@ -32,6 +32,10 @@ $apps = @(
         Interactive = $False
     },
     @{
+        Id = "Cloudflare.Warp"
+        Interactive = $False
+    }
+    @{
         Id = "9P9TQF7MRM4R" # Windows Subsystem for Linux (WSL)
         Interactive = $False
     },
@@ -110,13 +114,21 @@ $apps = @(
     @{
         Id = "Discord.Discord.PTB"
         Interactive = $False
-    },
+    }, 
     @{
-        Id = "TheDocumentFoundation.LibreOffice"
+        Id = "Discord.Discord.Canary"
+        Interactive = $False
+    },  
+    @{
+        Id = "Guilded.Guilded"
         Interactive = $False
     },
     @{
-        Id = "Yandex.Disk"
+        Id = "Revolt.RevoltDesktop"
+        Interactive = $False
+    },  
+    @{
+        Id = "TheDocumentFoundation.LibreOffice"
         Interactive = $False
     },
     @{
