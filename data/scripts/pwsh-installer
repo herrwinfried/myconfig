@@ -99,7 +99,7 @@ function PackageManager_fedora {
 
 function Install {
 
-curl -s --head http://www.google.com | grep "200 OK" > /dev/null
+curl -s --head http://www.google.com | grep "200" > /dev/null
 if [ $? -ne 0 ]; then
     echo -e "${Red}You do not have an Internet Connection.${NoColor}"
     exit 1

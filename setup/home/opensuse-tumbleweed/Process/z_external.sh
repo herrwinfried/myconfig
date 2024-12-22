@@ -11,7 +11,7 @@ function FireFox-Dev_install {
   BIN_FILENAME="${FILE_NAME}-dev"
   
   test -f $TMP_FILE && SUDO rm -f $TMP_FILE
-  wget -O $TMP_FILE $URL
+  wget -O $TMP_FILE "$URL"
   test -d $TARGET_DIR && SUDO rm -rf $TARGET_DIR
   SUDO mkdir -p $TARGET_DIR
   SUDO tar -xjf $TMP_FILE -C $TARGET_DIR

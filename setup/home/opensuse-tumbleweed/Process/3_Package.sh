@@ -3,12 +3,13 @@
 Base="hwinfo fastfetch htop curl wget zsh fish opi nano"
 Base+=" lsb-release java-21-openjdk rsync"
 Base+=" bash-completion wl-clipboard jq"
-Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark org.kde.KStyle.Adwaita//6.7 org.kde.PlatformTheme.QGnomePlatform//6.7"
+Base_Flatpak="flathub org.gtk.Gtk3theme.Breeze org.gtk.Gtk3theme.Adwaita-dark"
+Base_Flatpak+=" $(echo org.kde.WaylandDecoration.{QAdwaitaDecorations//6.7,QGnomePlatform-decoration//5.15-23.08,QGnomePlatform-decoration//6.5})"
 Base_Flatpak+=" com.github.tchx84.Flatseal"
 if ! CheckWsl; then
     Base+=" fetchmsttfonts $(echo google-noto-{sans,serif,coloremoji}\*fonts)"
     Base+=" memtest86+ xwaylandvideobridge AdobeICCProfiles"
-    
+    ######################################
     Remote="anydesk teamviewer-suse"
     Remote_Flatpak="flathub org.remmina.Remmina"
 fi
@@ -18,14 +19,14 @@ Browser_Office="poppler-tools"
 if ! CheckWsl; then
     Browser_Office+=" brave-browser microsoft-edge-stable $(echo libreoffice-{base,writer,calc,impress,math,l10n-tr})"
     Browser_Office_Flatpak="flathub org.onlyoffice.desktopeditors"
-    Virtualization="$(echo libguestfs{,-appliance}) qemu libvirt $(echo patterns-server-{kvm_server,kvm_tools}) virtualbox"
+    Virtualization="$(echo libguestfs{,-appliance}) $(echo qemu{,-audio-pipewire}) libvirt $(echo patterns-server-{kvm_server,kvm_tools}) virtualbox"
     Printer="patterns-server-printing skanlite $(echo cups{,-client,-filters,-airprint}) system-config-printer hplip"
-    Tool_Game="$(echo mangohud{,-32bit}) goverlay gamemode steam"
+    Tool_Game="$(echo mangohud{,-32bit}) goverlay $(echo gamemode{,d}) $(echo libgamemode{0,auto0,0-32bit,auto0-32bit}) steam"
     Tool_Game_Flatpak="flathub net.lutris.Lutris com.usebottles.bottles com.heroicgameslauncher.hgl"
     Tool_Game_Flatpak+=" io.github.trigg.discover_overlay net.davidotek.pupgui2 com.github.Matoking.protontricks org.freedesktop.Platform.VulkanLayer.MangoHud//24.08"
     Tool_Game_Flatpak+=" org.freedesktop.Sdk.Extension.openjdk21//24.08 org.prismlauncher.PrismLauncher"
 
-    Social_Flatpak="flathub org.telegram.desktop com.ktechpit.whatsie com.skype.Client com.teamspeak.TeamSpeak chat.revolt.RevoltDesktop gg.guilded.Guilded"
+    Social_Flatpak="flathub org.telegram.desktop com.ktechpit.whatsie im.riot.Riot com.skype.Client com.teamspeak.TeamSpeak chat.revolt.RevoltDesktop gg.guilded.Guilded"
 
     Other="pinta"
     Other_Flatpak="flathub com.obsproject.Studio com.github.wwmm.easyeffects com.saivert.pwvucontrol com.stremio.Stremio"

@@ -11,9 +11,14 @@ if [ -z "$ZSH_VERSION" ] && [ -z "$BASH_VERSION" ]; then
 fi
 
 if [ -z "$LC_ALL" ] && [ -z "$LANG" ]; then
-    LANG=C.utf8
-    LC_ALL=$LANG
+    export LANG=C.utf8
+    export LC_ALL=$LANG
+elif [ -z "$LANG" ]; then
+    export LANG=$LC_ALL
+elif [ -z "$LC_ALL" ]; then
+    export LC_ALL=$LANG
 fi
+
 
 OhMyPoshTheme=~/.poshthemes/default.omp.json
 

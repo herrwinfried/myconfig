@@ -8,13 +8,15 @@ if [ -f "$USERHOME/.config/MangoHud/MangoHud.conf" ]; then
     cd .
     sleep 2
     /usr/local/bin/MangoHud-Switch
+    /usr/local/bin/MangoHud-Switch
 fi
 ##################################################################################################################
 shopt -s dotglob
 
 rsync -a --info=progress2 --force -L $GetDataDir/home/ $USERHOME/
 
-SUDO rsync -a --info=progress2 --force -L $GetDataDir/root/ /root/
+SUDO su -c "rsync -a --info=progress2 --force -L $GetDataDir/root/ /root/"
+SUDO su -c "rsync -a --info=progress2 --force -L $GetDataDir/home/ /root/"
 
 shopt -u dotglob
 ##################################################################################################################

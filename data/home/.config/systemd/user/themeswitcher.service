@@ -1,0 +1,10 @@
+[Unit]
+Description=Theme Switcher Service
+
+[Service]
+ExecStart=/usr/local/bin/themeswitcher
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=default.target

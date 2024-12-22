@@ -1,17 +1,76 @@
 #!/bin/bash
 
-current_time=$(date +'%H:%M')
 if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
     xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
 else
     source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
 fi
 
-if [[ "$current_time" > "08:10" && "$current_time" < "16:40" ]]; then
-    /usr/bin/lookandfeeltool -a org.kde.breeze.desktop
-    /usr/bin/plasma-apply-wallpaperimage $XDG_PICTURES_DIR/breeze.png
-else
-    /usr/bin/lookandfeeltool -a org.kde.breezedark.desktop
-    /usr/bin/plasma-apply-wallpaperimage $XDG_PICTURES_DIR/breeze-dark.png
+conf_file="$HOME/.config/herrwinfried.themeswitcher.conf"
+
+default_lightTheme="org.kde.breeze.desktop"
+default_lightWallpaper="$XDG_PICTURES_DIR/breeze.png"
+default_darkTheme="org.kde.breezedark.desktop"
+default_darkWallpaper="$XDG_PICTURES_DIR/breeze-dark.png"
+default_lightTime="08:10"
+default_darkTime="16:40"
+default_mode="auto"
+
+if [ ! -f "$conf_file" ]; then
+    touch "$conf_file"
+    cat <<EOL > "$conf_file"
+lightTheme=$default_lightTheme
+lightWallpaper=$default_lightWallpaper
+darkTheme=$default_darkTheme
+darkWallpaper=$default_darkWallpaper
+lightTime=$default_lightTime
+darkTime=$default_darkTime
+mode=$default_mode
+EOL
 fi
 
+source "$conf_file"
+
+current_theme=$(grep -i "LookAndFeelPackage=" $HOME/.config/kdeglobals | cut -d'=' -f2)
+
+apply_theme() {
+    theme=$1
+    wallpaper=$2
+
+    if [ "$current_theme" != "$theme" ]; then
+        /usr/bin/lookandfeeltool -a "$theme"
+        /usr/bin/plasma-apply-wallpaperimage "$wallpaper"
+        echo "Applied theme: $theme"
+    else
+        echo "Theme already set to: $theme"
+    fi
+}
+
+ThemeSelect="$1"
+if [ -z "$ThemeSelect" ]; then
+    ThemeSelect="$mode"
+else
+    sed -i "s/^mode=.*/mode=$ThemeSelect/" "$conf_file"
+fi
+
+case "$ThemeSelect" in
+    "auto")
+        current_time=$(date +'%H:%M')
+        if [[ "$current_time" > "$lightTime" && "$current_time" < "$darkTime" ]]; then
+            apply_theme "$lightTheme" "$lightWallpaper"
+        else
+            apply_theme "$darkTheme" "$darkWallpaper"
+        fi
+        ;;
+    "light")
+        apply_theme "$lightTheme" "$lightWallpaper"
+        ;;
+    "dark")
+        apply_theme "$darkTheme" "$darkWallpaper"
+        ;;
+    *)
+        echo "Invalid usage! The command should be:"
+        echo "$0 [auto|light|dark]"
+        exit 1
+        ;;
+esac

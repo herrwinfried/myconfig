@@ -7,7 +7,7 @@ Packages+=" humanity-icon-theme materia-gtk-theme gnome-tweaks qt6ct"
 Packages+=" libOSMesa8 libgthread-2_0-0 libminizip1 libpcre2-16-0 nautilus"
 else
 Packman+=" vlc-codecs"
-Packages+=" systemd-zram-service"
+Packages+=" systemd-zram-service kernel-source kernel-devel gcc"
 fi
 
 if lspci | grep -iq "vga.*intel"; then
