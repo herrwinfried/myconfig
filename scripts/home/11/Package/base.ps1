@@ -36,6 +36,10 @@ $apps = @(
         Interactive = $False
     }
     @{
+        Id = "9NT1R1C2HH7J" # ChatGPT
+        Interactive = $False
+    }
+    @{
         Id = "9P9TQF7MRM4R" # Windows Subsystem for Linux (WSL)
         Interactive = $False
     },
@@ -45,10 +49,6 @@ $apps = @(
     },
     @{
         Id = "9WZDNCRFHWLH" # HP Smart
-        Interactive = $False
-    },
-    @{
-        Id = "9N5JJZW4QZBR" # Xtreme Download Manager - XDM
         Interactive = $False
     },
     @{
@@ -84,10 +84,6 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "KDE.Okular"
-        Interactive = $False
-    },
-    @{
         Id = "RevoUninstaller.RevoUninstaller"
         Interactive = $False
     },
@@ -104,17 +100,9 @@ $apps = @(
         Interactive = $False
     },
     @{
-        Id = "9WZDNCRFJ364" #Skype // Microsoft.Skype
-        Interactive = $False
-    },
-    @{
         Id = "Discord.Discord"
         Interactive = $False
     },
-    @{
-        Id = "Discord.Discord.PTB"
-        Interactive = $False
-    }, 
     @{
         Id = "Discord.Discord.Canary"
         Interactive = $False
@@ -122,17 +110,9 @@ $apps = @(
     @{
         Id = "Guilded.Guilded"
         Interactive = $False
-    },
-    @{
-        Id = "Revolt.RevoltDesktop"
-        Interactive = $False
-    },  
+    }, 
     @{
         Id = "TheDocumentFoundation.LibreOffice"
-        Interactive = $False
-    },
-    @{
-        Id = "Google.GoogleDrive"
         Interactive = $False
     },
     @{
@@ -169,10 +149,6 @@ $apps = @(
     },
     @{
         Id = "OBSProject.OBSStudio"
-        Interactive = $False
-    },
-    @{
-        Id = "Oracle.VirtualBox"
         Interactive = $False
     }
 )
