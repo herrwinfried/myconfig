@@ -1,154 +1,174 @@
 $apps = @(
     @{
-        Id = "Brave.Brave"
+        Id          = "Brave.Brave"
         Interactive = $False
     },
     @{
-        Id = "Mozilla.Firefox.DeveloperEdition"
+        Id          = "Mozilla.Firefox"
         Interactive = $False
     },
     @{
-        Id = "7zip.7zip"
+        Id          = "7zip.7zip"
         Interactive = $False
     },
     @{
-        Id = "AdrienAllard.FileConverter"
+        Id          = "AdrienAllard.FileConverter"
         Interactive = $False
     },
     @{
-        Id = "Fastfetch-cli.Fastfetch"
+        Id          = "9PFXCD722M2C" # KDE Filelight
         Interactive = $False
     },
     @{
-        Id = "Microsoft.OpenJDK.21"
+        Id          = "Fastfetch-cli.Fastfetch"
         Interactive = $False
     },
     @{
-        Id = "OpenVPNTechnologies.OpenVPNConnect"
+        Id          = "Microsoft.OpenJDK.21"
         Interactive = $False
     },
     @{
-        Id = "WireGuard.WireGuard"
+        Id          = "OpenVPNTechnologies.OpenVPNConnect"
         Interactive = $False
     },
     @{
-        Id = "Cloudflare.Warp"
+        Id          = "WireGuard.WireGuard"
+        Interactive = $False
+    },
+    @{
+        Id          = "Cloudflare.Warp"
         Interactive = $False
     }
     @{
-        Id = "9NT1R1C2HH7J" # ChatGPT
+        Id          = "9NT1R1C2HH7J" # ChatGPT
         Interactive = $False
     }
     @{
-        Id = "9P9TQF7MRM4R" # Windows Subsystem for Linux (WSL)
+        Id          = "Ollama.Ollama"
+        Interactive = $False
+    }
+    @{
+        Id          = "9P9TQF7MRM4R" # Windows Subsystem for Linux (WSL)
         Interactive = $False
     },
     @{
-        Id = "9MSSK2ZXXN11" # OpenSUSE Tumbleweed for WSL
+        Id          = "9MSSK2ZXXN11" # OpenSUSE Tumbleweed for WSL
         Interactive = $False
     },
     @{
-        Id = "9WZDNCRFHWLH" # HP Smart
+        Id          = "9WZDNCRFHWLH" # HP Smart
         Interactive = $False
     },
     @{
-        Id = "AnyDeskSoftwareGmbH.AnyDesk"
+        Id          = "AnyDeskSoftwareGmbH.AnyDesk"
         Interactive = $False
     },
     @{
-        Id = "TeamViewer.TeamViewer"
+        Id          = "TeamViewer.TeamViewer"
         Interactive = $False
     },
     @{
-        Id = "9PP9GZM2GN26" # Intel Unison
+        Id          = "LocalSend.LocalSend"
         Interactive = $False
     },
     @{
-        Id = "KDE.KDEConnect"
+        Id          = "dev47apps.DroidCam"
         Interactive = $False
     },
     @{
-        Id = "9N9WCLWDQS5J" # Bluetooth Audio Receiver
+        Id          = "9N93MRMSXBF0" # KDE Connect
         Interactive = $False
     },
     @{
-        Id = "9NBLGGH516XP" # EarTrumpet
+        Id          = "9N9WCLWDQS5J" # Bluetooth Audio Receiver
         Interactive = $False
     },
     @{
-        Id = "XPDM1ZW6815MQM" # VLC
+        Id          = "9NBLGGH516XP" # EarTrumpet
         Interactive = $False
     },
     @{
-        Id = "Stremio.Stremio"
+        Id          = "XPDM1ZW6815MQM" # VLC
         Interactive = $False
     },
     @{
-        Id = "RevoUninstaller.RevoUninstaller"
+        Id          = "Stremio.Stremio"
         Interactive = $False
     },
     @{
-        Id = "9NKSQGP7F2NH" # Whatsapp
+        Id          = "RevoUninstaller.RevoUninstaller"
         Interactive = $False
     },
     @{
-        Id = "Telegram.TelegramDesktop"
+        Id          = "9NKSQGP7F2NH" # Whatsapp
         Interactive = $False
     },
     @{
-        Id = "TeamSpeakSystems.TeamSpeakClient"
+        Id          = "9N97ZCKPD60Q" # Unigram
         Interactive = $False
     },
     @{
-        Id = "Discord.Discord"
+        Id          = "TeamSpeakSystems.TeamSpeakClient"
         Interactive = $False
     },
     @{
-        Id = "Discord.Discord.Canary"
-        Interactive = $False
-    },  
-    @{
-        Id = "Guilded.Guilded"
-        Interactive = $False
-    }, 
-    @{
-        Id = "TheDocumentFoundation.LibreOffice"
+        Id          = "Discord.Discord"
         Interactive = $False
     },
     @{
-        Id = "Microsoft.PowerToys"
+        Id          = "Element.Element"
         Interactive = $False
     },
     @{
-        Id = "Flameshot.Flameshot"
+        Id          = "Discord.Discord.Canary"
+        Interactive = $False
+    },   
+    @{
+        Id          = "TheDocumentFoundation.LibreOffice"
         Interactive = $False
     },
     @{
-        Id = "Valve.Steam"
+        Id          = "Microsoft.PowerToys"
         Interactive = $False
     },
     @{
-        Id = "HeroicGamesLauncher.HeroicGamesLauncher"
+        Id          = "Flameshot.Flameshot"
         Interactive = $False
     },
     @{
-        Id = "EpicGames.EpicGamesLauncher"
+        Id          = "Nvidia.FrameView"
         Interactive = $False
     },
     @{
-        Id = "ElectronicArts.EADesktop"
+        Id          = "Valve.Steam"
         Interactive = $False
     },
     @{
-        Id = "Ubisoft.Connect"
+        Id          = "HeroicGamesLauncher.HeroicGamesLauncher"
         Interactive = $False
     },
     @{
-        Id = "PrismLauncher.PrismLauncher"
+        Id          = "EpicGames.EpicGamesLauncher"
         Interactive = $False
     },
     @{
-        Id = "OBSProject.OBSStudio"
+        Id          = "ElectronicArts.EADesktop"
+        Interactive = $False
+    },
+    @{
+        Id          = "Ubisoft.Connect"
+        Interactive = $False
+    },
+    @{
+        Id          = "PrismLauncher.PrismLauncher"
+        Interactive = $False
+    },
+    @{
+        Id          = "OBSProject.OBSStudio"
+        Interactive = $False
+    },
+    @{
+        Id          = "KDE.Kdenlive"
         Interactive = $False
     }
 )
@@ -156,7 +176,8 @@ $apps = @(
 foreach ($app in $apps) {
     if ($app.Interactive) {
         Install-WingetPackage -Interactive 1 -PackageID $app.Id
-    } else {
+    }
+    else {
         Install-WingetPackage -PackageID $app.Id
     }
 }

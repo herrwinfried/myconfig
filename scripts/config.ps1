@@ -5,7 +5,7 @@ function New-ConfigData {
         [string]$Name,
         $Value
     )
-$ConfigData | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
+    $ConfigData | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
 }
 
 New-ConfigData -Name 'Hostname' -Value 'HR-WINFRIED'

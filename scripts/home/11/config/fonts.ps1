@@ -7,7 +7,7 @@ function IsAdministrator {
 if (IsAdministrator) {
     # FIXME: :/ Hey, if you know a more logical way, I'm open to suggestions.
     Set-Location $PSScriptRoot\..\..\..\
-    $TempFolder=$(Get-Location)
+    $TempFolder = $(Get-Location)
     . "$TempFolder\config.ps1"
     Import-Module "$TempFolder\function.psm1"
     Set-Location $PSScriptRoot
@@ -18,10 +18,12 @@ if (IsAdministrator) {
     }
 
     #Stop-Process -Name "explorer" -Force
-} else {
+}
+else {
     if (Test-CommandExists pwsh) {
         Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait   
-    } else {
+    }
+    else {
         Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait  
     }
 }

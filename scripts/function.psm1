@@ -5,11 +5,13 @@ if (-Not ($Lang)) { $Lang = $PSUICulture }
 $GetLanguageModuleFile = "$PSScriptRoot/lang/$Lang/$GetModuleName.psd1"
 
 if (-Not (Test-Path "$PSScriptRoot/lang/en-US/$GetModuleName.psd1")) {
-        Write-Error "There is no language file. Module exited."
-        Exit 1
-} elseif (Test-Path $GetLanguageModuleFile) {
+    Write-Error "There is no language file. Module exited."
+    Exit 1
+}
+elseif (Test-Path $GetLanguageModuleFile) {
     $LanguageModule = Import-LocalizedData -BaseDirectory "$PSScriptRoot/lang" -FileName $($GetModuleName).psd1 -UICulture $Lang
-} elseif (-Not (Test-Path $GetLanguageModuleFile)) {
+}
+elseif (-Not (Test-Path $GetLanguageModuleFile)) {
     $LanguageModule = Import-LocalizedData -BaseDirectory "$PSScriptRoot/lang" -FileName $($GetModuleName).psd1 -UICulture "en-US"
 }
 # language support complete
@@ -51,49 +53,54 @@ if (Test-CommandExists winget) {
     function Install-WingetPackage {
         param (
             [Parameter()][Alias("i")][bool]$Interactive = $false,
-            [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][Alias("id","p")][String]$PackageID
-            )
+            [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][Alias("id", "p")][String]$PackageID
+        )
         $RequireVersion = "1.7.10861"
         $installedVersion = winget --version 2>&1 | Select-String -Pattern '(\d+(\.\d+){2})' -AllMatches | ForEach-Object { $_.Matches.Value }
 
         if ($installedVersion -ge $RequireVersion) {
             if ($Interactive) {
                 $runCommand = "winget.exe install --interactive --id $PackageID --accept-package-agreements --accept-source-agreements"
-            } else {
+            }
+            else {
                 $runCommand = "winget.exe install --id $PackageID --accept-package-agreements --accept-source-agreements"
             }
             Invoke-Expression $runCommand
-        } else {
+        }
+        else {
             Write-Host-Red "I couldn't install package $PackageID because your Winget version is not $RequireVersion or higher."
         }
     } 
     Export-ModuleMember -Function Install-WingetPackage
-} else {
+}
+else {
     Write-Warning "$(LanguageModule.NotFoundWinget)"
 }
 
 function Install-Module2 {
     param (
         [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][String]$ModuleName
-        )
-        if (-not (Get-Module -ListAvailable -Name $ModuleName)) {
-            Install-Module -Name $ModuleName -Force
-        } else {
-            Write-Warning "Module $ModuleName is already installed."
+    )
+    if (-not (Get-Module -ListAvailable -Name $ModuleName)) {
+        Install-Module -Name $ModuleName -Force
+    }
+    else {
+        Write-Warning "Module $ModuleName is already installed."
          
-        }   
-        Import-Module -Name $ModuleName
+    }   
+    Import-Module -Name $ModuleName
 }
 Export-ModuleMember -Function Install-Module2
 function Install-PackageProvider2 {
     param (
         [Parameter (Mandatory = $true)][ValidateNotNullOrEmpty()][String]$ProviderName
-        )
-        if (-not (Get-Module -ListAvailable -Name $ProviderName)) {
-            Install-PackageProvider -Name $ProviderName -Force
-        } else {
-            Write-Warning "Package Provider $ProviderName is already installed."
-        }
+    )
+    if (-not (Get-Module -ListAvailable -Name $ProviderName)) {
+        Install-PackageProvider -Name $ProviderName -Force
+    }
+    else {
+        Write-Warning "Package Provider $ProviderName is already installed."
+    }
 }
 Export-ModuleMember -Function Install-PackageProvider2
 
@@ -147,7 +154,8 @@ function Test-ScriptDirectory {
 
     if (Test-Path -Path "$GetScriptDir\$Type\$WindowsVersion" -PathType Container) {
         return $true
-    } else {
+    }
+    else {
         return $false
     }
 }
@@ -187,7 +195,8 @@ function Invoke-InstallScript {
     if (-not (Test-ScriptDirectory "$Type" $OSDirPath)) {
         Write-Host "$($LanguageModule.NotSupport) [$Type]"
         exit 1
-    } else {
+    }
+    else {
         if ($Presetup) {
             Invoke-ScriptFile "$GetScriptDir/$Type/$OSDirPath/Presetup"
             PreSetupFinishMessage
