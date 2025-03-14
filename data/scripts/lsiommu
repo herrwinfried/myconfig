@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$(uname -s)" != "Linux" ]]; then
+    echo -e "${COLORS[Red]}This script is designed for Linux.${COLORS[NoColor]}"
+    exit 1
+fi
+
 # https://gist.github.com/jabbas/a8785710a5e8655045fc0be67385e887
 
 for d in /sys/kernel/iommu_groups/*/devices/*; do

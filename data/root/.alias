@@ -44,6 +44,11 @@ if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+export PATH=$PATH:~/.dotnet/tools
+ if [[ $EUID -ne 0 ]]; then
+export PATH=$PATH:/root/.dotnet/tools
+    fi
+
 function UpdateAlias() {
     test -f "$HOME/.alias.ps1" && rm -f "$HOME/.alias.ps1"
     wget -O "$HOME/.alias.ps1" "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1"

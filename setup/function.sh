@@ -1,70 +1,45 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
-Black='\033[0;30m'
-DarkBlue='\033[0;34m'
-DarkGreen='\033[0;32m'
-DarkCyan='\033[0;36m'
-DarkRed='\033[0;31m'
-DarkMagenta='\033[0;35m'
-DarkYellow='\033[0;33m'
-Gray='\033[0;37m'
-DarkGray='\033[1;30m'
-Blue='\033[1;34m'
-Green='\033[1;32m'
-Cyan='\033[1;36m'
-Red='\033[1;31m'
-Magenta='\033[1;35m'
-Yellow='\033[1;33m'
-White='\033[1;37m'
-NoColor='\033[0m' # No Color
+function is_command() { command -v "$1" &>/dev/null; }
 
-USER_PASSWORD=""
-function rootpassword {
-if [[ $EUID -eq 0 ]]; then
-     echo -e "${Red}You must not be Super User/Root.${NoColor}"
-   exit 1
-fi
-sudo --reset-timestamp
-# shellcheck disable=SC2162
-echo -n -e "${Cyan}Password for ${Red}root:${NoColor} "
-# shellcheck disable=SC2162
-read -s USER_PASSWORD
-echo -e "\n${Yellow}Password checking...${NoColor}"
-if echo "$USER_PASSWORD" | sudo -S true >/dev/null 2>&1; then
-    echo -e "${Green}Password verified.${NoColor}\n"
-    function SUDO {
-        # shellcheck disable=SC2317
-        echo "$USER_PASSWORD" | sudo -S "$@"
-    }
-else
-    echo -e "${Red}Password could not be verified ${NoColor}\n"
-    rootpassword
-fi  
+function check_root() {
+    if [[ $EUID -eq 0 ]]; then
+        echo -e "${COLORS[Red]}You must not run this script as root.${COLORS[NoColor]}"
+        exit 1
+    fi
 }
-function rootpassword_end {
-    unset USER_PASSWORD
+
+function verify_password() {
+    echo -n -e "${COLORS[Cyan]}Password for ${COLORS[Red]}root:${COLORS[NoColor]} "
+    read -s user_password
+    echo -e "\n${COLORS[Yellow]}Verifying password...${COLORS[NoColor]}"
+    echo "$user_password" | sudo -S true &>/dev/null && return 0 || {
+        echo -e "${COLORS[Red]}Incorrect password.${COLORS[NoColor]}"
+        exit 1
+    }
+}
+
+function SUDO() {
+    echo "$user_password" | sudo -S "$@"
+}
+
+function cleanup() {
+    unset user_password
     sudo --reset-timestamp
 }
+trap cleanup EXIT
 
-function InternetCheck {
-  local URLCheck
-  if [ "$2" ]; then
-    URLCheck=$2
-  else
-    URLCheck="https://google.com"
-  fi
-
-  curl -s --head "$URLCheck" | grep "200" > /dev/null
-  if [ $? -ne 0 ]; then
-    echo -e "${Red}You do not have an Internet Connection.${NoColor}"
-    if [ "$1" == "yes" ]; then
-    exit 1
-      fi
-  fi
+function check_internet() {
+    curl -s --head http://www.google.com | grep "200" &>/dev/null || {
+        echo -e "${COLORS[Red]}No Internet connection.${COLORS[NoColor]}"
+        exit 1
+    }
 }
 
 function Language {
-gettext -s "$1"
+    gettext -s "$1"
 }
 
 function echo-red {
@@ -72,22 +47,130 @@ function echo-red {
     echo -e "${Red}$@ ${NoColor}"
 }
 
-function CheckCommand {
-    if type -P $1 > /dev/null; then
-        return 0
-    else
-        return 1
-    fi
+. /etc/os-release
+
+if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
+    xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+else
+    source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
+
+function get_package_manager() {
+    case "$DISTRO" in
+    *"opensuse tumbleweed"*) echo "zypper" ;;
+    *"fedora"*) echo "dnf" ;;
+    *"debian"* | *"ubuntu"*) echo "apt" ;;
+    *) echo "unsupported" ;;
+    esac
 }
 
-function CheckLinux {
-    if [ "$(uname -s)" != "Linux" ]; then
-    echo-red "$(Language NOTLINUX)"
-    exit 1;
-    fi
+get_zypper_command() {
+    local distro=$(echo "$NAME $VERSION" | tr '[:upper:]' '[:lower:]')
+    local dup_distros=("tumbleweed" "slowroll" "microos" "kubic")
+    local up_distros=("leap")
+    for dup_distro in "${dup_distros[@]}"; do
+        if [[ $distro == *"$dup_distro"* ]]; then
+            echo "dup"
+            return
+        fi
+    done
+    for up_distro in "${up_distros[@]}"; do
+        if [[ $distro == *"$up_distro"* ]]; then
+            echo "up"
+            return
+        fi
+    done
+    echo "up"
 }
 
-function CheckWsl {
+get_dnf_command() {
+    local distro=$(echo "$NAME $VERSION" | tr '[:upper:]' '[:lower:]')
+    local dup_distros=("tumbleweed" "slowroll" "microos" "kubic")
+    local up_distros=("leap")
+    for dup_distro in "${dup_distros[@]}"; do
+        if [[ $distro == *"$dup_distro"* ]]; then
+            echo "distro-sync"
+            return
+        fi
+    done
+    for up_distro in "${up_distros[@]}"; do
+        if [[ $distro == *"$up_distro"* ]]; then
+            echo "upgrade"
+            return
+        fi
+    done
+    echo "upgrade"
+}
+
+function GetPackageManagerVariable() {
+    local pm=$1
+    local isYes="-y"
+    case $pm in
+    zypper)
+        PM="zypper"
+        PM_Refresh="refresh ${isYes}"
+        PM_Upgrade="$(get_zypper_command) ${isYes}"
+        PM_Install="install ${isYes}"
+        PM_Uninstall="rm ${isYes}"
+        ;;
+    dnf)
+        PM="dnf"
+        PM_Refresh="makecache ${isYes}"
+        PM_Upgrade="$(get_dnf_command) ${isYes}"
+        PM_Install="install --skip-broken ${isYes}"
+        PM_Uninstall="remove ${isYes}"
+        ;;
+    dnf5)
+        PM="dnf5"
+        PM_Refresh="makecache ${isYes}"
+        PM_Upgrade="$(get_dnf_command) ${isYes}"
+        PM_Install="install --skip-broken ${isYes}"
+        PM_Uninstall="remove ${isYes}"
+        ;;
+    apt)
+        PM="apt"
+        PM_Refresh="update ${isYes}"
+        PM_Upgrade="upgrade ${isYes}"
+        PM_Install="install ${isYes}"
+        PM_Uninstall="remove ${isYes}"
+        ;;
+    flatpak)
+        FPM="flatpak"
+        FPM_Refresh="update ${isYes}"
+        FPM_Upgrade="update ${isYes}"
+        FPM_Install="install ${isYes}"
+        FPM_Uninstall="uninstall ${isYes}"
+        ;;
+    brew)
+        BPM="/home/linuxbrew/.linuxbrew/bin/brew"
+        BPM_Refresh="update ${isYes}"
+        BPM_Upgrade="upgrade ${isYes}"
+        BPM_Install="install ${isYes}"
+        BPM_Uninstall="uninstall ${isYes}"
+        ;;
+    snap)
+        SPM="snap"
+        SPM_Refresh="refresh ${isYes}"
+        SPM_Upgrade="refresh ${isYes}"
+        SPM_Install="install ${isYes}"
+        SPM_Uninstall="uninstall ${isYes}"
+        ;;
+    *)
+        echo -e "${COLORS[Red]}Invalid package manager: $manager${COLORS[NoColor]}"
+        return
+        ;;
+    esac
+}
+
+function PackageInstall {
+    SUDO su -c "$PM $PM_Install $@"
+}
+
+function FlatpakPackageInstall {
+    SUDO su -c "$FPM $FPM_Install $@"
+}
+
+function isWsl {
     unameout=$(uname -r | tr '[:upper:]' '[:lower:]')
     if [[ "$unameout" = "*microsoft*" || "$unameout" = "*wsl*" ]] ||
         [ -f /proc/sys/fs/binfmt_misc/WSLInterop ] ||
@@ -99,168 +182,6 @@ function CheckWsl {
     fi
 }
 
-function RequireCommand {
-    local i=0
-    # shellcheck disable=SC2046
-    if [[ ! -x $(command -v xdg-user-dirs-update) ]]; then
-       echo-red "xdg-user-dirs-update: $(Language NOTFOUND_PACKAGE ||  echo "Not found")"
-        ((i++))
-    fi
-
-    # shellcheck disable=SC2046
-    if [[ ! -x $(command -v git) ]]; then
-       echo-red "Git: $(Language NOTFOUND_PACKAGE ||  echo "Not found")"
-        ((i++))
-    fi
-
-    # shellcheck disable=SC2046
-    if [[ ! -x $(command -v dos2unix) ]]; then
-       echo-red "dos2unix: $(Language NOTFOUND_PACKAGE ||  echo "Not found")"
-        ((i++))
-    fi
-    # shellcheck disable=SC2046
-    if [[ ! -x $(command -v gettext) ]]; then
-       echo-red "gettext: $(Language NOTFOUND_PACKAGE ||  echo "Not found")"
-        ((i++))
-    fi
-
-    if [ $i -ne 0 ]; then
-        exit 1
-    fi
-}
-
-
-if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
-    xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-else
-    source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-fi
-
-function PackageManager_openSUSE-TW {
-    SUSE_TYPE=0
-    if [[ $1 -eq 1 ]] || [[ $1 -eq 0 ]]; then
-        SUSE_TYPE=$1
-    else
-        SUSE_TYPE=0
-    fi
-    
-    if [[ $SUSE_TYPE -eq 1 ]]; then
-        if ! checkcommand dnf ; then
-            SUSE_TYPE=0
-        fi
-    fi
-
-    if [[ $SUSE_TYPE -eq 0 ]]; then
-        PackagePrep="zypper"
-        Package="$PackagePrep --gpg-auto-import-keys --no-gpg-checks"
-        PackageUpdate="dup -y -l"
-        PackageRefresh="refresh"
-
-        PackageRemove="rm -u -y"
-        PackageInstall="in -y -l"
-
-    elif [[ $SUSE_TYPE -eq 1 ]]; then
-
-        PackagePrep="dnf"
-        Package="$PackagePrep --nogpgcheck"
-        PackageUpdate="dup -y"
-        PackageRefresh="makecache"
-
-        PackageRemove="remove -y"
-        PackageInstall="install -y"
-    fi
-}
-
-function PackageManager_fedora {
-    PackagePrep="dnf"
-    Package="$PackagePrep --nogpgcheck"
-    PackageUpdate="dup -y"
-    PackageRefresh="makecache"
-
-    PackageRemove="remove -y"
-    PackageInstall="install -y"
-}
-
-function PackageManager_debian {
-    PackagePrep="apt"
-    Package="$PackagePrep"
-    PackageUpdate="upgrade -y"
-    PackageRefresh="update"
-
-    PackageRemove="remove -y"
-    PackageInstall="install -y"
-}
-
-function External_PM_Brew {
-    BrewPackagePrep="brew"
-    BrewPackage="$BrewPackagePrep"
-    BrewPackageUpdate="update -y"
-
-    BrewPackageRemove="uninstall -y"
-    BrewPackageInstall="install -y"
-}
-
-function External_PM_Flatpak {
-    FlatpakPackagePrep="flatpak"
-    FlatpakPackage="$FlatpakPackagePrep"
-    FlatpakPackageUpdate="update -y"
-
-    FlatpakPackageRemove="uninstall -y"
-    FlatpakPackageInstall="install -y"
-}
-
-function External_PM_Snap {
-    SnapPackagePrep="snap"
-    SnapPackage="$SnapPackagePrep"
-    SnapPackageUpdate="refresh"
-
-    SnapPackageRemove="remove"
-    SnapPackageInstall="install"
-}
-
-
-function ExternalPackage {
-    mkdir -p $EXTERNAL_PACKAGE_DIRS
-    cd $EXTERNAL_PACKAGE_DIRS
-    files=$(ls -1 *.flatpakref *.rpm *.deb *.run *.bundle *.appimage 2>/dev/null)
-
-        if [ -n "$files" ]; then
-        for file in $files; do
-            chmod +x "$file"
-            case "$file" in
-                *.flatpakref)
-               if [ -x $(command -v flatpak) ]; then
-                    SUDO $FlatpakPackage $FlatpakPackageInstall "$file"
-                    SUDO $FlatpakPackage $FlatpakPackageUpdate
-                    SUDO $Package $PackageUpdate
-                fi
-                    ;;
-                *.rpm)
-                if [ -x $(command -v zypper) ] || [ -x $(command -v dnf) ] && [ -x $(command -v rpm) ]; then
-                    SUDO $Package $PackageInstall "$file"
-                    SUDO $Package $PackageUpdate
-                fi
-                    ;;
-                *.deb)
-                if [ -x $(command -v apt) ] && [ -x $(command -v dpkg) ]; then
-                    SUDO $Package $PackageInstall "$file"
-                    SUDO $Package $PackageUpdate
-                fi
-                    ;;
-                *.run)
-                    SUDO ./"$file"
-                    ;;
-                *.bundle)
-                    SUDO ./"$file"
-                    ;;
-                *.appimage)
-                    SUDO ./"$file"
-                    ;;
-            esac
-        done
-    fi
-}
-
 function CreateDesktopEntry() {
     local directory_path="$1"
     local icon_name="$2"
@@ -268,18 +189,58 @@ function CreateDesktopEntry() {
         mkdir -p "$directory_path"
     fi
     if [[ -n $icon_name ]]; then
-    echo -e "[Desktop Entry]\nIcon=$icon_name" | tee "$directory_path/.directory"
+        echo -e "[Desktop Entry]\nIcon=$icon_name" | tee "$directory_path/.directory"
     fi
 }
 
-
 function flatpak_user_override() {
-    if command -v flatpak &> /dev/null; then
+    if command -v flatpak &>/dev/null; then
         if [[ -z $2 ]]; then
-        flatpak --user override --filesystem=$1 $2
+            flatpak --user override --filesystem=$1 $2
         else
-        flatpak --user override --filesystem=$1
+            flatpak --user override --filesystem=$1
         fi
+    fi
+}
+
+function ExternalPackage {
+    mkdir -p $EXTERNAL_PACKAGE_DIRS
+    cd $EXTERNAL_PACKAGE_DIRS
+    files=$(ls -1 *.flatpakref *.rpm *.deb *.run *.bundle *.appimage 2>/dev/null)
+
+    if [ -n "$files" ]; then
+        for file in $files; do
+            chmod +x "$file"
+            case "$file" in
+            *.flatpakref)
+                if [ -x $(command -v flatpak) ]; then
+                    SUDO $FPM $FPM_Install "$file"
+                    SUDO $FPM $FPM_Refresh
+                fi
+                ;;
+            *.rpm)
+                if [ -x $(command -v zypper) ] || [ -x $(command -v dnf) ] && [ -x $(command -v rpm) ]; then
+                    SUDO $PM $PM_Install "$file"
+                    SUDO $PM $PM_Refresh
+                fi
+                ;;
+            *.deb)
+                if [ -x $(command -v apt) ] && [ -x $(command -v dpkg) ]; then
+                    SUDO $PM $PM_Install "$file"
+                    SUDO $PM $PM_Refresh
+                fi
+                ;;
+            *.run)
+                SUDO ./"$file"
+                ;;
+            *.bundle)
+                SUDO ./"$file"
+                ;;
+            *.appimage)
+                SUDO ./"$file"
+                ;;
+            esac
+        done
     fi
 }
 
@@ -287,12 +248,12 @@ function CheckScriptDirectory {
     local Type="$1"
     local Distro="$2"
 
-        # shellcheck disable=SC2154
-        if [ -d "${GetScriptDir}/${Type}/${Distro}" ]; then
-            return 0
-        else 
-            return 1
-        fi
+    # shellcheck disable=SC2154
+    if [ -d "${GetScriptDir}/${Type}/${Distro}" ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 function RunScriptFile {
@@ -312,24 +273,24 @@ function RunScript {
     local result=$(CheckScriptDirectory $Type $Dir)
     # shellcheck disable=SC1009
     if ! $result; then
-    echo-red "$(Language NOTSUPPORTDISTRO) [${Type}]"
-    exit 1
+        echo-red "$(Language NOTSUPPORTDISTRO) [${Type}]"
+        exit 1
     fi
-        if [ "$Presetup" = true ]; then
-            RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
-            RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Presetup"
-            PreSetupFinishMessage
-            exit 1
-        fi
-        if [ "$OnlyConfig" = true ]; then
-            RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Config"
-            exit 1
-        fi
+    if [ "$Presetup" = true ]; then
         RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
-        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Process"
-        if [ "$Config" = true ]; then
-            RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Config"
-        fi
+        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Presetup"
+        PreSetupFinishMessage
+        exit 1
+    fi
+    if [ "$OnlyConfig" = true ]; then
+        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Config"
+        exit 1
+    fi
+    RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
+    RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Process"
+    if [ "$Config" = true ]; then
+        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Config"
+    fi
 
 }
 
@@ -339,8 +300,8 @@ function RunScript_Distrobox {
     local dx_distro=$DX_OS
     # shellcheck disable=SC1009
     if ! CheckScriptDirectory "$Type" "$Dir"; then
-    echo-red "$(Language NOTSUPPORTDISTRO) [${Type}]"
-    exit 1
+        echo-red "$(Language NOTSUPPORTDISTRO) [${Type}]"
+        exit 1
     else
         if [ "$Presetup" ]; then
             RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
@@ -363,30 +324,18 @@ function RunScript_Distrobox {
 function PreSetupFinishMessage {
     echo -e "${Yellow}$(Language PreSetupMessageOne)${NoColor}"
     echo -e "${Cyan}$(Language PreSetupMessageTwo)${NoColor}"
-    exit 1;
+    exit 1
 }
 
 basic_if_warning() {
-  echo -e "${Yellow}$(Language BOTH_WARNING)${NoColor}"
-  echo "[1] $(Language BOTH_WARNING_YES)"
-  echo "[2] $(Language BOTH_WARNING_NO)"
-  read -r IFREAD
-  if [ "$IFREAD" -ne 1 ] && [ "$IFREAD" -ne 2 ]; then
-    echo -e "${Red}$(Language BOTH_WARNING_INVALID) ${NoColor}"
-    basic_if_warning
-  elif [ "$IFREAD" -eq 2 ]; then
-    exit 1
-  fi
-}
-
-function BasePackageInstall {
-if [[ -n $1 ]]; then
-    SUDO $Package $PackageInstall $1
-fi
-}
-
-function BasePackageFlatpakInstall {
-if [[ -n $1 ]]; then
-    SUDO $FlatpakPackage $FlatpakPackageInstall $1
-fi
+    echo -e "${Yellow}$(Language BOTH_WARNING)${NoColor}"
+    echo "[1] $(Language BOTH_WARNING_YES)"
+    echo "[2] $(Language BOTH_WARNING_NO)"
+    read -r IFREAD
+    if [ "$IFREAD" -ne 1 ] && [ "$IFREAD" -ne 2 ]; then
+        echo -e "${Red}$(Language BOTH_WARNING_INVALID) ${NoColor}"
+        basic_if_warning
+    elif [ "$IFREAD" -eq 2 ]; then
+        exit 1
+    fi
 }

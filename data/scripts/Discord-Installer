@@ -1,0 +1,125 @@
+#!/bin/bash
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
+
+declare -A COLORS=(
+    [Black]='\033[0;30m' [DarkBlue]='\033[0;34m' [DarkGreen]='\033[0;32m' [DarkCyan]='\033[0;36m'
+    [DarkRed]='\033[0;31m' [DarkMagenta]='\033[0;35m' [DarkYellow]='\033[0;33m' [Gray]='\033[0;37m'
+    [DarkGray]='\033[1;30m' [Blue]='\033[1;34m' [Green]='\033[1;32m' [Cyan]='\033[1;36m'
+    [Red]='\033[1;31m' [Magenta]='\033[1;35m' [Yellow]='\033[1;33m' [White]='\033[1;37m'
+    [NoColor]='\033[0m'
+)
+
+
+if [[ "$(uname -s)" != "Linux" ]]; then
+    echo -e "${COLORS[Red]}This script is designed for Linux.${COLORS[NoColor]}"
+    exit 1
+fi
+
+function is_command() { command -v "$1" &>/dev/null; }
+
+function check_root() {
+    if [[ $EUID -eq 0 ]]; then
+        echo -e "${COLORS[Red]}You must not run this script as root.${COLORS[NoColor]}"
+        exit 1
+    fi
+}
+
+function verify_password() {
+    echo -n -e "${COLORS[Cyan]}Password for ${COLORS[Red]}root:${COLORS[NoColor]} "
+    read -s user_password
+    echo -e "\n${COLORS[Yellow]}Verifying password...${COLORS[NoColor]}"
+    # Do not show the password in terminal output
+    echo "$user_password" | sudo -S true &>/dev/null && return 0 || {
+        echo -e "${COLORS[Red]}Incorrect password.${COLORS[NoColor]}"
+        exit 1
+    }
+}
+
+function SUDO() {
+    echo "$user_password" | sudo -S "$@"
+}
+
+function cleanup() {
+    unset user_password
+    sudo --reset-timestamp
+}
+trap cleanup EXIT
+
+function check_internet() {
+    curl -s --head https://discord.com/ | grep "200" &>/dev/null || {
+        echo -e "${COLORS[Red]}No Internet connection.${COLORS[NoColor]}"
+        exit 1
+    }
+}
+
+check_root
+verify_password
+check_internet
+
+function errorHelp() {
+    echo "ERROR! Example: $0 PTB"
+    echo "development, canary, ptb, stable"
+    exit 1
+}
+
+if [ $# -eq 0 ]; then
+    errorHelp
+fi
+
+n1=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
+if [ "$n1" == "update" ]; then
+    curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/$SCRIPT_NAME" -o "$SCRIPT_DIR/$SCRIPT_NAME"
+    exit 1
+elif [ "$n1" == "development" ]; then
+    Version="development"
+    AppName="DiscordDevelopment"
+elif [ "$n1" == "canary" ]; then
+    Version="canary"
+    AppName="DiscordCanary"
+elif [ "$n1" == "ptb" ]; then
+    Version="ptb"
+    AppName="DiscordPTB"
+elif [ "$n1" == "stable" ]; then
+    Version=""
+    AppName="Discord"
+else
+    errorHelp
+fi
+
+for cmd in curl tar; do
+    if ! is_command "$cmd"; then
+        echo -e "${COLORS[Red]}Not Found $cmd${COLORS[NoColor]}"
+        exit 1
+    fi
+done
+
+SUDO rm -rf "/opt/${AppName}" "/tmp/${AppName}.tar.gz"
+
+DownloadURL="https://discord.com/api/download"
+[ -n "$Version" ] && DownloadURL+="/$Version"
+DownloadURL+="?platform=linux&format=tar.gz"
+
+curl -L "$DownloadURL" -o "/tmp/${AppName}.tar.gz"
+
+SUDO mkdir -p "/opt/${AppName}"
+sleep 3
+
+SUDO tar -xzf "/tmp/${AppName}.tar.gz" -C "/opt/"
+
+SUDO touch /usr/share/applications/${AppName}.desktop
+
+SUDO su -c "echo \"[Desktop Entry]
+Name=${AppName}
+StartupWMClass=${AppName}
+Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
+GenericName=Internet Messenger
+Exec=/opt/${AppName}/${AppName}
+Icon=/opt/${AppName}/discord.png
+Type=Application
+Categories=Network;InstantMessaging;
+Path=/opt/${AppName}\" | tee /usr/share/applications/${AppName}.desktop"
+
+
+SUDO chmod -R 777 "/opt/${AppName}"

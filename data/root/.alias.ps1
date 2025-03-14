@@ -59,6 +59,13 @@ if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
     }
 }
 
+$env:PATH = $env:PATH + ";$HOME/.dotnet/tools"
+
+if ($EUID -ne 0) {
+    $env:PATH = $env:PATH + ";/root/.dotnet/tools"
+}
+
+
 function Update-Alias {
     if (Test-Path "$env:HOME\.alias.ps1") { Remove-Item "$env:HOME\.alias.ps1" }
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/home/.alias.ps1" -OutFile "$env:HOME\.alias.ps1"

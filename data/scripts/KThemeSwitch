@@ -1,0 +1,96 @@
+#!/bin/bash
+
+declare -A COLORS=(
+    [Black]='\033[0;30m' [DarkBlue]='\033[0;34m' [DarkGreen]='\033[0;32m' [DarkCyan]='\033[0;36m'
+    [DarkRed]='\033[0;31m' [DarkMagenta]='\033[0;35m' [DarkYellow]='\033[0;33m' [Gray]='\033[0;37m'
+    [DarkGray]='\033[1;30m' [Blue]='\033[1;34m' [Green]='\033[1;32m' [Cyan]='\033[1;36m'
+    [Red]='\033[1;31m' [Magenta]='\033[1;35m' [Yellow]='\033[1;33m' [White]='\033[1;37m'
+    [NoColor]='\033[0m'
+)
+
+
+if [[ "$(uname -s)" != "Linux" ]]; then
+    echo -e "${COLORS[Red]}This script is designed for Linux.${COLORS[NoColor]}"
+    exit 1
+fi
+
+if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
+    xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+else
+    source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
+
+if ! [ "$(echo $XDG_CURRENT_DESKTOP | tr '[:upper:]' '[:lower:]')" = "kde" ]; then
+    echo "${COLORS[Red]}Your desktop environment doesn't seem to be KDE?${COLORS[NoColor]}"
+    sleep 2
+    exit 1
+fi
+
+conf_file="$HOME/.config/herrwinfried.themeswitcher.conf"
+
+default_lightTheme="org.kde.breeze.desktop"
+default_lightWallpaper="$XDG_PICTURES_DIR/breeze.png"
+default_darkTheme="org.kde.breezedark.desktop"
+default_darkWallpaper="$XDG_PICTURES_DIR/breeze-dark.png"
+default_lightTime="08:10"
+default_darkTime="16:40"
+default_mode="auto"
+
+if [ ! -f "$conf_file" ]; then
+    touch "$conf_file"
+    cat <<EOL >"$conf_file"
+lightTheme=$default_lightTheme
+lightWallpaper=$default_lightWallpaper
+darkTheme=$default_darkTheme
+darkWallpaper=$default_darkWallpaper
+lightTime=$default_lightTime
+darkTime=$default_darkTime
+mode=$default_mode
+EOL
+fi
+
+source "$conf_file"
+
+current_theme=$(grep -i "LookAndFeelPackage=" $HOME/.config/kdeglobals | cut -d'=' -f2)
+
+function apply_theme() {
+    theme=$1
+    wallpaper=$2
+
+    if [ "$current_theme" != "$theme" ]; then
+        /usr/bin/lookandfeeltool -a "$theme"
+        /usr/bin/plasma-apply-wallpaperimage "$wallpaper"
+        echo "Applied theme: $theme"
+    else
+        echo "Theme already set to: $theme"
+    fi
+}
+
+ThemeSelect="$1"
+if [ -z "$ThemeSelect" ]; then
+    ThemeSelect="$mode"
+else
+    sed -i "s/^mode=.*/mode=$ThemeSelect/" "$conf_file"
+fi
+
+case "$ThemeSelect" in
+"auto")
+    current_time=$(date +'%H:%M')
+    if [[ "$current_time" > "$lightTime" && "$current_time" < "$darkTime" ]]; then
+        apply_theme "$lightTheme" "$lightWallpaper"
+    else
+        apply_theme "$darkTheme" "$darkWallpaper"
+    fi
+    ;;
+"light")
+    apply_theme "$lightTheme" "$lightWallpaper"
+    ;;
+"dark")
+    apply_theme "$darkTheme" "$darkWallpaper"
+    ;;
+*)
+    echo "Invalid usage! The command should be:"
+    echo "$0 [auto|light|dark]"
+    exit 1
+    ;;
+esac

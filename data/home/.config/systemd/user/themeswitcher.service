@@ -1,8 +1,8 @@
 [Unit]
-Description=Theme Switcher Service
+Description=KDE Time-based Theme Changer
 
 [Service]
-ExecStart=/usr/local/bin/themeswitcher
+ExecStart=/usr/local/bin/KThemeSwitch
 Restart=always
 RestartSec=60
 
