@@ -10,7 +10,6 @@ declare -A COLORS=(
     [NoColor]='\033[0m'
 )
 
-
 if [[ "$(uname -s)" != "Linux" ]]; then
     echo -e "${COLORS[Red]}This script is designed for Linux.${COLORS[NoColor]}"
     exit 1
@@ -174,7 +173,7 @@ update_packages() {
     else
         unset isYes
     fi
-    local refresh_cmd update_cmd
+    local refresh_cmd update_cmd non_root
     case "$manager" in
     flatpak)
         refresh_cmd="echo '.'"
@@ -185,6 +184,7 @@ update_packages() {
         update_cmd="snap refresh"
         ;;
     brew)
+        non_root=true
         refresh_cmd="/home/linuxbrew/.linuxbrew/bin/brew update"
         update_cmd="/home/linuxbrew/.linuxbrew/bin/brew upgrade ${isYes}"
         ;;
@@ -210,7 +210,11 @@ update_packages() {
 
     if is_command "$manager"; then
         echo -e "${COLORS[Green]}Updating $manager...${COLORS[NoColor]}"
-        SUDO su -c "$refresh_cmd && $update_cmd"
+        if [[ "$non_root" == true ]]; then
+            bash -c "$refresh_cmd && $update_cmd"
+        else
+            SUDO su -c "$refresh_cmd && $update_cmd"
+        fi
     else
         echo -e "${COLORS[Red]}$manager not found, skipping.${COLORS[NoColor]}"
     fi

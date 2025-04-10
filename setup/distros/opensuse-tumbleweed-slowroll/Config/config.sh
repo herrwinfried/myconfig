@@ -21,13 +21,21 @@ fi
 if ! isWsl; then
     SUDO mkdir -p /boot/grub2.d
     SUDO mkdir -p /boot/grub2.d/themes
-fi
-
-if ! isWsl; then
-    if [[ $(hostname) == "$config[new_hostname]" ]]; then
+    if [[ $(hostname) == "${config[new_hostname]}" ]]; then
         echo "${COLORS[Red]}${LANG_ALREADY_HOSTNAME}${COLORS[NoColor]}"
     else
-        SUDO hostnamectl set-hostname "$config[new_hostname]"
+        SUDO hostnamectl set-hostname "${config[new_hostname]}"
+    fi
+
+    if is_command semanage; then
+        SUDO semanage fcontext -a -t textrel_shlib_t "~/.local/share/Steam/compatibilitytools.d(/.*)?"
+        SUDO restorecon -Rv ~/.local/share/Steam/compatibilitytools.d
+        SUDO semanage fcontext -a -t textrel_shlib_t "~/Games(/.*)?"
+        SUDO restorecon -Rv ~/Games
+    fi
+    if is_command setsebool; then
+    SUDO setsebool -P selinuxuser_execmod 1
+    SUDO setsebool -P selinuxuser_execstack 1
     fi
 fi
 

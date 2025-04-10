@@ -42,7 +42,7 @@ else
 
     Packages+=("fetchmsttfonts" "google-noto-sans*fonts" "google-noto-serif*fonts" "google-noto-coloremoji*fonts")
 
-    Packages+=("anydesk" "teamviewer-suse" "brave-browser" "microsoft-edge-stable" "libreoffice-base" "libreoffice-writer" "libreoffice-calc" "libreoffice-impress" "libreoffice-math" "libreoffice-l10n-tr")
+    Packages+=("anydesk" "teamviewer-suse" "brave-browser" "microsoft-edge-stable" "libreoffice-base" "libreoffice-writer" "libreoffice-calc" "libreoffice-impress" "libreoffice-math" "libreoffice-l10n-tr" "$(echo droidcam{,-cli})")
 
     PackagesFlatpak+=("org.remmina.Remmina" "com.rustdesk.RustDesk" "org.onlyoffice.desktopeditors" "org.localsend.localsend_app")
 
@@ -57,6 +57,11 @@ else
     PackagesFlatpak+=("org.telegram.desktop" "im.riot.Riot")
 
     PackagesFlatpak+=("com.obsproject.Studio" "com.saivert.pwvucontrol" "com.stremio.Stremio")
+fi
+
+# Selinux
+if is_command semanage; then
+    Packages+=("$(echo python311-{semanage,setools,selinux})")
 fi
 
 # Container
