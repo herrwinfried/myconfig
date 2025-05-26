@@ -2,7 +2,7 @@ function WSLTheme {
   if isWsl; then
   
       if [[ -d "$GetDataDir/rootWSL/" ]]; then
-      SUDO rsync -a --info=progress2 --force -L$GetDataDir/rootWSL/ /
+      SUDO rsync -a --info=progress2 --force -L $GetDataDir/rootWSL/ /
       fi
   
   

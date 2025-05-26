@@ -2,7 +2,7 @@
 
 function repo_nvidia_zypp {
     SUDO zypper --gpg-auto-import-keys --no-gpg-checks install -y -l openSUSE-repos-Slowroll-NVIDIA
-    SUDO zypper --gpg-auto-import-keys ar -n "Cuda (OpenSUSE 15)" -cfp 100 "https://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/cuda-opensuse15.repo"
+    SUDO zypper --gpg-auto-import-keys ar -n "Cuda (OpenSUSE 15)" -cfp 90 "https://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/cuda-opensuse15.repo"
 
 }
 

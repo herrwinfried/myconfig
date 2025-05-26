@@ -2,13 +2,15 @@
 
 # Apple
 Packages=("usbmuxd" "ifuse" "libimobiledevice-1_0-6" "libimobiledevice-glue-1_0-0" "libheif1" "libheif-ffmpeg" "libheif-jpeg" "libheif-openjpeg")
-
+Delete_Packages=()
 # KDE
 if ! isWsl && [ "$(echo "$XDG_CURRENT_DESKTOP" | tr '[:upper:]' '[:lower:]')" = "kde" ]; then
 
     # Partition Manager, Clock App, Color for KDE, krecorder
     Packages+=("partitionmanager" "kclock" "colord-kde" "krecorder")
 
+    Delete_Packages+=("kompare" "kuiviewer" "kmahjongg" "kmines" "kpat" "kreversi" "ksudoku" "akregator" "konversation" "ktnef" "pim-sieve-editor")
+    
     # Mass renaming, Calendar, KDE Connect, Advanced Text Editor
     Packages+=("krename" "merkuro" "kdeconnect-kde" "kate")
 
@@ -21,8 +23,8 @@ if ! isWsl && [ "$(echo "$XDG_CURRENT_DESKTOP" | tr '[:upper:]' '[:lower:]')" = 
     # Paint(Like WinXP), Music Player, Dolphin extra plugin, nextcloud images for dolphin
     Packages+=("kolourpaint" "elisa" "dolphin-plugins" "nextcloud-desktop-dolphin")
 
-    # Video edit, KDE Games, File Usage viewer, Flatpak Theme xdg desktop portal
-    Packages+=("kdenlive" "patterns-kde-kde_games" "filelight" "qt6-platformtheme-xdgdesktopportal")
+    # Video edit, File Usage viewer, Flatpak Theme xdg desktop portal, On-Screen Keyboard
+    Packages+=("kdenlive" "filelight" "qt6-platformtheme-xdgdesktopportal" "maliit-keyboard")
 fi
 
 # Base
@@ -38,19 +40,19 @@ PackagesFlatpak+=("com.github.tchx84.Flatseal")
 if isWsl; then
     Packages+=()
 else
-    Packages+=("wl-clipboard" "xwaylandvideobridge" "memtest86+" "AdobeICCProfiles")
+    Packages+=("wl-clipboard" "xwaylandvideobridge" "memtest86+" "AdobeICCProfiles" "onboard")
 
-    Packages+=("fetchmsttfonts" "google-noto-sans*fonts" "google-noto-serif*fonts" "google-noto-coloremoji*fonts")
+    Packages+=("google-noto-sans*fonts" "google-noto-serif*fonts" "google-noto-coloremoji*fonts")
 
-    Packages+=("anydesk" "teamviewer-suse" "brave-browser" "microsoft-edge-stable" "libreoffice-base" "libreoffice-writer" "libreoffice-calc" "libreoffice-impress" "libreoffice-math" "libreoffice-l10n-tr" "$(echo droidcam{,-cli})")
+    Packages+=("anydesk" "teamviewer-suse" "brave-browser" "microsoft-edge-stable" "$(echo libreoffice-{base,writer,calc,impress,math,l10n-tr})" "$(echo droidcam{,-cli})")
 
-    PackagesFlatpak+=("org.remmina.Remmina" "com.rustdesk.RustDesk" "org.onlyoffice.desktopeditors" "org.localsend.localsend_app")
+    PackagesFlatpak+=("org.remmina.Remmina" "org.onlyoffice.desktopeditors" "org.localsend.localsend_app")
 
     Packages+=("libguestfs" "libguestfs-appliance" "qemu" "qemu-audio-pipewire" "libvirt" "patterns-server-kvm_server" "patterns-server-kvm_tools" "virtualbox")
 
-    Packages+=("patterns-server-printing" "skanlite" "cups" "cups-client" "cups-filters" "cups-airprint" "system-config-printer" "hplip")
+    Packages+=("patterns-server-printing" "$(echo cups{,-client,-filters,-airprint})" "system-config-printer")
 
-    Packages+=("mangohud" "mangohud-32bit" "gamemode" "gamemoded" "libgamemode0" "libgamemodeauto0" "libgamemode0-32bit" "libgamemodeauto0-32bit" "steam" "lutris")
+    Packages+=("$(echo mangohud{,-32bit})" "gamemode" "gamemoded" "libgamemode0" "libgamemodeauto0" "libgamemode0-32bit" "libgamemodeauto0-32bit" "steam" "lutris")
 
     PackagesFlatpak+=("com.usebottles.bottles" "com.heroicgameslauncher.hgl" "io.github.trigg.discover_overlay" "net.davidotek.pupgui2" "com.github.Matoking.protontricks" "org.freedesktop.Platform.VulkanLayer.MangoHud//23.08" "org.freedesktop.Platform.VulkanLayer.MangoHud//24.08" "org.freedesktop.Sdk.Extension.openjdk21//24.08" "org.prismlauncher.PrismLauncher")
 
@@ -79,7 +81,7 @@ if ! isWsl; then
 fi
 
 Packages+=("patterns-devel-C-C++-devel_C_C++" "gdb" "clang" "gcc" "gcc-c++" "cmake" "cmake-full" "extra-cmake-modules")
-Packages+=("dotnet-sdk-9.0" "aspnetcore-runtime-9.0" "dotnet-runtime-9.0" "krb5-devel" "zlib-devel" "patterns-devel-mono-devel_mono" "patterns-devel-base-devel_rpm_build" "python311")
+Packages+=("dotnet-sdk-9.0" "aspnetcore-runtime-9.0" "dotnet-runtime-9.0" "krb5" "libicu77" "patterns-devel-mono-devel_mono" "python311")
 Packages+=("python311-pip" "nodejs-default" "npm-default" "build" "ninja" "git" "git-lfs")
 
 # Homebrew
@@ -96,8 +98,10 @@ if [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
 fi
 
 package_list="${Packages[@]}"
+unpackage_list="${Delete_Packages[@]}"
 flatpak_list="${PackagesFlatpak[@]}"
 
+PackageUnInstall "$unpackage_list"
 PackageInstall "$package_list"
 FlatpakPackageInstall "$flatpak_list"
 

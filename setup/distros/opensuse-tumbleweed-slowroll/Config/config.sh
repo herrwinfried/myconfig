@@ -34,9 +34,12 @@ if ! isWsl; then
         SUDO restorecon -Rv ~/Games
     fi
     if is_command setsebool; then
-    SUDO setsebool -P selinuxuser_execmod 1
-    SUDO setsebool -P selinuxuser_execstack 1
+        SUDO setsebool -P selinuxuser_execmod 1
+        SUDO setsebool -P selinuxuser_execstack 1
     fi
+
+    SUDO usermod -aG video $USER
+
 fi
 
 if [ -f "/bin/zsh" ]; then
@@ -47,10 +50,6 @@ if rpm -q systemd-zram-service &>/dev/null; then
     if [ -f /usr/lib/systemd/system/zramswap.service ]; then
         SUDO systemctl enable --now zramswap
     fi
-fi
-
-if [ -f "/bin/fish" ] && [ ! -x "$(command -v fisher)" ]; then
-    fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source ; fisher install jorgebucaran/fisher"
 fi
 
 if systemctl status cups.service &>/dev/null; then
@@ -75,4 +74,9 @@ mkdir -p $HOME/source/gitlab
 mkdir -p $HOME/source/github
 mkdir -p $XDG_VIDEOS_DIR/OBS
 mkdir -p $XDG_VIDEOS_DIR/Kdenlive
-mkdir -p $XDG_VIDEOS_DIR/MangoHud
+
+# KDE
+if ! isWsl && [ "$(echo "$XDG_CURRENT_DESKTOP" | tr '[:upper:]' '[:lower:]')" = "kde" ]; then
+mkdir -p ~/.config/environment.d
+echo -e '[Environment]\nKWIN_IM_SHOW_ALWAYS=1' | tee ~/.config/environment.d/kwin_virtualkeyboard.conf
+fi

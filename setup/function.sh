@@ -165,6 +165,9 @@ function GetPackageManagerVariable() {
 function PackageInstall {
     SUDO su -c "$PM $PM_Install $@"
 }
+function PackageUnInstall {
+    SUDO su -c "$PM $PM_Uninstall $@"
+}
 
 function FlatpakPackageInstall {
     SUDO su -c "$FPM $FPM_Install $@"

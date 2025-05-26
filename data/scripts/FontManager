@@ -56,11 +56,11 @@ FONT_DIR="/usr/local/share/fonts/truetype"
 function localdisk_windowsfont {
     WindowsDiskPath="/run/media/$USER/OS"
     WINDOWS_FONT_DIR="$WindowsDiskPath/Windows/Fonts/"
-    SUDO rm -rf "${FONT_DIR}/WindowsFonts"
 
-    if [ -d "$WINDOWS_FONT_DIR" ]; then
-        SUDO mkdir -p "${FONT_DIR}/WindowsFonts"
-        SUDO find "${WINDOWS_FONT_DIR}" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "${FONT_DIR}/WindowsFonts" \;
+    SUDO mkdir -p "$FONT_DIR/WindowsFonts"
+    if [ -d "$FONT_DIR/WindowsFonts" ]; then
+        SUDO rm -rf "$FONT_DIR/WindowsFonts"*
+        SUDO find "$WINDOWS_FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "$FONT_DIR/WindowsFonts" \;
         SUDO fc-cache -f -v
         fc-cache -f -v
     else
@@ -70,42 +70,29 @@ function localdisk_windowsfont {
 }
 
 function applefont {
-    local BaseURL tempdir
+    local BaseURL tempdir dmgfile pkgdir
     BaseURL="https://devimages-cdn.apple.com/design/resources/download/"
-    # shellcheck disable=SC2054
-    # shellcheck disable=SC2190
-    declare -A Fonts=("SF-Pro.dmg" "SF-Compact.dmg" "SF-Mono.dmg" "NY.dmg")
+    Fonts=("SF-Pro.dmg" "SF-Compact.dmg" "SF-Mono.dmg" "NY.dmg")
     tempdir=$(mktemp -d)
 
-    mkdir -p ${tempdir}
-
-    SUDO rm -rf "$FONT_DIR/AppleFonts"
-    SUDO mkdir -p "$FONT_DIR/AppleFonts"
+    sudo mkdir -p "$FONT_DIR/AppleFonts"
+    cd "$tempdir" || exit
 
     for Font in "${Fonts[@]}"; do
-        curl -L "${BaseURL}${Font}" -o "${tempdir}/${Font}"
+        curl -L "${BaseURL}${Font}" -o "${Font}"
     done
 
-    for dmgfile in "${tempdir}"/*.dmg; do
-        cd ${tempdir} || exit
-
-        7z e "${dmgfile}" -y -o"${tempdir}"
-
-        if [[ -f "${tempdir}"/*.pkg ]]; then
-
-            7z x -txar "${tempdir}"/*.pkg -y
-
-            if [[ -f "${tempdir}"/*.pkg/Payload ]]; then
-                7z x "${tempdir}"/*.pkg/Payload -y
-            fi
-
-            mv "${tempdir}/Library/Fonts/"* "$FONT_DIR/AppleFonts"
-        fi
-
-        rm -r "${tempdir}/${dmgfile}"
+    for dmgfile in *.dmg; do
+        7z e "${dmgfile}" -y -o"$tempdir"
+        7z x -txar *.pkg -y
+        pkgdir=$(find . -type d -name "*.pkg" | head -n 1)
+        cd "$pkgdir" || continue
+        7z x Payload -y
+        7z x Payload~ -y 2>/dev/null
+        sudo mv Library/Fonts/* "$FONT_DIR/AppleFonts"
     done
+    rm -rf "$tempdir"
 }
-
 
 copy_proton() {
     search_directories=("$HOME/Games/Lutris" "$HOME/Games/Heroic" "$HOME/Games/Bottles" "$HOME/Games/SteamData" "$HOME/WineData" "$HOME/ProtonData")
