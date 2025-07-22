@@ -2,22 +2,46 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
-function is_command() { command -v "$1" &>/dev/null; }
+function red_message {
+    # shellcheck disable=SC2145
+    echo -e "${COLORS[Red]}$@${COLORS[NoColor]}"
+}
+function yellow_message {
+    # shellcheck disable=SC2145
+    echo -e "${COLORS[Yellow]}$@${COLORS[NoColor]}"
+}
+function green_message {
+    # shellcheck disable=SC2145
+    echo -e "${COLORS[Green]}$@${COLORS[NoColor]}"
+}
+
+function GetLanguage {
+    gettext "$1"
+}
+
+function is_command() {
+    if command -v "$1" &>/dev/null; then
+        return 0
+    else
+        red_message "$(GetLanguage NOT_FOUND): $1"
+        return 1
+    fi
+}
 
 function check_root() {
     if [[ $EUID -eq 0 ]]; then
-        echo -e "${COLORS[Red]}You must not run this script as root.${COLORS[NoColor]}"
+        red_message "$(GetLanguage NOT_ROOT)"
         exit 1
     fi
 }
 
 function verify_password() {
-    echo -n -e "${COLORS[Cyan]}Password for ${COLORS[Red]}root:${COLORS[NoColor]} "
+    echo -n -e "${COLORS[Cyan]}$(GetLanguage "INPUT_PASSWORD"):${COLORS[NoColor]} "
     read -s user_password
-    echo -e "\n${COLORS[Yellow]}Verifying password...${COLORS[NoColor]}"
+    yellow_message "$(GetLanguage VERIFY_PASSWORD)"
     echo "$user_password" | sudo -S true &>/dev/null && return 0 || {
-        echo -e "${COLORS[Red]}Incorrect password.${COLORS[NoColor]}"
-        exit 1
+        red_message "$(GetLanguage ERROR_PASSWORD)"
+        verify_password
     }
 }
 
@@ -32,28 +56,11 @@ function cleanup() {
 trap cleanup EXIT
 
 function check_internet() {
-    curl -s --head http://www.google.com | grep "200" &>/dev/null || {
-        echo -e "${COLORS[Red]}No Internet connection.${COLORS[NoColor]}"
+    curl -s --head https://duckduckgo.com | grep "200" &>/dev/null || {
+        red_message "$(GetLanguage NO_INTERNET)"
         exit 1
     }
 }
-
-function Language {
-    gettext -s "$1"
-}
-
-function echo-red {
-    # shellcheck disable=SC2145
-    echo -e "${Red}$@ ${NoColor}"
-}
-
-. /etc/os-release
-
-if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
-    xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-else
-    source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
-fi
 
 function get_package_manager() {
     case "$DISTRO" in
@@ -143,10 +150,10 @@ function GetPackageManagerVariable() {
         ;;
     brew)
         BPM="/home/linuxbrew/.linuxbrew/bin/brew"
-        BPM_Refresh="update ${isYes}"
-        BPM_Upgrade="upgrade ${isYes}"
-        BPM_Install="install ${isYes}"
-        BPM_Uninstall="uninstall ${isYes}"
+        BPM_Refresh="update"
+        BPM_Upgrade="upgrade"
+        BPM_Install="install"
+        BPM_Uninstall="uninstall"
         ;;
     snap)
         SPM="snap"
@@ -185,7 +192,7 @@ function isWsl {
     fi
 }
 
-function CreateDesktopEntry() {
+function CreateDirectory() {
     local directory_path="$1"
     local icon_name="$2"
     if [[ ! -d $directory_path ]]; then
@@ -196,63 +203,77 @@ function CreateDesktopEntry() {
     fi
 }
 
-function flatpak_user_override() {
+function flatpakOverrideFs() {
     if command -v flatpak &>/dev/null; then
-        if [[ -z $2 ]]; then
-            flatpak --user override --filesystem=$1 $2
+        local user=$1
+        local fsystem=$2
+        local appname=$3
+        local flatargs
+        if [[ $user == true ]]; then
+            flatargs="--user"
+        fi
+        if [[ -z $appname ]]; then
+            flatpak $flatargs override --filesystem=$fsystem $appname
         else
-            flatpak --user override --filesystem=$1
+            flatpak $flatargs override --filesystem=$fsystem
         fi
     fi
 }
 
-function ExternalPackage {
-    mkdir -p $EXTERNAL_PACKAGE_DIRS
-    cd $EXTERNAL_PACKAGE_DIRS
-    files=$(ls -1 *.flatpakref *.rpm *.deb *.run *.bundle *.appimage 2>/dev/null)
+function ExternalPackage() {
+    green_message "===== ${config["external_package_dirs"]} ====="
+    CreateDirectory ${config["external_package_dirs"]}
+    cd ${config["external_package_dirs"]}
+    local files=$(ls -1 *.flatpakref *.rpm *.deb *.run *.bundle *.appimage 2>/dev/null)
 
     if [ -n "$files" ]; then
         for file in $files; do
             chmod +x "$file"
             case "$file" in
             *.flatpakref)
-                if [ -x $(command -v flatpak) ]; then
+                if is_command flatpak; then
                     SUDO $FPM $FPM_Install "$file"
-                    SUDO $FPM $FPM_Refresh
                 fi
                 ;;
             *.rpm)
-                if [ -x $(command -v zypper) ] || [ -x $(command -v dnf) ] && [ -x $(command -v rpm) ]; then
+                if is_command zypper || is_command dnf; then
                     SUDO $PM $PM_Install "$file"
-                    SUDO $PM $PM_Refresh
                 fi
                 ;;
             *.deb)
-                if [ -x $(command -v apt) ] && [ -x $(command -v dpkg) ]; then
+                if is_command apt; then
                     SUDO $PM $PM_Install "$file"
-                    SUDO $PM $PM_Refresh
                 fi
                 ;;
+            *.rootless.run)
+                ./$file
+                ;;
             *.run)
-                SUDO ./"$file"
+                SUDO ./$file
+                ;;
+            *.rootless.bundle)
+                ./$file
                 ;;
             *.bundle)
-                SUDO ./"$file"
+                SUDO ./$file
+                ;;
+            *.rootless.appimage)
+                ./$file
                 ;;
             *.appimage)
-                SUDO ./"$file"
+                SUDO ./$file
                 ;;
             esac
         done
     fi
+
 }
 
 function CheckScriptDirectory {
-    local Type="$1"
+    local DistroDirectory="$1"
     local Distro="$2"
-
     # shellcheck disable=SC2154
-    if [ -d "${GetScriptDir}/${Type}/${Distro}" ]; then
+    if [ -d "${GetScriptDir}/${DistroDirectory}/${Distro}" ]; then
         return 0
     else
         return 1
@@ -261,8 +282,9 @@ function CheckScriptDirectory {
 
 function RunScriptFile {
     local Folder="$1"
+    # shellcheck disable=SC2010
     for scriptfile in $(ls -1 "$Folder" | grep "\.sh$"); do
-        echo -e "${Magenta}${Folder}/${scriptfile}${NoColor}"
+        yellow_message "${Folder}/${scriptfile}"
         dos2unix "${Folder}/${scriptfile}"
         chmod +x "${Folder}/${scriptfile}"
         # shellcheck disable=SC1090
@@ -271,74 +293,43 @@ function RunScriptFile {
 }
 
 function RunScript {
-    local Type="$1"
-    local Dir="$2"
-    local result=$(CheckScriptDirectory $Type $Dir)
+    local DistroDirectory="$1"
+    local Distro="$2"
+    local fpath
+    if [[ $DistroDirectory == "distrobox" ]]; then
+        fpath="${DX_OS}/${Distro}"
+    else
+        fpath="${Distro}"
+    fi
+
+    # shellcheck disable=SC2155
+    local result=$(CheckScriptDirectory "$DistroDirectory" "$Distro")
     # shellcheck disable=SC1009
     if ! $result; then
-        echo-red "$(Language NOTSUPPORTDISTRO) [${Type}]"
+        echo-red "$(Language NOT_SUPPORT_DISTRO) [${DistroDirectory}]"
         exit 1
     fi
+    # shellcheck disable=SC2154
     if [ "$Presetup" = true ]; then
-        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
-        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Presetup"
+        RunScriptFile "${GetScriptDir}/${DistroDirectory}/${fpath}/Repository"
+        RunScriptFile "${GetScriptDir}/${DistroDirectory}/${fpath}/Presetup"
         PreSetupFinishMessage
         exit 1
     fi
+    # shellcheck disable=SC2154
     if [ "$OnlyConfig" = true ]; then
-        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Config"
+        RunScriptFile "${GetScriptDir}/${DistroDirectory}/${fpath}/Config"
         exit 1
     fi
-    RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
-    RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Process"
+    RunScriptFile "${GetScriptDir}/${DistroDirectory}/${fpath}/Repository"
+    RunScriptFile "${GetScriptDir}/${DistroDirectory}/${fpath}/Process"
+    # shellcheck disable=SC2154
     if [ "$Config" = true ]; then
-        RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Config"
-    fi
-
-}
-
-function RunScript_Distrobox {
-    local Type="distrobox"
-    local Dir="$1"
-    local dx_distro=$DX_OS
-    # shellcheck disable=SC1009
-    if ! CheckScriptDirectory "$Type" "$Dir"; then
-        echo-red "$(Language NOTSUPPORTDISTRO) [${Type}]"
-        exit 1
-    else
-        if [ "$Presetup" ]; then
-            RunScriptFile "${GetScriptDir}/${Type}/${Dir}/Repository"
-            RunScriptFile "${GetScriptDir}/${Type}/${dx_distro}/${Dir}/Presetup"
-            PreSetupFinishMessage
-            exit 1
-        fi
-        if [ "$OnlyConfig" ]; then
-            RunScriptFile "${GetScriptDir}/${Type}/${dx_distro}/${Dir}/Config"
-            exit 1
-        fi
-        RunScriptFile "${GetScriptDir}/${Type}/${dx_distro}/${Dir}/Repository"
-        RunScriptFile "${GetScriptDir}/${Type}/${dx_distro}/${Dir}/Process"
-        if [ "$Config" ]; then
-            RunScriptFile "${GetScriptDir}/${Type}/${dx_distro}/${Dir}/Config"
-        fi
+        RunScriptFile "${GetScriptDir}/${DistroDirectory}/${fpath}/Config"
     fi
 }
-
 function PreSetupFinishMessage {
-    echo -e "${Yellow}$(Language PreSetupMessageOne)${NoColor}"
-    echo -e "${Cyan}$(Language PreSetupMessageTwo)${NoColor}"
+    echo -e "${COLORS[Yellow]}$(Language PreSetupMessageOne)${COLORS[NoColor]}"
+    echo -e "${COLORS[Cyan]}$(Language PreSetupMessageTwo)${COLORS[NoColor]}"
     exit 1
-}
-
-basic_if_warning() {
-    echo -e "${Yellow}$(Language BOTH_WARNING)${NoColor}"
-    echo "[1] $(Language BOTH_WARNING_YES)"
-    echo "[2] $(Language BOTH_WARNING_NO)"
-    read -r IFREAD
-    if [ "$IFREAD" -ne 1 ] && [ "$IFREAD" -ne 2 ]; then
-        echo -e "${Red}$(Language BOTH_WARNING_INVALID) ${NoColor}"
-        basic_if_warning
-    elif [ "$IFREAD" -eq 2 ]; then
-        exit 1
-    fi
 }

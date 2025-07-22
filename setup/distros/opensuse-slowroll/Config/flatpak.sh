@@ -1,35 +1,35 @@
 #!/bin/bash
 
-if [ -x "$(command -v flatpak)" ]; then
+if is_command flatpak; then
 
-    flatpak_user_override ~/.local/share/themes
-    flatpak_user_override ~/.local/share/icons
-    flatpak_user_override xdg-config/gtk-2.0
-    flatpak_user_override xdg-config/gtk-3.0
-    flatpak_user_override xdg-config/gtk-4.0
-    flatpak_user_override xdg-config/gtk-2.0
-    flatpak_user_override xdg-config/gtkrc
+    flatpakOverrideFs true ~/.local/share/themes
+    flatpakOverrideFs true ~/.local/share/icons
+    flatpakOverrideFs true xdg-config/gtk-2.0
+    flatpakOverrideFs true xdg-config/gtk-3.0
+    flatpakOverrideFs true xdg-config/gtk-4.0
+    flatpakOverrideFs true xdg-config/gtk-2.0
+    flatpakOverrideFs true xdg-config/gtkrc
 
-    flatpak_user_override xdg-config/MangoHud
-    flatpak_user_override ~/.var/me
+    flatpakOverrideFs true xdg-config/MangoHud
+    flatpakOverrideFs true ~/.var/me
 
     game_apps=("com.github.Matoking.protontricks" "com.valvesoftware.Steam" "net.lutris.Lutris" "com.heroicgameslauncher.hgl" "com.usebottles.bottles")
-    game_dirs=("/mnt" "/run/media" "~/Games")
+    game_dirs=("/mnt" "/run/media" "$HOME/Games")
     
     for app in "${game_apps[@]}"; do
       for dir in "${game_dirs[@]}"; do
-        flatpak_user_override "$dir" "$app"
+        flatpakOverrideFs true "$dir" "$app"
       done
     done
 
-    flatpak_user_override /.var/me
-    mkdir -p ~/.var/me
+    flatpakOverrideFs true /.var/me
+    CreateDirectory ~/.var/me
 
     SUDO flatpak override --device=dri org.prismlauncher.PrismLauncher
     
     if ! isWsl; then
         # Discord Rich Presence
-        for i in {0..9}; do flatpak_user_override xdg-run/discord-ipc-$i; done
+        for i in {0..9}; do flatpakOverrideFs true xdg-run/discord-ipc-$i; done
     fi
 
     etc_os_release=$(md5sum /etc/os-release)

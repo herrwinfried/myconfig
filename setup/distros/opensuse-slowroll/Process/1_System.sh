@@ -1,12 +1,12 @@
 #!/bin/bash
 Packman=(ffmpeg $(echo gstreamer-plugins-{good,bad,ugly,libav}) libavcodec-full)
-System=(e2fsprogs net-tools util-linux-systemd)
+System=(e2fsprogs net-tools util-linux-systemd gcc)
 
 if isWsl; then
 System+=(humanity-icon-theme materia-gtk-theme gnome-tweaks qt6ct libOSMesa8 libgthread-2_0-0 libminizip1 libpcre2-16-0 nautilus) 
 else
 Packman+=(vlc-codecs)
-System+=(systemd-zram-service kernel-source kernel-devel gcc)
+System+=(systemd-zram-service kernel-source kernel-devel)
 fi
 
 if inxi -G | grep -iq "intel"; then

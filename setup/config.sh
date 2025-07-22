@@ -14,4 +14,14 @@ config["distro"]=$(echo $NAME $VERSION | tr '[:upper:]' '[:lower:]')
 config["board_vendor"]=$(cat /sys/class/dmi/id/board_vendor 2>/dev/null | tr '[:upper:]' '[:lower:]')
 config["external_package_dirs"]="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && cd .. && pwd)/files"
 config["new_hostname"]="herrwinfried"
+
+if [ ! -f "${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs" ]; then
+    xdg-user-dirs-update && sleep 1 && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+else
+    source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+fi
+
+
+export PATH=$PATH:/usr/sbin:/sbin
+
 unset /etc/os-release

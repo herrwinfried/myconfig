@@ -58,8 +58,7 @@ function localdisk_windowsfont {
     WINDOWS_FONT_DIR="$WindowsDiskPath/Windows/Fonts/"
 
     SUDO mkdir -p "$FONT_DIR/WindowsFonts"
-    if [ -d "$FONT_DIR/WindowsFonts" ]; then
-        SUDO rm -rf "$FONT_DIR/WindowsFonts"*
+    if [ -d "$WINDOWS_FONT_DIR" ]; then
         SUDO find "$WINDOWS_FONT_DIR" -type f \( -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "$FONT_DIR/WindowsFonts" \;
         SUDO fc-cache -f -v
         fc-cache -f -v
@@ -147,7 +146,7 @@ for arg in "$@"; do
         exit 0
         ;;
     update)
-        curl -L https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/SystemUpdate -o "$SCRIPT_DIR/SystemUpdate"
+        curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/$SCRIPT_NAME" -o "$SCRIPT_DIR/$SCRIPT_NAME"
         exit 0
         ;;
     -a | --applefont)

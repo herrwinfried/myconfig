@@ -3,28 +3,32 @@
 chmod 755 $GetDataDir/scripts/*
 SUDO rsync -a --info=progress2 --force $GetDataDir/scripts/ /usr/local/bin/
 
-##################################################################################################################
 shopt -s dotglob
 
 rsync -a --info=progress2 --force -L $GetDataDir/home/ $HOME/
+SUDO su -c "rsync -a --info=progress2 --force -L $GetDataDir/home/ /root/"
 
 SUDO su -c "rsync -a --info=progress2 --force -L $GetDataDir/root/ /root/"
 
-shopt -u dotglob
+if $isWSL; then
+    SUDO su -c "rsync -a --info=progress2 --force -L $GetDataDir/rootWSL/ /"
+fi
 
-##################################################################################################################
+shopt -u dotglob
 
 if [ -f $XDG_DESKTOP_DIR/trash.desktop ]; then
     SUDO chattr +i $XDG_DESKTOP_DIR/trash.desktop
 fi
 
 if ! isWsl; then
-    SUDO mkdir -p /boot/grub2.d
-    SUDO mkdir -p /boot/grub2.d/themes
+
     if [[ $(hostname) == "${config[new_hostname]}" ]]; then
-        echo "${COLORS[Red]}${LANG_ALREADY_HOSTNAME}${COLORS[NoColor]}"
+        red_message "$(GetLanguage ALREADY_HOSTNAME)"
     else
-        SUDO hostnamectl set-hostname "${config[new_hostname]}"
+        SUDO hostnamectl set-hostname "${config[new_hostname]}" || {
+            echo "${config[new_hostname]}" | sudo tee /etc/hostname
+        }
+
     fi
 
     if is_command semanage; then
@@ -39,7 +43,6 @@ if ! isWsl; then
     fi
 
     SUDO usermod -aG video $USER
-
 fi
 
 if [ -f "/bin/zsh" ]; then
@@ -59,24 +62,16 @@ if systemctl status cups.service &>/dev/null; then
     SUDO systemctl enable cups
 fi
 
-if [ -x "$(command -v snapper)" ]; then
-    SUDO snapper -c home create-config /home
-    SUDO snapper -c home create --description "New config"
-fi
-
-if ! lsmod | grep -q ntfs3; then
-    SUDO /sbin/modprobe ntfs3
-fi
-
-mkdir -p $HOME/source
-CreateDesktopEntry $HOME/source folder-build
-mkdir -p $HOME/source/gitlab
-mkdir -p $HOME/source/github
-mkdir -p $XDG_VIDEOS_DIR/OBS
-mkdir -p $XDG_VIDEOS_DIR/Kdenlive
-
 # KDE
 if ! isWsl && [ "$(echo "$XDG_CURRENT_DESKTOP" | tr '[:upper:]' '[:lower:]')" = "kde" ]; then
-mkdir -p ~/.config/environment.d
-echo -e '[Environment]\nKWIN_IM_SHOW_ALWAYS=1' | tee ~/.config/environment.d/kwin_virtualkeyboard.conf
+    mkdir -p ~/.config/environment.d
+    echo -e '[Environment]\nKWIN_IM_SHOW_ALWAYS=1' | tee ~/.config/environment.d/kwin_virtualkeyboard.conf
 fi
+
+CreateDirectory $HOME/source folder-build
+CreateDirectory $HOME/source/gitlab
+CreateDirectory $HOME/source/github
+CreateDirectory $HOME/source/local
+mkdir -p $XDG_VIDEOS_DIR/OBS
+mkdir -p $XDG_VIDEOS_DIR/Kdenlive
+mkdir -p $XDG_VIDEOS_DIR/davinci

@@ -3,12 +3,11 @@ if ((uname -s) -ne "Linux") {
   exit 1
 }
 
-
 if (-not $env:LC_ALL -and -not $env:LANG) {
   $env:LANG = "C.utf8"
   $env:LC_ALL = $env:LANG
 }
-Function Test-CommandExists {
+function Test-CommandExists {
   Param ($command)
   $oldPreference = $ErrorActionPreference
    
@@ -18,6 +17,15 @@ Function Test-CommandExists {
   Catch { return $False }
    
   Finally { $ErrorActionPreference = $oldPreference }
+}
+
+if (Test-CommandExists warp-cli) {
+  warp-cli generate-completions powershell | Set-Content -Path "$env:HOME/.config/powershell/completions/warp-cli.ps1"
+}
+
+New-Item -ItemType Directory -Path "$env:HOME/.config/powershell/completions" -Force | Out-Null
+Get-ChildItem -Path "$env:HOME/.config/powershell/completions" -Filter '*.ps1' | ForEach-Object {
+    . $_.FullName
 }
 
 $OhMyPoshTheme="$env:HOME/.poshthemes/default.omp.json"
@@ -44,14 +52,14 @@ function Test-WSL {
 
 }
 
-
-if (Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
-  Add-Content -Path $PROFILE.CurrentUserAllHosts -Value '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv) | Invoke-Expression'
+if (Test-Path "$env:HOMEBREW_PREFIX") {
+$("$env:HOMEBREW_PREFIX/bin/brew shellenv") | Invoke-Expression | Out-Null
 }
+
 
 if ((Test-Path $OhMyPoshTheme) -And (Test-CommandExists oh-my-posh)) {
   if ($env:TERM -ne "linux") {
-      oh-my-posh init pwsh --config $OhMyPoshTheme | Invoke-Expression 
+      oh-my-posh init pwsh --config $OhMyPoshTheme | Invoke-Expression
   }
   function Update-OhMyPoshTheme {
     if (Test-Path "$env:HOME\.poshthemes\default.omp.json") { Remove-Item "$env:HOME\.poshthemes\default.omp.json" }

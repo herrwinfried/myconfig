@@ -15,7 +15,7 @@ if [ ! -f "${TEXTDOMAINDIR}/en_US/LC_MESSAGES/${GetScriptName}.mo" ]; then
     echo "There is no language file. Script exited."
     exit 1
 elif [[ ! -f "${TEXTDOMAINDIR}/$(echo "$LANG" | cut -d '.' -f 1)/LC_MESSAGES/${GetScriptName}.mo" ]]; then
-    export LANG="en_US.UTF-8"
+    export LC_ALL="en_US.UTF-8"
 fi
 
 if [ -f function.sh ]; then
@@ -42,20 +42,23 @@ for arg in "$@"; do
         ;;
     "--client" | "--user" | "-u")
         Client=true
+        Distrobox=false
         ;;
     "--distrobox" | "-d")
         Distrobox=true
+        Client=false
         ;;
     "--presetup" | "-ps")
         Presetup=true
         ;;
     "--only-config" | "-cc")
         OnlyConfig=true
+        Config=false
         ;;
     "--config" | "-c")
         Config=true
         ;;
-    *) echo -e "${COLORS[Red]}Invalid argument: $arg${COLORS[NoColor]}" ;;
+    *) red_message "$(GetLanguage INVALID_ARGS): $arg" ;;
     esac
 done
 
@@ -66,7 +69,7 @@ if [[ ${config[distro]} = *opensuse\ tumbleweed ]]; then
     GetPackageManagerVariable flatpak
     GetPackageManagerVariable brew
 elif [[ ${config[distro]} = *opensuse\ tumbleweed-slowroll ]]; then
-    DistroFolder="opensuse-tumbleweed-slowroll"
+    DistroFolder="opensuse-slowroll"
     GetPackageManagerVariable dnf5 # zypper
     GetPackageManagerVariable flatpak
     GetPackageManagerVariable brew
@@ -81,12 +84,12 @@ elif [[ ${config[distro]} = *debian* ]]; then
     GetPackageManagerVariable flatpak
     GetPackageManagerVariable brew
 else
-    echo -e "${COLORS[Red]}$(Language NOTSUPPORTDISTRO)${COLORS[NoColor]}"
+    red_message "$(GetLanguage NOT_SUPPORT_DISTRO)"
     exit 1
 fi
 
-if [ $Client = false ] && [ $Server = false ] && [ $Distrobox = false ]; then
-    echo -e "${COLORS[Red]}$(Language NOARGUMENT)${COLORS[NoColor]}"
+if [ $Client = false ] && [ $Distrobox = false ]; then
+    red_message "$(GetLanguage NO_ARGS)"
     exit 1
 else
 
@@ -94,13 +97,14 @@ else
     check_root
     verify_password
 
-    # running scripts inside folders
+    CreateDirectory ${config["external_package_dirs"]}
+
     if [ $Client = true ]; then
         RunScript "distros" "${DistroFolder}"
     fi
 
     if [ $Distrobox = true ]; then
-        RunScript_Distrobox "${DistroFolder}"
+        RunScript "distrobox" "${DistroFolder}"
     fi
 
 fi

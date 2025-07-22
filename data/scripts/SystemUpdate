@@ -2,6 +2,8 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
+export PATH=$PATH:/usr/sbin:/sbin
+
 declare -A COLORS=(
     [Black]='\033[0;30m' [DarkBlue]='\033[0;34m' [DarkGreen]='\033[0;32m' [DarkCyan]='\033[0;36m'
     [DarkRed]='\033[0;31m' [DarkMagenta]='\033[0;35m' [DarkYellow]='\033[0;33m' [Gray]='\033[0;37m'
@@ -15,7 +17,13 @@ if [[ "$(uname -s)" != "Linux" ]]; then
     exit 1
 fi
 
-function is_command() { command -v "$1" &>/dev/null; }
+function is_command() {
+    if command -v "$1" &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 function check_root() {
     if [[ $EUID -eq 0 ]]; then
@@ -30,7 +38,7 @@ function verify_password() {
     echo -e "\n${COLORS[Yellow]}Verifying password...${COLORS[NoColor]}"
     echo "$user_password" | sudo -S true &>/dev/null && return 0 || {
         echo -e "${COLORS[Red]}Incorrect password.${COLORS[NoColor]}"
-        exit 1
+        verify_password
     }
 }
 
@@ -106,7 +114,7 @@ for arg in "$@"; do
         exit 0
         ;;
     update)
-        curl -L https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/SystemUpdate -o "$SCRIPT_DIR/SystemUpdate"
+        curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/$SCRIPT_NAME" -o "$SCRIPT_DIR/$SCRIPT_NAME"
         exit 0
         ;;
     -y | --assumeyes) PM_AllYes=true ;;
@@ -176,7 +184,7 @@ update_packages() {
     local refresh_cmd update_cmd non_root
     case "$manager" in
     flatpak)
-        refresh_cmd="echo '.'"
+        refresh_cmd="echo ''"
         update_cmd="flatpak update ${isYes}"
         ;;
     snap)
@@ -186,7 +194,7 @@ update_packages() {
     brew)
         non_root=true
         refresh_cmd="/home/linuxbrew/.linuxbrew/bin/brew update"
-        update_cmd="/home/linuxbrew/.linuxbrew/bin/brew upgrade ${isYes}"
+        update_cmd="/home/linuxbrew/.linuxbrew/bin/brew upgrade"
         ;;
     zypper)
         local zypper_cmd=$(get_zypper_command)
