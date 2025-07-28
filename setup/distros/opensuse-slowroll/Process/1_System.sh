@@ -6,7 +6,7 @@ if isWsl; then
 System+=(humanity-icon-theme materia-gtk-theme gnome-tweaks qt6ct libOSMesa8 libgthread-2_0-0 libminizip1 libpcre2-16-0 nautilus) 
 else
 Packman+=(vlc-codecs)
-System+=(systemd-zram-service kernel-source kernel-devel)
+System+=(systemd-zram-service $(echo kernel-{source,devel,longterm-devel,source-longterm}))
 fi
 
 if inxi -G | grep -iq "intel"; then
