@@ -7,7 +7,7 @@
 
 <h1>Program Requirements</h1>
 <ul>
-    <li>Winget v1.7.1061+</li>
+    <li>Winget v1.11.510+</li>
     <li>git (<code>winget install --interactive --id Git.Git</code>)</li>
     <li>Windows Powershell or Powershell Core 7.x.x+ (<code>winget install --id Microsoft.PowerShell</code>)
 </ul>
@@ -31,7 +31,7 @@ cd %userprofile% && git clone https://github.com/herrwinfried/myconfig/ -b windo
 <h2> CLI </h2>
 
 ```powershell
-./install.ps1 -u -c
+./install.ps1 -c
 ```
 
 <small>for details "-?" Use the argument.</small>
