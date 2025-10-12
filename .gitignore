@@ -36,3 +36,5 @@ my_themes
 # I don't want to accidentally send back the file I pulled from the Linux branch. :P
 *.poshthemes*
 *default.omp.json*
+
+.env

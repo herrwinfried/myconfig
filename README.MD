@@ -12,18 +12,25 @@
     <li>Windows Powershell or Powershell Core 7.x.x+ (<code>winget install --id Microsoft.PowerShell</code>)
 </ul>
 
+> [!WARNING]
+> If you create a variable named `WACPort` in the .env file, the firewall that WAC adds for public and domain networks will use the port you specify. If you don’t specify it, port 6600 will be used. 
+> Example .env file:
+> ```.env
+> WACPort=6600
+> ```
+
 <h1>Download</h1>
 
 <h4>Powershell:</h4>
 
 ```powershell
-Set-Location ~ ; git clone https://github.com/herrwinfried/myconfig/ -b windows ; Set-Location ~/myconfig/scripts
+Set-Location ~ ; git clone https://github.com/herrwinfried/myconfig/ -b windows ; Set-Location ~/myconfig/setup
 ```
 
 <h4>CMD:</h4>
 
 ```cmd
-cd %userprofile% && git clone https://github.com/herrwinfried/myconfig/ -b windows && cd myconfig/scripts
+cd %userprofile% && git clone https://github.com/herrwinfried/myconfig/ -b windows && cd myconfig/setup
 ```
 
 <h1>Install</h1>

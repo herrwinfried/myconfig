@@ -123,6 +123,14 @@ if (IsAdministrator) {
             Name  = "UploadUserActivities"
             Value = 0
             Type  = "DWord"
+        },
+        # Marks the system as "Upgraded" in Windows Code Integrity (CI) policies;
+        # Value 1 = Enabled (some driver signature and security checks may be relaxed)
+        @{
+            Path  = "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy"
+            Name  = "UpgradedSystem"
+            Value = 1
+            Type  = "dword"
         }
     );
     $registryKeys += @(

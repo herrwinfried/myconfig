@@ -151,10 +151,6 @@ $apps += @(
         Interactive = $False
     }
     @{
-        Id          = "Ollama.Ollama"
-        Interactive = $False
-    },
-    @{
         Id          = "9WZDNCRFHWLH" # HP Smart
         Interactive = $False
     },
@@ -231,6 +227,10 @@ $apps += @(
         Interactive = $False
     },
     @{
+        Id          = "Obsidian.Obsidian"
+        Interactive = $False
+    },
+    @{
         Id          = "Microsoft.VisualStudioCode"
         Interactive = $False
     },
@@ -248,6 +248,14 @@ $apps += @(
     },
     @{
         Id          = "GitHub.GitLFS"
+        Interactive = $False
+    },
+    @{
+        Id          = "GLab.GLab"
+        Interactive = $False
+    },
+    @{
+        Id          = "GitHub.cli"
         Interactive = $False
     },
     @{
@@ -278,6 +286,12 @@ if (Get-CimInstance Win32_VideoController | Where-Object { $_.Name -ilike "*NVID
         Interactive = $False
     }
 } 
+
+# Later, prevent the firewall from running in the Public and Domain profiles due to security risk.
+$apps += @{
+    Id          = "Microsoft.WindowsAdminCenter"
+    Interactive = $True
+}
 
 foreach ($app in $apps) {
     if ($app.Interactive) {
