@@ -53,10 +53,10 @@ function cleanup() {
 trap cleanup EXIT
 
 function check_internet() {
-    curl -s --head http://www.google.com | grep "200" &>/dev/null || {
-        echo -e "${COLORS[Red]}No Internet connection.${COLORS[NoColor]}"
-        exit 1
-    }
+   curl -s --head http://www.google.com | grep "200" &>/dev/null || {
+       echo -e "${COLORS[Red]}No Internet connection.${COLORS[NoColor]}"
+       exit 1
+   }
 }
 
 . /etc/os-release

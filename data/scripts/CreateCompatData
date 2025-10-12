@@ -46,7 +46,7 @@ function cleanup() {
 trap cleanup EXIT
 
 function search_recursive() {
-    SUDO "find \"$1\" -type f -name \"$2\" 2>/dev/null"
+    SUDO find "$1" -type f -name "$2" 2>/dev/null
 }
 
 search_directories=("/mnt" "/run/media/$USER" "$HOME" "/root")

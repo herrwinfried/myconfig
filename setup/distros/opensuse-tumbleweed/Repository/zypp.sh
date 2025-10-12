@@ -1,17 +1,17 @@
 #!/bin/bash
 
 function repo_nvidia_zypp {
-    SUDO zypper --gpg-auto-import-keys --no-gpg-checks install -y -l openSUSE-repos-Slowroll-NVIDIA
+    SUDO zypper --gpg-auto-import-keys --no-gpg-checks install -y -l openSUSE-repos-Tumbleweed-NVIDIA
     SUDO zypper --gpg-auto-import-keys ar -n "Cuda (OpenSUSE 15)" -cfp 91 "https://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/cuda-opensuse15.repo"
 }
 
 function repo_packman_zypp {
-    SUDO zypper --gpg-auto-import-keys ar -n "Packman Essentials" -cfp 90 "https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Slowroll/Essentials/" packman-essentials
+    SUDO zypper --gpg-auto-import-keys ar -n "Packman Essentials" -cfp 90 "https://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/Essentials/" packman-essentials
     SUDO zypper --gpg-auto-import-keys dup -y -l --from packman-essentials --allow-vendor-change
 }
 
 function repo_snapd_zypp {
-    SUDO zypper --gpg-auto-import-keys addrepo -n "Snappy" "https://download.opensuse.org/repositories/system:/snappy/openSUSE_Slowroll" snappy
+    SUDO zypper --gpg-auto-import-keys addrepo -n "Snappy" "https://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed" snappy
 }
 
 function repo_asuscommunity_zypp() {

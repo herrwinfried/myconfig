@@ -86,10 +86,10 @@ fi
 
 if ! isWsl; then
     Packages+=("code" "sublime-merge" "filezilla" "okteta")
+    PackagesFlatpak+=("md.obsidian.Obsidia")
 fi
 Packages+=("rust" "dotnet-sdk-9.0" "aspnetcore-runtime-9.0" "dotnet-runtime-9.0" "krb5" "libicu77" "patterns-devel-mono-devel_mono" "python313")
 Packages+=("python313-pip" "nodejs-default" "npm-default" "git" "git-lfs" "glab" "gh")
-PackagesFlatpak+=("md.obsidian.Obsidia")
 # Homebrew
 
 OLD_PWD=$(pwd)

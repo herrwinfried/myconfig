@@ -7,14 +7,19 @@
 
 <h1>Package Requirements</h1>
 
-| Package Name | OpenSUSE Tumleweed | Fedora | Debian |
-|--------------|--------------------|--------|--------|
-| git          | git                | git    | git    |
-| xdg-user-dirs| xdg-user-dirs      | xdg-user-dirs | xdg-user-dirs |
-| dos2unix     | dos2unix           | dos2unix | dos2unix |
-| wget         | wget               | wget   | wget   |
-| curl         | curl               | curl   | curl   |
-| gettext         | gettext-tools               | gettext   | gettext   |
+| Package Name  | OpenSUSE Tumbleweed | Fedora        | Debian       |
+|----------------|--------------------|----------------|---------------|
+| git            | git                | git            | git           |
+| xdg-user-dirs  | xdg-user-dirs      | xdg-user-dirs  | xdg-user-dirs |
+| dos2unix       | dos2unix           | dos2unix       | dos2unix      |
+| wget           | wget               | wget           | wget          |
+| curl           | curl               | curl           | curl          |
+| gettext        | gettext-tools      | gettext        | gettext       |
+| rsync          | rsync              | rsync          | rsync         |
+| which          | which              | which          | which         |
+| tar            | tar                | tar            | tar           |
+| ruby           | ruby               | ruby           | ruby          |
+| inxi           | inxi               | inxi           | inxi          |
 
 
 <h1>Download</h1>
