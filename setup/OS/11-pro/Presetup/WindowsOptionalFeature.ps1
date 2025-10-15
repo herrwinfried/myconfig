@@ -3,7 +3,8 @@ function IsAdministrator {
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
-if (IsAdministrator) { 
+
+if (IsAdministrator) {
     # FIXME: :/ Hey, if you know a more logical way, I'm open to suggestions.
     Set-Location $PSScriptRoot\..\..\..\
     $TempFolder = $(Get-Location)
@@ -33,7 +34,7 @@ if (IsAdministrator) {
 }
 else {
     if (Test-CommandExists pwsh) {
-        Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait  
+        Start-Process pwsh.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait
     }
     else {
         Start-Process powershell.exe -ArgumentList "-ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs -Wait   

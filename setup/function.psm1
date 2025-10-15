@@ -116,7 +116,7 @@ function Invoke-ScriptFile {
     foreach ($File in (Get-ChildItem -Path $Directory -Filter *.ps1)) {
         Write-Host -ForegroundColor Magenta "$File"
         Start-Sleep -Seconds 1
-        . "$Directory\$File"
+        . $File.FullName
     }
 }
 Export-ModuleMember -Function Invoke-ScriptFile

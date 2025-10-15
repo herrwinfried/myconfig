@@ -91,10 +91,6 @@ $apps += @(
         Interactive = $False
     },
     @{
-        Id          = "9MSSK2ZXXN11" # OpenSUSE Tumbleweed for WSL
-        Interactive = $False
-    },
-    @{
         Id          = "9PKTQ5699M62" # iCloud
         Interactive = $False
     },
@@ -276,6 +272,10 @@ $apps += @(
     },
     @{
         Id          = "Docker.DockerDesktop"
+        Interactive = $False
+    },
+    @{
+        Id          = "Oracle.VirtualBox"
         Interactive = $False
     }
 )
