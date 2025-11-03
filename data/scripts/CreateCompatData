@@ -60,11 +60,11 @@ for directory in "${search_directories[@]}"; do
             parent_dir=$(dirname "$file")
             echo -e "${COLORS[Green]}$parent_dir Directory Found!${COLORS[NoColor]}"
             
-            if [ -d "$parent_dir/steamapps" ] && { [ ! -L "$parent_dir/steamapps/compatdata" ] || [ "$(readlink "$parent_dir/steamapps/compatdata")" != "$HOME/Games/SteamData" ]; }; then
-                if [ ! -d "$HOME/Games/SteamData" ]; then
-                    mkdir -p "$HOME/Games/SteamData"
+            if [ -d "$parent_dir/steamapps" ] && { [ ! -L "$parent_dir/steamapps/compatdata" ] || [ "$(readlink "$parent_dir/steamapps/compatdata")" != "$HOME/Games/Prefix/compatdata" ]; }; then
+                if [ ! -d "$HOME/Games/Prefix/compatdata" ]; then
+                    mkdir -p "$HOME/Games/Prefix/compatdata"
                 fi
-                ln -sf "$HOME/Games/SteamData" "$parent_dir/steamapps/compatdata"
+                ln -sf "$HOME/Games/Prefix/compatdata" "$parent_dir/steamapps/compatdata"
                 echo -e "${COLORS[Blue]}$parent_dir/steamapps/compatdata ${COLORS[Cyan]}Symbolic Link Created!${COLORS[NoColor]}"
             else
                 echo -e "${COLORS[Blue]}$parent_dir Directory:${COLORS[Red]} Couldn't find anything to meet the conditions!${COLORS[NoColor]}"

@@ -7,6 +7,12 @@ if (-not $env:LC_ALL -and -not $env:LANG) {
   $env:LANG = "C.utf8"
   $env:LC_ALL = $env:LANG
 }
+
+### Proton/Wine
+$env:HOST_LC_ALL = $env:LC_ALL
+$env:WINEDLLPATH = "$env:WINEDLLPATH:/opt/discord-rpc/bin64:/opt/discord-rpc/bin32"
+###########################
+
 function Test-CommandExists {
   Param ($command)
   $oldPreference = $ErrorActionPreference
@@ -28,6 +34,7 @@ Get-ChildItem -Path "$env:HOME/.config/powershell/completions" -Filter '*.ps1' |
     . $_.FullName
 }
 
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = "1"
 $OhMyPoshTheme="$env:HOME/.poshthemes/default.omp.json"
 
 if (Test-CommandExists zypper) {
@@ -39,6 +46,8 @@ if (Test-CommandExists zypper) {
 
 if (Test-Path "$env:XDG_RUNTIME_DIR/docker.sock" -PathType Leaf) {
   $env:DOCKER_HOST = "unix://$env:XDG_RUNTIME_DIR/docker.sock"
+} else {
+    $env:DOCKER_HOST = "unix:///var/run/docker.sock"
 }
 
 function Test-WSL {

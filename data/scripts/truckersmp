@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMPAT_DATA_DIR="$HOME/Games/SteamData"
+COMPAT_DATA_DIR="$HOME/Games/Prefix/compatdata"
 
 export STEAM_COMPAT_DATA_PATH="$COMPAT_DATA_DIR/scssoftware"
 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"

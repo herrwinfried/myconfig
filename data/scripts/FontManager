@@ -94,7 +94,7 @@ function applefont {
 }
 
 copy_proton() {
-    search_directories=("$HOME/Games/Lutris" "$HOME/Games/Heroic" "$HOME/Games/Bottles" "$HOME/Games/SteamData" "$HOME/WineData" "$HOME/ProtonData")
+    search_directories=("$HOME/Games/Prefix" "$HOME/WineData")
     source_fonts="/usr/local/share/fonts/truetype/WindowsFonts"
 
     for dir in "${search_directories[@]}"; do

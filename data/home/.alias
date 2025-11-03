@@ -19,13 +19,19 @@ elif [ -z "$LC_ALL" ]; then
     export LC_ALL=$LANG
 fi
 
+### Proton/Wine
+export HOST_LC_ALL="$LC_ALL"
+export WINEDLLPATH=$WINEDLLPATH:/opt/discord-rpc/bin64:/opt/discord-rpc/bin32
+###########################
 
 OhMyPoshTheme=~/.poshthemes/default.omp.json
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 if  [ -S "${XDG_RUNTIME_DIR}/docker.sock" ]; then
 export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/docker.sock"
+else 
+export DOCKER_HOST=unix:///var/run/docker.sock
 fi
-
 
 function CheckWsl() {
     local unameout
