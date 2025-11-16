@@ -70,7 +70,7 @@ if [[ ${config[distro]} = *opensuse\ tumbleweed ]]; then
     GetPackageManagerVariable brew
 elif [[ ${config[distro]} = *opensuse\ tumbleweed-slowroll ]]; then
     DistroFolder="opensuse-slowroll"
-    GetPackageManagerVariable dnf5 # zypper
+    GetPackageManagerVariable zypper # dnf5
     GetPackageManagerVariable flatpak
     GetPackageManagerVariable brew
 elif [[ ${config[distro]} = *fedora* ]]; then

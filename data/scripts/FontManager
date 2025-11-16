@@ -109,7 +109,9 @@ copy_proton() {
                 fi
 
                 mkdir -p "$parent_dir/Fonts" && rm -rf "$parent_dir/Fonts/"*
-                cp -a "$source_fonts/." "$parent_dir/Fonts/"
+                for file in "$source_fonts"/*; do
+                    ln -s "$file" "$parent_dir/Fonts/$(basename $file)"
+                done
                 echo -e "${COLORS[Blue]}Font Copied: ${COLORS[Cyan]}${parent_dir}/Fonts${COLORS[NoColor]}"
             fi
         done

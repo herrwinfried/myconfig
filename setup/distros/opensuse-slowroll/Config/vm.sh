@@ -54,6 +54,7 @@ function libvirt {
         fi
     fi
 }
+
 function virtualbox {
     if ! isWsl; then
         if rpm -q virtualbox &>/dev/null; then

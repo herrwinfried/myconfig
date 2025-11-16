@@ -83,11 +83,12 @@ declare -A DEFAULTS=(
     [Snap]=$(is_command snap && echo true || echo false)
     [brew]=$(is_command brew && echo true || echo false)
     [Package]=$PACKAGE_MANAGER
+    [Dotnet]=$(is_command dotnet && echo true || echo false)
     [AllYes]=true
 )
 
-[[ ! -f "$CONF_FILE" ]] && printf "PM_Flatpak=%s\nPM_Snap=%s\nPM_brew=%s\nPM_Package=%s\nPM_AllYes=%s\n" \
-    "${DEFAULTS[Flatpak]}" "${DEFAULTS[Snap]}" "${DEFAULTS[brew]}" "${DEFAULTS[Package]}" "${DEFAULTS[AllYes]}" >"$CONF_FILE"
+[[ ! -f "$CONF_FILE" ]] && printf "PM_Flatpak=%s\nPM_Snap=%s\nPM_brew=%s\nPM_Package=%s\nPM_Dotnet=%s\nPM_AllYes=%s\n" \
+    "${DEFAULTS[Flatpak]}" "${DEFAULTS[Snap]}" "${DEFAULTS[brew]}" "${DEFAULTS[Package]}" "${DEFAULTS[Dotnet]}" "${DEFAULTS[AllYes]}" >"$CONF_FILE"
 source "$CONF_FILE"
 
 function HelpFunction {
@@ -103,7 +104,9 @@ function HelpFunction {
     echo -e "  -ds, --disablesnap       Disable Snap updates"
     echo -e "  -ep, --enablepackage     Enable package manager updates"
     echo -e "  -dp, --disablepackage    Disable package manager updates"
-    echo -e "  update                  Update the script itself"
+    echo -e "  -ed, --enabledotnet      Enable package manager updates"
+    echo -e "  -dd, --disabledotnet     Disable package manager updates"
+    echo -e "  update                   Update the script itself"
     exit 0
 }
 
@@ -127,6 +130,8 @@ for arg in "$@"; do
     -dh | --disablebrew) PM_brew=false ;;
     -ep | --enablepackage) PM_Package=$PACKAGE_MANAGER ;;
     -dp | --disablepackage) PM_Package=false ;;
+    -eh | --enabledotnet) PM_Dotnet=true ;;
+    -dh | --disabledotnet) PM_Dotnet=false ;;
     *) echo -e "${COLORS[Red]}Invalid argument: $arg${COLORS[NoColor]}" ;;
     esac
 done
@@ -210,6 +215,10 @@ update_packages() {
         refresh_cmd="apt update"
         update_cmd="apt upgrade ${isYes}"
         ;;
+    dotnet)
+        refresh_cmd="echo ''"
+        update_cmd="dotnet tool update --tool-path /opt/microsoft/tool"
+        ;;
     *)
         echo -e "${COLORS[Red]}Invalid package manager: $manager${COLORS[NoColor]}"
         return
@@ -232,5 +241,5 @@ update_packages() {
 [[ "$PM_Snap" == true ]] && update_packages "snap" "${PM_AllYes}"
 [[ "$PM_brew" == true ]] && update_packages "brew" "${PM_AllYes}"
 [[ "$PM_Package" != false ]] && update_packages "$PM_Package" "${PM_AllYes}"
-
+[[ "$PM_Dotnet" != false ]] && update_packages "dotnet" "${PM_AllYes}"
 cleanup
