@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the myconfig package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: myconfig 2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-20 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: setup.sh - init_environment
+msgid "⚠️  Error: Script cannot be run as root. Please run as a normal user."
+msgstr ""
+
+#: setup.sh - init_environment
+msgid "⚠️  Error: No internet connection. Please check your network."
+msgstr ""
+
+#: setup.sh - init_environment
+msgid "⚠️  Error: sudo authentication failed."
+msgstr ""
+
+#: setup.sh - distro check
+msgid "❌ Unable to detect Linux distribution."
+msgstr ""
+
+#: setup.sh - distro dir check
+msgid "❌ Configuration not found for distro: %s at %s"
+msgstr ""
+
+#: setup.sh - info display
+msgid "🧭 Detected distribution: %s"
+msgstr ""
+
+#: setup.sh - info display
+msgid "🖥️  Platform: %s"
+msgstr ""
+
+#: setup.sh - info display
+msgid "📁 Configuration directory: %s"
+msgstr ""
+
+#: setup.sh - parameter parsing
+msgid "⚠️  Unknown parameter: %s"
+msgstr ""
+
+#: setup.sh - parameter parsing
+msgid "⚠️  Error: You must specify a parameter (--presetup, --install, --config, --onlyconfig)."
+msgstr ""
+
+#: setup.sh - completion
+msgid "✅ Setup completed successfully."
+msgstr ""
+
+#: lib/utils.sh - run_stage
+msgid "⚠️  Stage directory not found: %s"
+msgstr ""
+
+#: lib/utils.sh - run_stage
+msgid "▶️  Executing: %s"
+msgstr ""
+
+#: lib/package_manager.sh
+msgid "⚠️  Invalid package manager:"
+msgstr ""
+
+#: lib/package_manager.sh - detect_package_manager
+msgid "⚠️  Unsupported distribution: %s"
+msgstr ""
+
+#: Process/2_dnf.sh
+msgid "⚠️  Warning: %s value is present, skipping."
+msgstr ""
+
+#: Configure/directory.sh
+msgid "Data directory resolved to:"
+msgstr ""
+
+#: Configure/directory.sh
+msgid "❌ One or more required data subdirectories are missing in %s."
+msgstr ""
+
+#: Configure/directory.sh
+msgid "Copying data/root to / ..."
+msgstr ""
+
+#: Configure/directory.sh
+msgid "Copying data/user to %s ..."
+msgstr ""
+
+#: Configure/directory.sh
+msgid "Copying data/superuser to /root ..."
+msgstr ""
+
+#: Configure/directory.sh
+msgid "✅ All data has been copied successfully."
+msgstr ""
+
+#: Configure/hostname.sh
+msgid "Hostname is already set correctly, skipping."
+msgstr ""
+
+#: Configure/vm.sh
+msgid "%s and %s parameters have been added to %s"
+msgstr ""
+
+#: Configure/vm.sh
+msgid "%s and %s parameters are already in %s"
+msgstr ""
+
+#: Configure/vm.sh
+msgid "%s not found!"
+msgstr ""
+
+#: Configure/vm.sh
+msgid "%s and %s parameters have been added to the GRUB configuration."
+msgstr ""
+
+#: Configure/vm.sh
+msgid "%s and %s parameters are already included in the GRUB configuration."
+msgstr ""
+
+#: Configure/vm.sh
+msgid "GRUB configuration file not found! Please check your system."
+msgstr ""
+
+#: Configure/vm.sh
+msgid "Unsupported bootloader type."
+msgstr ""

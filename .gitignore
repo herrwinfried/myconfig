@@ -26,7 +26,8 @@
 *.pkg
 
 files
-my_themes
+
+*.mo
 
 .gitconfig
 .ssh

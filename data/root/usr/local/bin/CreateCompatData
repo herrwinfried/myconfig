@@ -1,0 +1,76 @@
+#!/bin/bash
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
+
+declare -A COLORS=(
+    [Black]='\033[0;30m' [DarkBlue]='\033[0;34m' [DarkGreen]='\033[0;32m' [DarkCyan]='\033[0;36m'
+    [DarkRed]='\033[0;31m' [DarkMagenta]='\033[0;35m' [DarkYellow]='\033[0;33m' [Gray]='\033[0;37m'
+    [DarkGray]='\033[1;30m' [Blue]='\033[1;34m' [Green]='\033[1;32m' [Cyan]='\033[1;36m'
+    [Red]='\033[1;31m' [Magenta]='\033[1;35m' [Yellow]='\033[1;33m' [White]='\033[1;37m'
+    [NoColor]='\033[0m'
+)
+
+
+if [[ "$(uname -s)" != "Linux" ]]; then
+    echo -e "${COLORS[Red]}This script is designed for Linux.${COLORS[NoColor]}"
+    exit 1
+fi
+
+function is_command() { command -v "$1" &>/dev/null; }
+
+function check_root() {
+    if [[ $EUID -eq 0 ]]; then
+        echo -e "${COLORS[Red]}You must not run this script as root.${COLORS[NoColor]}"
+        exit 1
+    fi
+}
+
+function verify_password() {
+    echo -n -e "${COLORS[Cyan]}Password for ${COLORS[Red]}root:${COLORS[NoColor]} "
+    read -s user_password
+    echo -e "\n${COLORS[Yellow]}Verifying password...${COLORS[NoColor]}"
+    echo "$user_password" | sudo -S true &>/dev/null && return 0 || {
+        echo -e "${COLORS[Red]}Incorrect password.${COLORS[NoColor]}"
+        exit 1
+    }
+}
+
+function sudo() {
+    echo "$user_password" | sudo -S "$@"
+}
+
+function cleanup() {
+    unset user_password
+    sudo --reset-timestamp
+}
+trap cleanup EXIT
+
+function search_recursive() {
+    sudo find "$1" -type f -name "$2" 2>/dev/null
+}
+
+search_directories=("/mnt" "/run/media/$USER" "$HOME" "/root")
+
+check_root
+verify_password
+
+for directory in "${search_directories[@]}"; do
+    if found_files=$(search_recursive "$directory" "libraryfolder.vdf"); then
+        for file in $found_files; do
+            parent_dir=$(dirname "$file")
+            echo -e "${COLORS[Green]}$parent_dir Directory Found!${COLORS[NoColor]}"
+            
+            if [ -d "$parent_dir/steamapps" ] && { [ ! -L "$parent_dir/steamapps/compatdata" ] || [ "$(readlink "$parent_dir/steamapps/compatdata")" != "$HOME/Games/Prefix/compatdata" ]; }; then
+                if [ ! -d "$HOME/Games/Prefix/compatdata" ]; then
+                    mkdir -p "$HOME/Games/Prefix/compatdata"
+                fi
+                ln -sf "$HOME/Games/Prefix/compatdata" "$parent_dir/steamapps/compatdata"
+                echo -e "${COLORS[Blue]}$parent_dir/steamapps/compatdata ${COLORS[Cyan]}Symbolic Link Created!${COLORS[NoColor]}"
+            else
+                echo -e "${COLORS[Blue]}$parent_dir Directory:${COLORS[Red]} Couldn't find anything to meet the conditions!${COLORS[NoColor]}"
+            fi
+        done
+    else
+        echo -e "${COLORS[Blue]}$directory Directory:${COLORS[Red]} Couldn't find anything to meet the conditions!${COLORS[NoColor]}"
+    fi
+done

@@ -1,0 +1,245 @@
+#!/bin/bash
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
+
+export PATH=$PATH:/usr/sbin:/sbin
+
+declare -A COLORS=(
+    [Black]='\033[0;30m' [DarkBlue]='\033[0;34m' [DarkGreen]='\033[0;32m' [DarkCyan]='\033[0;36m'
+    [DarkRed]='\033[0;31m' [DarkMagenta]='\033[0;35m' [DarkYellow]='\033[0;33m' [Gray]='\033[0;37m'
+    [DarkGray]='\033[1;30m' [Blue]='\033[1;34m' [Green]='\033[1;32m' [Cyan]='\033[1;36m'
+    [Red]='\033[1;31m' [Magenta]='\033[1;35m' [Yellow]='\033[1;33m' [White]='\033[1;37m'
+    [NoColor]='\033[0m'
+)
+
+if [[ "$(uname -s)" != "Linux" ]]; then
+    echo -e "${COLORS[Red]}This script is designed for Linux.${COLORS[NoColor]}"
+    exit 1
+fi
+
+function is_command() {
+    if command -v "$1" &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function check_root() {
+    if [[ $EUID -eq 0 ]]; then
+        echo -e "${COLORS[Red]}You must not run this script as root.${COLORS[NoColor]}"
+        exit 1
+    fi
+}
+
+function verify_password() {
+    echo -n -e "${COLORS[Cyan]}Password for ${COLORS[Red]}root:${COLORS[NoColor]} "
+    read -s user_password
+    echo -e "\n${COLORS[Yellow]}Verifying password...${COLORS[NoColor]}"
+    echo "$user_password" | sudo -S true &>/dev/null && return 0 || {
+        echo -e "${COLORS[Red]}Incorrect password.${COLORS[NoColor]}"
+        verify_password
+    }
+}
+
+function sudo() {
+    echo "$user_password" | sudo -S "$@"
+}
+
+function cleanup() {
+    unset user_password
+    sudo --reset-timestamp
+}
+trap cleanup EXIT
+
+function check_internet() {
+   curl -s --head http://www.google.com | grep "200" &>/dev/null || {
+       echo -e "${COLORS[Red]}No Internet connection.${COLORS[NoColor]}"
+       exit 1
+   }
+}
+
+. /etc/os-release
+DISTRO=$(echo "$NAME" | tr '[:upper:]' '[:lower:]')
+
+function get_package_manager() {
+    case "$DISTRO" in
+    *"opensuse tumbleweed"*) echo "zypper" ;;
+    *"fedora"*) echo "dnf" ;;
+    *"debian"* | *"ubuntu"*) echo "apt" ;;
+    *) echo "unsupported" ;;
+    esac
+}
+
+PACKAGE_MANAGER=$(get_package_manager)
+[[ "$PACKAGE_MANAGER" == "unsupported" ]] && {
+    echo -e "${COLORS[Red]}Unsupported Linux distribution.${COLORS[NoColor]}"
+    exit 1
+}
+
+CONF_FILE="$HOME/.config/systemupdate.conf"
+declare -A DEFAULTS=(
+    [Flatpak]=$(is_command flatpak && echo true || echo false)
+    [Snap]=$(is_command snap && echo true || echo false)
+    [brew]=$(is_command brew && echo true || echo false)
+    [Package]=$PACKAGE_MANAGER
+    [Dotnet]=$(is_command dotnet && echo true || echo false)
+    [AllYes]=true
+)
+
+[[ ! -f "$CONF_FILE" ]] && printf "PM_Flatpak=%s\nPM_Snap=%s\nPM_brew=%s\nPM_Package=%s\nPM_Dotnet=%s\nPM_AllYes=%s\n" \
+    "${DEFAULTS[Flatpak]}" "${DEFAULTS[Snap]}" "${DEFAULTS[brew]}" "${DEFAULTS[Package]}" "${DEFAULTS[Dotnet]}" "${DEFAULTS[AllYes]}" >"$CONF_FILE"
+source "$CONF_FILE"
+
+function HelpFunction {
+    echo -e "${COLORS[Cyan]}Usage:${COLORS[NoColor]}"
+    echo "Usage: ${SCRIPT_NAME} [options]"
+    echo -e "\n${COLORS[Cyan]}Options:${COLORS[NoColor]}"
+    echo -e "  -h, --help               Show this help message"
+    echo -e "  -y, --assumeyes          Assume yes for all prompts"
+    echo -e "  -n, --noassumeyes        If --assumeyes for all prompts, then remove"
+    echo -e "  -ef, --enableflatpak     Enable Flatpak updates"
+    echo -e "  -df, --disableflatpak    Disable Flatpak updates"
+    echo -e "  -es, --enablesnap        Enable Snap updates"
+    echo -e "  -ds, --disablesnap       Disable Snap updates"
+    echo -e "  -ep, --enablepackage     Enable package manager updates"
+    echo -e "  -dp, --disablepackage    Disable package manager updates"
+    echo -e "  -ed, --enabledotnet      Enable package manager updates"
+    echo -e "  -dd, --disabledotnet     Disable package manager updates"
+    echo -e "  update                   Update the script itself"
+    exit 0
+}
+
+for arg in "$@"; do
+    case "${arg,,}" in
+    -h | --help)
+        HelpFunction
+        exit 0
+        ;;
+    update)
+        curl -L "https://raw.githubusercontent.com/herrwinfried/myconfig/linux/data/scripts/$SCRIPT_NAME" -o "$SCRIPT_DIR/$SCRIPT_NAME"
+        exit 0
+        ;;
+    -y | --assumeyes) PM_AllYes=true ;;
+    -n | --noassumeyes) PM_AllYes=false ;;
+    -ef | --enableflatpak) PM_Flatpak=true ;;
+    -df | --disableflatpak) PM_Flatpak=false ;;
+    -es | --enablesnap) PM_Snap=true ;;
+    -ds | --disablesnap) PM_Snap=false ;;
+    -eh | --enablebrew) PM_brew=true ;;
+    -dh | --disablebrew) PM_brew=false ;;
+    -ep | --enablepackage) PM_Package=$PACKAGE_MANAGER ;;
+    -dp | --disablepackage) PM_Package=false ;;
+    -eh | --enabledotnet) PM_Dotnet=true ;;
+    -dh | --disabledotnet) PM_Dotnet=false ;;
+    *) echo -e "${COLORS[Red]}Invalid argument: $arg${COLORS[NoColor]}" ;;
+    esac
+done
+
+check_root
+check_internet
+verify_password
+
+get_zypper_command() {
+    local distro=$(echo "$NAME $VERSION" | tr '[:upper:]' '[:lower:]')
+    local dup_distros=("tumbleweed" "slowroll" "microos" "kubic")
+    local up_distros=("leap")
+    for dup_distro in "${dup_distros[@]}"; do
+        if [[ $distro == *"$dup_distro"* ]]; then
+            echo "dup"
+            return
+        fi
+    done
+    for up_distro in "${up_distros[@]}"; do
+        if [[ $distro == *"$up_distro"* ]]; then
+            echo "up"
+            return
+        fi
+    done
+    echo "up"
+}
+
+get_dnf_command() {
+    local distro=$(echo "$NAME $VERSION" | tr '[:upper:]' '[:lower:]')
+    local dup_distros=("tumbleweed" "slowroll" "microos" "kubic")
+    local up_distros=("leap")
+    for dup_distro in "${dup_distros[@]}"; do
+        if [[ $distro == *"$dup_distro"* ]]; then
+            echo "distro-sync"
+            return
+        fi
+    done
+    for up_distro in "${up_distros[@]}"; do
+        if [[ $distro == *"$up_distro"* ]]; then
+            echo "upgrade"
+            return
+        fi
+    done
+    echo "upgrade"
+}
+
+update_packages() {
+    local manager=$1
+    local isYes=$2
+    if [[ "$isYes" == true ]]; then
+        isYes="-y"
+    else
+        unset isYes
+    fi
+    local refresh_cmd update_cmd non_root
+    case "$manager" in
+    flatpak)
+        refresh_cmd="echo ''"
+        update_cmd="flatpak update ${isYes}"
+        ;;
+    snap)
+        refresh_cmd="snap refresh"
+        update_cmd="snap refresh"
+        ;;
+    brew)
+        non_root=true
+        refresh_cmd="/home/linuxbrew/.linuxbrew/bin/brew update"
+        update_cmd="/home/linuxbrew/.linuxbrew/bin/brew upgrade"
+        ;;
+    zypper)
+        local zypper_cmd=$(get_zypper_command)
+        refresh_cmd="zypper --gpg-auto-import-keys refresh"
+        update_cmd="zypper --gpg-auto-import-keys ${zypper_cmd} --details -l ${isYes}"
+        ;;
+    dnf)
+        local dnf_cmd=$(get_dnf_command)
+        refresh_cmd="dnf makecache"
+        update_cmd="dnf ${dnf_cmd} --nogpgcheck ${isYes}"
+        ;;
+    apt)
+        refresh_cmd="apt update"
+        update_cmd="apt upgrade ${isYes}"
+        ;;
+    dotnet)
+        refresh_cmd="echo ''"
+        update_cmd="dotnet tool update --all --tool-path /opt/microsoft/tool"
+        ;;
+    *)
+        echo -e "${COLORS[Red]}Invalid package manager: $manager${COLORS[NoColor]}"
+        return
+        ;;
+    esac
+
+    if is_command "$manager"; then
+        echo -e "${COLORS[Green]}Updating $manager...${COLORS[NoColor]}"
+        if [[ "$non_root" == true ]]; then
+            bash -c "$refresh_cmd && $update_cmd"
+        else
+            sudo su -c "$refresh_cmd && $update_cmd"
+        fi
+    else
+        echo -e "${COLORS[Red]}$manager not found, skipping.${COLORS[NoColor]}"
+    fi
+}
+
+[[ "$PM_Flatpak" == true ]] && update_packages "flatpak" "${PM_AllYes}"
+[[ "$PM_Snap" == true ]] && update_packages "snap" "${PM_AllYes}"
+[[ "$PM_brew" == true ]] && update_packages "brew" "${PM_AllYes}"
+[[ "$PM_Package" != false ]] && update_packages "$PM_Package" "${PM_AllYes}"
+[[ "$PM_Dotnet" != false ]] && update_packages "dotnet" "${PM_AllYes}"
+cleanup

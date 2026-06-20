@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: myconfig 2.0\n"
+"POT-Creation-Date: 2026-06-20 00:00+0000\n"
+"PO-Revision-Date: 2026-06-20 00:00+0000\n"
+"Last-Translator: Winfried <winfried@example.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: setup.sh - init_environment
+msgid "⚠️  Error: Script cannot be run as root. Please run as a normal user."
+msgstr "⚠️  Hata: Script root olarak çalıştırılamaz. Lütfen normal kullanıcı olarak çalıştırın."
+
+#: setup.sh - init_environment
+msgid "⚠️  Error: No internet connection. Please check your network."
+msgstr "⚠️  Hata: İnternet bağlantısı bulunamadı. Lütfen ağınızı kontrol edin."
+
+#: setup.sh - init_environment
+msgid "⚠️  Error: sudo authentication failed."
+msgstr "⚠️  Hata: sudo kimlik doğrulaması başarısız."
+
+#: setup.sh - distro check
+msgid "❌ Unable to detect Linux distribution."
+msgstr "❌ Linux dağıtımı tespit edilemedi."
+
+#: setup.sh - distro dir check
+msgid "❌ Configuration not found for distro: %s at %s"
+msgstr "❌ %s dağıtımı için yapılandırma bulunamadı: %s"
+
+#: setup.sh - info display
+msgid "🧭 Detected distribution: %s"
+msgstr "🧭 Tespit edilen dağıtım: %s"
+
+#: setup.sh - info display
+msgid "🖥️  Platform: %s"
+msgstr "🖥️  Platform: %s"
+
+#: setup.sh - info display
+msgid "📁 Configuration directory: %s"
+msgstr "📁 Kullanılan yapılandırma klasörü: %s"
+
+#: setup.sh - parameter parsing
+msgid "⚠️  Unknown parameter: %s"
+msgstr "⚠️  Bilinmeyen parametre: %s"
+
+#: setup.sh - parameter parsing
+msgid "⚠️  Error: You must specify a parameter (--presetup, --install, --config, --onlyconfig)."
+msgstr "⚠️  Hata: Çalıştırmak için bir parametre (--presetup, --install, --config, --onlyconfig) belirtmelisiniz."
+
+#: setup.sh - completion
+msgid "✅ Setup completed successfully."
+msgstr "✅ Kurulum başarıyla tamamlandı."
+
+#: lib/utils.sh - run_stage
+msgid "⚠️  Stage directory not found: %s"
+msgstr "⚠️  Aşama dizini bulunamadı: %s"
+
+#: lib/utils.sh - run_stage
+msgid "▶️  Executing: %s"
+msgstr "▶️  Çalıştırılıyor: %s"
+
+#: lib/package_manager.sh
+msgid "⚠️  Invalid package manager:"
+msgstr "⚠️  Geçersiz paket yöneticisi:"
+
+#: lib/package_manager.sh - detect_package_manager
+msgid "⚠️  Unsupported distribution: %s"
+msgstr "⚠️  Desteklenmeyen dağıtım: %s"
+
+#: Process/2_dnf.sh
+msgid "⚠️  Warning: %s value is present, skipping."
+msgstr "⚠️  Uyarı: %s değeri zaten mevcut, atlanıyor."
+
+#: Configure/directory.sh
+msgid "Data directory resolved to:"
+msgstr "Veri dizini yolu:"
+
+#: Configure/directory.sh
+msgid "❌ One or more required data subdirectories are missing in %s."
+msgstr "❌ %s içinde bir veya daha fazla gerekli veri alt dizini eksik."
+
+#: Configure/directory.sh
+msgid "Copying data/root to / ..."
+msgstr "data/root → / kopyalanıyor..."
+
+#: Configure/directory.sh
+msgid "Copying data/user to %s ..."
+msgstr "data/user → %s kopyalanıyor..."
+
+#: Configure/directory.sh
+msgid "Copying data/superuser to /root ..."
+msgstr "data/superuser → /root kopyalanıyor..."
+
+#: Configure/directory.sh
+msgid "✅ All data has been copied successfully."
+msgstr "✅ Tüm veriler başarıyla kopyalandı."
+
+#: Configure/hostname.sh
+msgid "Hostname is already set correctly, skipping."
+msgstr "Hostname zaten doğru ayarlanmış, atlanıyor."
+
+#: Configure/vm.sh
+msgid "%s and %s parameters have been added to %s"
+msgstr "%s ve %s parametreleri %s dosyasına eklendi"
+
+#: Configure/vm.sh
+msgid "%s and %s parameters are already in %s"
+msgstr "%s ve %s parametreleri zaten %s dosyasında mevcut"
+
+#: Configure/vm.sh
+msgid "%s not found!"
+msgstr "%s bulunamadı!"
+
+#: Configure/vm.sh
+msgid "%s and %s parameters have been added to the GRUB configuration."
+msgstr "%s ve %s parametreleri GRUB yapılandırmasına eklendi."
+
+#: Configure/vm.sh
+msgid "%s and %s parameters are already included in the GRUB configuration."
+msgstr "%s ve %s parametreleri zaten GRUB yapılandırmasında mevcut."
+
+#: Configure/vm.sh
+msgid "GRUB configuration file not found! Please check your system."
+msgstr "GRUB yapılandırma dosyası bulunamadı! Lütfen sisteminizi kontrol edin."
+
+#: Configure/vm.sh
+msgid "Unsupported bootloader type."
+msgstr "Desteklenmeyen önyükleyici türü."
