@@ -64,14 +64,14 @@ PackageManagerVariable() {
 			PM="dnf"
 			PM_Refresh="makecache ${yes_flag}"
 			PM_Upgrade="$(_get_update_type dnf) ${yes_flag}"
-			PM_Install="install --no-gpg-checks ${yes_flag}"
+			PM_Install="--no-gpgchecks install ${yes_flag}"
 			PM_Uninstall="remove ${yes_flag}"
 			;;
 		dnf5)
 			PM="dnf5"
 			PM_Refresh="makecache ${yes_flag}"
 			PM_Upgrade="$(_get_update_type dnf5) ${yes_flag}"
-			PM_Install="install --no-gpg-checks ${yes_flag}"
+			PM_Install="--no-gpgchecks install ${yes_flag}"
 			PM_Uninstall="remove ${yes_flag}"
 			;;
 		pacman)

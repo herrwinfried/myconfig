@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # Repository/zypp.sh — Zypper repository definitions (openSUSE Tumbleweed)
-set -euo pipefail
 
 # ----------------------------------------------------------------
 # Repository addition functions
 # ----------------------------------------------------------------
 
 repo_nvidia_zypp() {
-	sudo zypper --gpg-auto-import-keys --no-gpg-checks install -y -l openSUSE-repos-Tumbleweed-NVIDIA
+	sudo zypper --gpg-auto-import-keys --no-gpg-checks install -y -l openSUSE-repos-Tumbleweed-NVIDIA || true
 	sudo zypper --gpg-auto-import-keys ar -n "Cuda (OpenSUSE 15)" -cfp 91 \
 		"https://developer.download.nvidia.com/compute/cuda/repos/opensuse15/x86_64/cuda-opensuse15.repo" || true
 }
